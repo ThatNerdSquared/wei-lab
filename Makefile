@@ -1,9 +1,9 @@
-.PHONY: run lint fmt
+.PHONY: clean
 
 # SRCS = $(shell find ./recombinator -type f -name '*.py')
 
-run:
-	python3 ./main.py
+clean:
+	rm **/out--*.png
 
 # lint:
 # 	python3 -m flake8 $(SRCS)

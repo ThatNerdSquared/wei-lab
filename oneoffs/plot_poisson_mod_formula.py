@@ -31,5 +31,5 @@ markov_line = plt.bar(x_range, [modded_1to2_poisson(i, avg) for i in x_range], w
 
 ax = plt.gca()
 plt.legend()
-plt.savefig("plot_poisson_mod_formula.png")
+plt.savefig("out--plot_poisson_mod_formula.png")
 plt.show()

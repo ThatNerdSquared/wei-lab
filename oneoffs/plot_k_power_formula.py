@@ -22,5 +22,5 @@ diff_line = plt.plot(
 ax = plt.gca()
 ax.set_ylim([0, 10])
 plt.legend()
-plt.savefig("plot_k_power_formula.png")
+plt.savefig("out--plot_k_power_formula.png")
 plt.show()
