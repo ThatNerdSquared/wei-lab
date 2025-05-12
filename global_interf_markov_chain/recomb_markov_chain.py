@@ -1,6 +1,8 @@
 import numpy as np
 import math
+from collections.abc import Callable
 from textwrap import dedent
+from typing import Optional
 
 class RecombMarkovChain:
 
@@ -70,3 +72,24 @@ class RecombMarkovChain:
             self._transition_matrix[start][end + 1] -= delta
         else:
             self._transition_matrix[start][end - 1] -= delta
+
+    def scale_transition_probability(self, start: int, end: int, multiplier: float):
+        if end - start > 1:
+            raise ValueError("Given start and end states are not connected!")
+        if start == end:
+            raise NotImplementedError(
+                "This method doesn't yet support scaling k->k transitions. Please try scaling a k->k+1 transition instead."
+            )
+        self._transition_matrix[start][end] *= multiplier
+        self._transition_matrix[start][end - 1] = 1 -self._transition_matrix[start][end]
+
+    def on_all_onward_transitions(
+        self,
+        fn: Callable[[int, int, float], None],
+        arg: float,
+        start: Optional[int] = None
+    ):
+        for k in range(start if start else 0, len(self._transition_matrix)):
+            if k == len(self._transition_matrix) - 1:
+                return
+            fn(k, k+1, arg)
