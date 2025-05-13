@@ -23,7 +23,7 @@ class Chromosome:
 
     def randomly_add_crossovers(self, num: int):
         for _ in range(num):
-            self.insert_crossover(randint(0, self.length))
+            self.insert_crossover(randint(0, self.length - 1))
 
     def get_num_crossovers(self) -> int:
         return len(self._crossovers)
@@ -35,7 +35,7 @@ class Chromosome:
             return False
 
     def has_visible_crossover(self, start: int = 0, end: Optional[int] = None) -> bool:
-        endpoint: int = end if end else self.length
+        endpoint: int = end if end is not None else self.length
         crossover_locations = sorted(self._crossovers.keys())
         num_crossovers_in_region = len([
             x for x in crossover_locations if x >= start and x <= endpoint
