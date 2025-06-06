@@ -5,7 +5,7 @@ from typing import Callable
 from src.utils.chromosome import Chromosome
 
 # config here is set to match otto's simulation
-NUM_CHROMOSOMES = 10000
+NUM_CHROMOSOMES = 100000
 BINS_PER_CHROMOSOME = 1000
 # NEW: standardised map length
 AVG_COS_PER_CHROMOSOME = 0.5
@@ -36,34 +36,13 @@ def simulate_bins(react_to_co: Callable[[int, list, list[int]], None]):
 
     return chroms
 
-def simulate_bins_arange(react_to_co: Callable[[int, list, list[int]], None]):
-    chroms = []
-    for i in range(NUM_CHROMOSOMES):
-        print(i)
-        chrom = Chromosome(BINS_PER_CHROMOSOME)
-        bins = np.zeros(BINS_PER_CHROMOSOME)
-        bins += starting_p_hit
-
-        # bin_idxs = list(range(BINS_PER_CHROMOSOME))
-        bin_idxs = np.arange(BINS_PER_CHROMOSOME)
-        rand.shuffle(bin_idxs)
-
-        for loc in bin_idxs:
-            if rand.binomial(1, bins[loc]):
-                react_to_co(loc, bins, bin_idxs)
-                chrom.insert_crossover(loc)
-
-        chroms.append(chrom)
-
-    return chroms
-
-
-'''
 no_interf_chroms = simulate_bins(lambda x, y, z: None)
 
 # basic interference
 def interf_scaling_factor(bin_index, co_location) -> float:
-    return 1 - np.exp(-1 * np.abs((bin_index / BINS_PER_CHROMOSOME) - co_location))
+    return 1 - np.exp(-1 * np.abs(
+        (bin_index / BINS_PER_CHROMOSOME) - (co_location / BINS_PER_CHROMOSOME)
+    ))
 
 
 def basic_interf_reaction(co_loc, bins, bin_idxs):
@@ -87,4 +66,3 @@ ax.plot(x_range, total_cos_per_location__interf, label='interf')
 ax.set_ylim((0, 1))
 # ax.set_ylim([0, 1])
 plt.show()
-'''
