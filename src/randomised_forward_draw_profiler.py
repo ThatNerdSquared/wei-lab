@@ -21,10 +21,19 @@ def lazy_interf(loc: int):
 
 def interf(co_loc, bins, bin_idxs):
     for idx in bin_idxs:
-        bins[idx] = interf_scaling(idx, co_loc, bins[idx])
+        bins[idx] = bins[idx] * (1 - np.exp(-1 * np.abs(
+            (idx / BINS_PER_CHROMOSOME) - (co_loc / BINS_PER_CHROMOSOME)
+        )))
+
+bin_locs = np.arange(BINS_PER_CHROMOSOME)
+def vectorised_interf(co_loc, bins, bin_idxs):
+    bins = bins * (1 - np.exp(-1 * np.abs(
+        (bin_locs / BINS_PER_CHROMOSOME) - (co_loc / BINS_PER_CHROMOSOME)
+    )))
 
 cProfile.run(
-    'simulate_bins(interf)',
+    # 'simulate_bins(interf)',
+    'simulate_bins(vectorised_interf)',
     # 'simulate_bins_lazy(lazy_interf)',
     sort=SortKey.TIME
 )
