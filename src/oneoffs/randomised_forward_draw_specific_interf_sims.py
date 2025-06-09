@@ -1,13 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from numpy._core.numerictypes import float64
 
-from src.randomised_forward_draw.rfd_chromosome import BinArray, ChromosomeSet, gather_recomb_curve_data, induce_COs_via_random_forward_draw
+from src.randomised_forward_draw.rfd_chromosome import BinArray, induce_COs_via_random_forward_draw
+from src.utils.chromosome_set import ChromosomeSet, gather_recomb_curve_data
 
-# NUM_CHROMOSOMES = 1000
-# BINS_PER_CHROMOSOME = 300000
-# NUM_CHROMOSOMES = 100
-# BINS_PER_CHROMOSOME = 3000
 NUM_CHROMOSOMES = 100000
 BINS_PER_CHROMOSOME = 1000
 AVG_COS_PER_CHROMOSOME = 0.5
@@ -43,7 +39,7 @@ induce_COs_via_random_forward_draw(
 
 induce_COs_via_random_forward_draw(
     basic_interf_chroms,
-    lambda x: np.zeros(len(x), dtype=float64) + STARTING_P_HIT,
+    lambda x: np.zeros(len(x), dtype=np.float64) + STARTING_P_HIT,
     basic_interf
 )
 
