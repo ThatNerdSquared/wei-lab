@@ -32,8 +32,8 @@ def vectorised_interf(co_loc, bins, bin_idxs):
     )))
 
 cProfile.run(
-    # 'simulate_bins(interf)',
-    'simulate_bins(vectorised_interf)',
+    'simulate_bins(interf)',
+    # 'simulate_bins(vectorised_interf)',
     # 'simulate_bins_lazy(lazy_interf)',
     sort=SortKey.TIME
 )

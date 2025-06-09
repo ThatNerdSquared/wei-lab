@@ -1,13 +1,91 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import numpy as np
+from numpy._core.numerictypes import float64, int64
 import numpy.typing as npt
 
-from typing import Callable
+from typing import Callable, Optional
 
 from src.utils.chromosome import Chromosome
 
+type BinArray = npt.NDArray[float64]
+type BinIdxArray = npt.NDArray[int64]
 
-NUM_CHROMOSOMES = 100
+class RandomForwardDrawChromosome(Chromosome):
+    def __init__(
+        self,
+        length: int,
+        rng: np.random.Generator,
+        base_p_hit: Callable[[int], float64],
+        interf: Callable[[int, BinArray, BinIdxArray], BinArray]
+    ):
+        self.bin_idxs: BinIdxArray = np.arange(length)
+        self.bins: BinArray = base_p_hit(self.bin_idxs)
+        self.rand: np.random.Generator = rng
+        self.interf = interf
+        super().__init__(length)
+
+    def perform_randomised_forward_draw(self):
+        order = rand.permutation(self.bin_idxs)
+        for loc in order:
+            if rand.binomial(1, self.bins[loc]):
+                self.bins = self.interf(loc, self.bins, self.bin_idxs)
+                self.insert_crossover(loc)
+
+@dataclass(kw_only=True, slots=True)
+class ChromosomeSet():
+    num_chroms: int
+    chrom_length: int
+    rand_seed: int | None = None
+    rand: np.random.Generator = field(init=False)
+    chroms: list[Chromosome] = field(init=False)
+
+    def __post_init__(self):
+        self.rand = np.random.default_rng(self.rand_seed)
+        self.chroms = [
+            Chromosome(self.chrom_length) for _ in range(self.num_chroms)
+        ]
+
+    def __iter__(self):
+        return self.chroms.__iter__()
+
+
+def induce_COs_via_random_forward_draw(
+    chrom_set: ChromosomeSet,
+    recomb_rate_init: Callable[[BinIdxArray], BinArray],
+    interf: Callable[[int, BinArray], BinArray]
+) -> None:
+    bin_locs = np.arange(chrom_set.chrom_length)
+
+    counter = 0
+    for chrom in chrom_set:
+        bins: BinArray = recomb_rate_init(bin_locs)
+        rand.shuffle(bin_locs)
+        for loc in bin_locs:
+            if rand.binomial(1, bins[loc]):
+                bins = interf(loc, bins)
+                chrom.insert_crossover(loc)
+
+        print(counter)
+        counter += 1
+
+def gather_recomb_curve_data(
+    chrom_set: ChromosomeSet,
+    proportional: bool = True
+) -> npt.NDArray[float64]:
+    recomb_curve_data = np.zeros(chrom_set.chrom_length)
+
+    for loc in range(chrom_set.chrom_length):
+        recomb_curve_data[loc] = sum(
+            [1 if x.has_crossover_at(loc) else 0 for x in chrom_set]
+        )
+
+    if proportional:
+        recomb_curve_data = recomb_curve_data / chrom_set.num_chroms
+
+    return recomb_curve_data
+
+
+NUM_CHROMOSOMES = 1000
 BINS_PER_CHROMOSOME = 300000
 AVG_COS_PER_CHROMOSOME = 0.5
 STARTING_P_HIT = AVG_COS_PER_CHROMOSOME / BINS_PER_CHROMOSOME
@@ -19,8 +97,7 @@ def simulate_bins(react_to_co: Callable[
     None
 ]) -> list[Chromosome]:
     chroms: list[Chromosome] = []
-    for i in range(NUM_CHROMOSOMES):
-        print(i)
+    for _ in range(NUM_CHROMOSOMES):
         chrom = Chromosome(BINS_PER_CHROMOSOME)
         bins = np.zeros(BINS_PER_CHROMOSOME)
         bins += STARTING_P_HIT
