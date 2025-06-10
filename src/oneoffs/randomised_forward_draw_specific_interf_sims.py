@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from src.randomised_forward_draw.rfd_chromosome import BinArray, induce_COs_via_random_forward_draw
-from src.utils.chromosome_set import ChromosomeSet, gather_recomb_curve_data
+from src.utils.chromosome_set import ChromosomeSet, gather_co_per_chrom_dist_data, gather_interevent_dist_data, gather_recomb_curve_data
 
 NUM_CHROMOSOMES = 100000
 BINS_PER_CHROMOSOME = 1000
@@ -43,16 +43,39 @@ induce_COs_via_random_forward_draw(
     basic_interf
 )
 
-no_interf_recomb_curve = gather_recomb_curve_data(no_interf_chroms)
-basic_interf_recomb_curve = gather_recomb_curve_data(basic_interf_chroms)
+# no_interf_recomb_curve = gather_recomb_curve_data(no_interf_chroms)
+# basic_interf_recomb_curve = gather_recomb_curve_data(basic_interf_chroms)
+# no_interf_co_per_chrom_dist = gather_co_per_chrom_dist_data(no_interf_chroms)
+# basic_interf_co_per_chrom_dist = gather_co_per_chrom_dist_data(
+#     basic_interf_chroms
+# )
+no_interf_interevent_dist = gather_interevent_dist_data(no_interf_chroms)
+basic_interf_interevent_dist = gather_interevent_dist_data(basic_interf_chroms)
 max_y = np.max([
-    np.max(no_interf_recomb_curve),
-    np.max(basic_interf_recomb_curve)
+    # np.max(no_interf_recomb_curve),
+    # np.max(basic_interf_recomb_curve)
+    # np.max(no_interf_co_per_chrom_dist),
+    # np.max(basic_interf_co_per_chrom_dist)
+    np.max(list(no_interf_interevent_dist.values())),
+    np.max(list(basic_interf_interevent_dist.values()))
 ])
 max_y = max_y * 1.1
 
 fig, ax = plt.subplots(sharex=True, sharey=True, figsize=(9.0, 7.0))
-ax.plot(no_interf_recomb_curve, label='no interf')
-ax.plot(basic_interf_recomb_curve, label='interf')
+# ax.plot(no_interf_recomb_curve, label='no interf')
+# ax.plot(basic_interf_recomb_curve, label='interf')
+# ax.stairs(no_interf_co_per_chrom_dist, label='no interf')
+# ax.stairs(basic_interf_co_per_chrom_dist, label='interf')
+ax.plot(
+    no_interf_interevent_dist.keys(),
+    no_interf_interevent_dist.values(),
+    label='no interf'
+)
+ax.plot(
+    basic_interf_interevent_dist.keys(),
+    basic_interf_interevent_dist.values(),
+    label='interf'
+)
 ax.set_ylim((0, max_y))
+plt.legend()
 plt.show()

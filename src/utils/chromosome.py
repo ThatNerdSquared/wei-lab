@@ -28,6 +28,9 @@ class Chromosome:
     def get_num_crossovers(self) -> int:
         return len(self._crossovers)
 
+    def get_crossover_locations(self) -> list[int]:
+        return sorted(self._crossovers.keys())
+
     def has_crossover_at(self, location: int) -> bool:
         try:
             return self._crossovers[location]
