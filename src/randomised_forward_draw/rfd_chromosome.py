@@ -16,7 +16,6 @@ def induce_COs_via_random_forward_draw(
 ) -> None:
     bin_locs = np.arange(chrom_set.chrom_length)
 
-    counter = 0
     for chrom in chrom_set:
         bins: BinArray = recomb_rate_init(bin_locs)
         chrom_set.rand.shuffle(bin_locs)
@@ -24,6 +23,3 @@ def induce_COs_via_random_forward_draw(
             if chrom_set.rand.binomial(1, bins[loc]):
                 bins = interf(loc, bins)
                 chrom.insert_crossover(loc)
-
-        print(counter)
-        counter += 1
