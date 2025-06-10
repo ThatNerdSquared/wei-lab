@@ -63,22 +63,39 @@ def gather_co_per_chrom_dist_data(
 def gather_interevent_dist_data(
     chrom_set: ChromosomeSet,
     proportional: bool = True
-) -> dict[int, np.float64]:
-    dist_data: dict[int, float] = {}
+) -> tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]:
+    dist_data: list[float] = []
 
     for chrom in chrom_set:
         co_locs = chrom.get_crossover_locations()
 
         for loc_idx in range(1, len(co_locs)):
             interevent_dist = co_locs[loc_idx] - co_locs[loc_idx - 1] - 1
-            try:
-                dist_data[interevent_dist] += 1.0
-            except KeyError:
-                dist_data[interevent_dist] = 1.0
+            dist_data.append(interevent_dist)
+
+    totals, groups = np.histogram(dist_data, bins='auto')
 
     if proportional:
-        for k, v in dist_data.items():
-            dist_data[k] = v / chrom_set.num_chroms
+        totals = totals / chrom_set.num_chroms
 
-    return dict(sorted(dist_data.items()))
+    return (totals, groups)
 
+def gather_rf_cM_curve_data(
+    chrom_set: ChromosomeSet
+) -> tuple[list[float], list[float]]:
+    dataset_cM: list[float] = []
+    dataset_rf: list[float] = []
+
+    total_cos_so_far = 0
+    for x in range(chrom_set.chrom_length):
+        visible_COs = 0
+        for chrom in chrom_set:
+            if chrom.has_crossover_at(x):
+                total_cos_so_far += 1
+            if chrom.has_visible_crossover(0, x):
+                visible_COs += 1
+
+        dataset_cM.append(total_cos_so_far / chrom_set.num_chroms)
+        dataset_rf.append(visible_COs / chrom_set.num_chroms)
+
+    return (dataset_cM, dataset_rf)
