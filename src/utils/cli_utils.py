@@ -57,3 +57,13 @@ def quickplot(
         )
         fig.savefig(f'out--{fig_name}.png')
         print(f'plot {fig_name} saved.')
+
+
+def plot_name_formatter(
+    plot_name: str,
+    num_chroms: int,
+    num_bins: int
+):
+    num_chrom_in_ks = str(num_chroms / 1000).replace('.', '_')
+    num_bins_in_ks = str(num_bins / 1000).replace('.', '_')
+    return f'{plot_name}--{num_chrom_in_ks}k__{num_bins_in_ks}k'
