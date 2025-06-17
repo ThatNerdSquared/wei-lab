@@ -1,30 +1,37 @@
+from typing import cast
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src.randomised_forward_draw.rfd_chromosome import BinArray, induce_COs_via_random_forward_draw
+from src.randomised_forward_draw.rfd_chromosome import induce_COs_via_random_forward_draw
+from src.specific_interf_sims.simulator import BinArray, InterferenceSim, SimulationQueue, queue_sim, run_sims
 from src.utils.chromosome_set import ChromosomeSet, gather_co_per_chrom_dist_data, gather_interevent_dist_data, gather_recomb_curve_data, gather_rf_cM_curve_data
-from src.utils.cli_utils import calculate_max_y, elapsed_time_printer, plot_name_formatter, quickplot
+from src.utils.cli_utils import calculate_max_y, plot_name_formatter, quickplot
 from src.utils.standard_funcs import haldane_input_cM, kosambi
 
 NUM_CHROMOSOMES = 100000
 BINS_PER_CHROMOSOME = 1000
 AVG_COS_PER_CHROMOSOME = 1
-STARTING_P_HIT = AVG_COS_PER_CHROMOSOME / BINS_PER_CHROMOSOME
+STARTING_P_HIT = np.float64(AVG_COS_PER_CHROMOSOME / BINS_PER_CHROMOSOME)
 RAND_SEED = 54321
 
-def no_interf(_: int, bins: BinArray):
+def no_interf(_: int, bins: BinArray) -> BinArray:
     return bins
 
-def local_interf(co_loc: int, bins: BinArray):
+def local_interf(co_loc: int, bins: BinArray) -> BinArray:
     bin_locs = np.arange(len(bins))
     return bins * (1 - np.exp(-1 * np.abs(
         (bin_locs / BINS_PER_CHROMOSOME) - (co_loc / BINS_PER_CHROMOSOME)
     )))
 
-def global_interf(co_loc: int, bins: BinArray):
+def global_interf(co_loc: int, bins: BinArray) -> BinArray:
     return bins * 0.7
 
-def regional_interf(co_loc: int, bins: BinArray):
+def equalised_global_interf(co_loc: int, bins: BinArray) -> BinArray:
+    new_total_p_co = np.sum(local_interf(co_loc, bins))
+    current_total_p_co = np.sum(bins)
+    return bins * new_total_p_co / current_total_p_co
+
+def regional_interf(co_loc: int, bins: BinArray) -> BinArray:
     bin_locs = np.arange(len(bins))
     return bins * (
         np.where(bin_locs <= co_loc, 0, 1)
@@ -57,52 +64,37 @@ regional_interf_chroms = ChromosomeSet(
     rand_seed=RAND_SEED
 )
 
-print('simulating crossovers...')
-
-with elapsed_time_printer(
-    op_name='no interf',
-    op_number=(1, 4),
+default_bins = cast(
+    BinArray,
+    np.zeros(BINS_PER_CHROMOSOME, dtype=np.float64) + STARTING_P_HIT
+)
+queue = SimulationQueue(induce_COs_via_random_forward_draw, default_bins)
+no_interf_sim = InterferenceSim(
+    label='no interf',
+    interf_strategy=no_interf,
     chrom_set=no_interf_chroms
-):
-    induce_COs_via_random_forward_draw(
-        no_interf_chroms,
-        lambda x: np.zeros(len(x)) + STARTING_P_HIT,
-        no_interf
-    )
-
-with elapsed_time_printer(
-    op_name='local interf',
-    op_number=(2, 4),
+)
+queue_sim(queue, no_interf_sim)
+local_interf_sim = InterferenceSim(
+    label='local interf',
+    interf_strategy=local_interf,
     chrom_set=local_interf_chroms
-):
-    induce_COs_via_random_forward_draw(
-        local_interf_chroms,
-        lambda x: np.zeros(len(x), dtype=np.float64) + STARTING_P_HIT,
-        local_interf
-    )
-
-with elapsed_time_printer(
-    op_name='global interf',
-    op_number=(3, 4),
+)
+queue_sim(queue, local_interf_sim)
+global_interf_sim = InterferenceSim(
+    label='global interf',
+    interf_strategy=global_interf,
     chrom_set=global_interf_chroms
-):
-    induce_COs_via_random_forward_draw(
-        global_interf_chroms,
-        lambda x: np.zeros(len(x), dtype=np.float64) + STARTING_P_HIT,
-        global_interf
-    )
-
-with elapsed_time_printer(
-    op_name='regional interf',
-    op_number=(4, 4),
+)
+queue_sim(queue, global_interf_sim)
+regional_interf_sim = InterferenceSim(
+    label='regional interf',
+    interf_strategy=regional_interf,
     chrom_set=regional_interf_chroms
-):
-    induce_COs_via_random_forward_draw(
-        regional_interf_chroms,
-        lambda x: np.zeros(len(x), dtype=np.float64) + STARTING_P_HIT,
-        regional_interf
-    )
+)
+queue_sim(queue, regional_interf_sim)
 
+run_sims(queue)
 
 no_interf_recomb_curve = gather_recomb_curve_data(no_interf_chroms)
 local_interf_recomb_curve = gather_recomb_curve_data(local_interf_chroms)

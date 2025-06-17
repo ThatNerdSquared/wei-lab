@@ -1,23 +1,21 @@
 import numpy as np
 import numpy.typing as npt
 
-from typing import Callable
-
+from src.specific_interf_sims.simulator import BinArray, InterferenceStrategy
 from src.utils.chromosome_set import ChromosomeSet
 
-type BinArray = npt.NDArray[np.float64]
 type BinIdxArray = npt.NDArray[np.int64]
 
 
 def induce_COs_via_random_forward_draw(
     chrom_set: ChromosomeSet,
-    recomb_rate_init: Callable[[BinIdxArray], BinArray],
-    interf: Callable[[int, BinArray], BinArray]
+    starting_bins: BinArray,
+    interf: InterferenceStrategy
 ) -> None:
     bin_locs = np.arange(chrom_set.chrom_length)
 
     for chrom in chrom_set:
-        bins: BinArray = recomb_rate_init(bin_locs)
+        bins: BinArray = starting_bins.copy()
         chrom_set.rand.shuffle(bin_locs)
         for loc in bin_locs:
             if chrom_set.rand.binomial(1, bins[loc]):
