@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src.utils.chromosome_set import ChromosomeSet, gather_cM_rf_curve_data, gather_co_per_chrom_dist_data, gather_interevent_dist_data, gather_recomb_curve_data, gather_rf_cM_curve_data
+from src.utils.chromosome_set import ChromosomeSet, gather_cM_rf_curve_data, gather_co_per_chrom_dist_data, gather_interevent_dist_data, gather_recomb_curve_data
 from src.utils.cli_utils import plot_name_formatter, quickplot
 from src.utils.standard_funcs import haldane_input_cM, kosambi
 
@@ -33,7 +33,7 @@ def plot_interevent_dist(*args: ChromosomeSet):
     with quickplot(
         x_label='inter-CO distance',
         y_label='% of chroms',
-        y_lim=interevent_dists,
+        y_lim=[n[0] for n in interevent_dists],
         fig_name=plot_name_formatter('interevent_dist', args[0].num_chroms, args[0].chrom_length)
     ) as interevent_dist:
         for i in range(len(interevent_dists)):
@@ -44,7 +44,7 @@ def plot_cM_rf_curve(*args: ChromosomeSet):
     with quickplot(
         x_label='morgans (M)',
         y_label='recombinant frequency (rf)',
-        y_lim=cM_rf_curves,
+        y_lim=1.0,
         fig_name=plot_name_formatter('cM_rf_curve', args[0].num_chroms, args[0].chrom_length)
     ) as morgan_rf_curves:
         for i in range(len(cM_rf_curves)):

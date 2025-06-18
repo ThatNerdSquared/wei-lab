@@ -30,7 +30,7 @@ def elapsed_time_printer(*,
             f'on {chrom_set.num_chroms} chroms @ {chrom_set.chrom_length} bins/chrom.' if chrom_set else '.'
         )
 
-def calculate_max_y(args) -> float:
+def calculate_max_y(args: list) -> float:
     flat_args = list(itertools.chain.from_iterable(args))
     return np.max(flat_args) * 1.1
 
@@ -39,7 +39,7 @@ def calculate_max_y(args) -> float:
 def quickplot(
     x_label: str = '',
     y_label: str = '',
-    y_lim: float | tuple[Any] = 1.0,
+    y_lim: float | list[Any] = 1.0,
     fig_name: str = ''
 ):
     fig = plt.figure(figsize=(9.0, 7.0))
