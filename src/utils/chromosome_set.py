@@ -8,6 +8,7 @@ from src.utils.chromosome import Chromosome
 
 @dataclass(kw_only=True, slots=True)
 class ChromosomeSet():
+    label: str
     num_chroms: int
     chrom_length: int
     chroms: list[Chromosome] = field(init=False)
@@ -77,7 +78,7 @@ def gather_interevent_dist_data(
 
     return (totals, groups)
 
-def gather_rf_cM_curve_data(
+def gather_cM_rf_curve_data(
     chrom_set: ChromosomeSet
 ) -> tuple[list[float], list[float]]:
     dataset_cM: list[float] = []

@@ -13,7 +13,6 @@ class InterferenceStrategy(Protocol):
 
 @dataclass(kw_only=True)
 class InterferenceSim:
-    label: str
     interf_strategy: InterferenceStrategy
     starting_bins: BinArray
     chrom_set: ChromosomeSet
@@ -42,12 +41,12 @@ def queue_sim(
     assert num_chroms is not None
 
     chrom_set = provided_chroms or ChromosomeSet(
+        label=label,
         num_chroms=num_chroms,
         chrom_length=len(bins)
     )
 
     sim = InterferenceSim(
-        label=label,
         interf_strategy=interf_strategy,
         starting_bins=bins,
         chrom_set=chrom_set,
@@ -62,7 +61,7 @@ def run_sims(queue: SimulationQueue):
     for queue_num in range(total_sims):
         sim = queue.sims[queue_num]
         with elapsed_time_printer(
-            op_name=sim.label,
+            op_name=sim.chrom_set.label,
             op_number=(queue_num + 1, total_sims),
             chrom_set=sim.chrom_set
         ):
