@@ -10,12 +10,9 @@ from src.utils.chromosome import Chromosome
 class ChromosomeSet():
     num_chroms: int
     chrom_length: int
-    rand_seed: int | None = None
-    rand: np.random.Generator = field(init=False)
     chroms: list[Chromosome] = field(init=False)
 
     def __post_init__(self):
-        self.rand = np.random.default_rng(self.rand_seed)
         self.chroms = [
             Chromosome(self.chrom_length) for _ in range(self.num_chroms)
         ]

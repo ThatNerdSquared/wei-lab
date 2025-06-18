@@ -39,60 +39,22 @@ def regional_interf(co_loc: int, bins: BinArray) -> BinArray:
         np.where(bin_locs >= co_loc, 0, 1)
     )
 
-print('setting up chromosomes...')
-no_interf_chroms = ChromosomeSet(
-    num_chroms=NUM_CHROMOSOMES,
-    chrom_length=BINS_PER_CHROMOSOME,
-    rand_seed=RAND_SEED
-)
-
-local_interf_chroms = ChromosomeSet(
-    num_chroms=NUM_CHROMOSOMES,
-    chrom_length=BINS_PER_CHROMOSOME,
-    rand_seed=RAND_SEED
-)
-
-global_interf_chroms = ChromosomeSet(
-    num_chroms=NUM_CHROMOSOMES,
-    chrom_length=BINS_PER_CHROMOSOME,
-    rand_seed=RAND_SEED
-)
-
-regional_interf_chroms = ChromosomeSet(
-    num_chroms=NUM_CHROMOSOMES,
-    chrom_length=BINS_PER_CHROMOSOME,
-    rand_seed=RAND_SEED
-)
 
 default_bins = cast(
     BinArray,
     np.zeros(BINS_PER_CHROMOSOME, dtype=np.float64) + STARTING_P_HIT
 )
-queue = SimulationQueue(induce_COs_via_random_forward_draw, default_bins)
-no_interf_sim = InterferenceSim(
-    label='no interf',
-    interf_strategy=no_interf,
-    chrom_set=no_interf_chroms
+queue = SimulationQueue(
+    induce_COs_via_random_forward_draw,
+    default_bins,
+    rand_seed=RAND_SEED,
+    chroms_per_sim=NUM_CHROMOSOMES
 )
-queue_sim(queue, no_interf_sim)
-local_interf_sim = InterferenceSim(
-    label='local interf',
-    interf_strategy=local_interf,
-    chrom_set=local_interf_chroms
-)
-queue_sim(queue, local_interf_sim)
-global_interf_sim = InterferenceSim(
-    label='global interf',
-    interf_strategy=global_interf,
-    chrom_set=global_interf_chroms
-)
-queue_sim(queue, global_interf_sim)
-regional_interf_sim = InterferenceSim(
-    label='regional interf',
-    interf_strategy=regional_interf,
-    chrom_set=regional_interf_chroms
-)
-queue_sim(queue, regional_interf_sim)
+print('setting up chromosomes...')
+no_interf_chroms = queue_sim(queue, 'no interf', no_interf)
+local_interf_chroms = queue_sim(queue, 'local interf', local_interf)
+global_interf_chroms = queue_sim(queue, 'global interf', global_interf)
+regional_interf_chroms = queue_sim(queue, 'regional interf', regional_interf)
 
 run_sims(queue)
 
