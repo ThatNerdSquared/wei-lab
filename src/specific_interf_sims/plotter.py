@@ -20,6 +20,7 @@ def plotter[T](
     y_label: str | None = None,
     post_plot: Callable[[Axes], Any] | None = None
 ):
+    print(f'processing data: {fig_name}')
     gathered_data = [data_gatherer(x) for x in chrom_sets]
     with quickplot(
         x_label=x_label,

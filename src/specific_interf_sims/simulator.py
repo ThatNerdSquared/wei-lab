@@ -1,26 +1,21 @@
 import numpy as np
-import numpy.typing as npt
 from dataclasses import dataclass, field
-from typing import Callable, Protocol
+from typing import Callable
 
+from src.specific_interf_sims.interf_schemes import BinArray, InterferenceScheme
 from src.utils.chromosome_set import ChromosomeSet
 from src.utils.cli_utils import elapsed_time_printer
 
-type BinArray = npt.NDArray[np.float64]
-
-class InterferenceStrategy(Protocol):
-    def __call__(self, co_loc: int, bins: BinArray) -> BinArray: ...
-
 @dataclass(kw_only=True)
 class InterferenceSim:
-    interf_strategy: InterferenceStrategy
+    interf_scheme: InterferenceScheme
     starting_bins: BinArray
     chrom_set: ChromosomeSet
     rand: np.random.Generator
 
 @dataclass()
 class SimulationQueue:
-    model: Callable[[ChromosomeSet, BinArray, InterferenceStrategy, np.random.Generator], None]
+    model: Callable[[ChromosomeSet, BinArray, InterferenceScheme, np.random.Generator], None]
     default_starting_bins: BinArray | None = None
     sims: list[InterferenceSim] = field(default_factory=list)
     rand_seed: int | None = None
@@ -30,7 +25,7 @@ class SimulationQueue:
 def queue_sim(
     queue: SimulationQueue,
     label: str,
-    interf_strategy: InterferenceStrategy,
+    interf_scheme: InterferenceScheme,
     chrom_count: int | None = None,
     starting_bins: BinArray | None = None,
     provided_chroms: ChromosomeSet | None = None,
@@ -47,7 +42,7 @@ def queue_sim(
     )
 
     sim = InterferenceSim(
-        interf_strategy=interf_strategy,
+        interf_scheme=interf_scheme,
         starting_bins=bins,
         chrom_set=chrom_set,
         rand=np.random.default_rng(queue.rand_seed)
@@ -68,7 +63,7 @@ def run_sims(queue: SimulationQueue):
             queue.model(
                 sim.chrom_set,
                 sim.starting_bins,
-                sim.interf_strategy,
+                sim.interf_scheme,
                 sim.rand
             )
     print('all queued sims completed.')

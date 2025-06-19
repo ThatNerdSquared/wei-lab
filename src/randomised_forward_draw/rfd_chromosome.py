@@ -1,7 +1,7 @@
 import numpy as np
 import numpy.typing as npt
 
-from src.specific_interf_sims.simulator import BinArray, InterferenceStrategy
+from src.specific_interf_sims.interf_schemes import BinArray, InterferenceScheme
 from src.utils.chromosome_set import ChromosomeSet
 
 type BinIdxArray = npt.NDArray[np.int64]
@@ -10,7 +10,7 @@ type BinIdxArray = npt.NDArray[np.int64]
 def induce_COs_via_random_forward_draw(
     chrom_set: ChromosomeSet,
     starting_bins: BinArray,
-    interf: InterferenceStrategy,
+    interf: InterferenceScheme,
     rand: np.random.Generator
 ) -> None:
     bin_locs = np.arange(chrom_set.chrom_length)
