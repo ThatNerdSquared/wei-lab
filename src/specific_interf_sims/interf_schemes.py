@@ -30,9 +30,7 @@ def telomere_based_regional_interf(co_loc: int, bins: BinArray) -> BinArray:
     )
 
 def equalised_global_interf(co_loc: int, bins: BinArray) -> BinArray:
-    new_total_p_co = np.sum(local_interf(co_loc, bins))
-    current_total_p_co = np.sum(bins)
-    return bins * new_total_p_co / current_total_p_co
+    return global_interf(co_loc, bins, _compute_scaling_from_local_interf(co_loc, bins))
 
 def fixed_regional_interf(co_loc: int, bins: BinArray, strength_high: float = 0.8) -> BinArray:
     bins_per_chrom = len(bins)
@@ -44,6 +42,21 @@ def fixed_regional_interf(co_loc: int, bins: BinArray, strength_high: float = 0.
         0.5 * strength_high
     )
 
+def equalised_fixed_regional_interf(co_loc: int, bins: BinArray) -> BinArray:
+    left_upper_bound, right_lower_bound = balanced_three_partition(len(bins))
+    p_low_region = np.sum(bins[left_upper_bound + 1:right_lower_bound])
+    p_total_old = np.sum(bins)
+    p_total_new = np.sum(local_interf(co_loc, bins))
+    return fixed_regional_interf(
+        co_loc,
+        bins,
+        p_total_new / (p_total_old - 0.5 * p_low_region)
+    )
+
+def _compute_scaling_from_local_interf(co_loc: int, old_bins: BinArray) -> float:
+    new_total_p_co = np.sum(local_interf(co_loc, old_bins))
+    current_total_p_co = np.sum(old_bins)
+    return new_total_p_co / current_total_p_co
 
 
 
