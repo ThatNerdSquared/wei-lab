@@ -1,9 +1,9 @@
 from typing import Any, Callable
 from matplotlib.axes import Axes
 import numpy as np
-import matplotlib.pyplot as plt
 
-from src.utils.chromosome_set import ChromosomeSet, gather_cM_rf_curve_data, gather_co_per_chrom_dist_data, gather_interevent_dist_data, gather_recomb_curve_data
+from src.specific_interf_sims.interf_schemes import BinArray
+from src.utils.chromosome_set import ChromosomeSet, gather_cM_rf_curve_data, gather_co_per_chrom_dist_data, gather_interevent_dist_data, gather_preinterf_cM_rf_curve_data, gather_recomb_curve_data
 from src.utils.cli_utils import plot_name_formatter, quickplot
 from src.utils.standard_funcs import haldane_input_cM, kosambi
 
@@ -65,18 +65,18 @@ def plot_interevent_dist(*args: ChromosomeSet):
         y_lim_func=lambda data: [x[0] for x in data]
     )
 
-def plot_cM_rf_curve(*args: ChromosomeSet):
-    def post_plot(ax: Axes):
-        ax.axhline(
-            y=0.5,
-            color='tab:red',
-            label=f'50% RF'
-        ).set_dashes((5, 2))
-        x = np.linspace(0, 2, 1000)
-        _ = ax.plot(x, [haldane_input_cM(n) for n in x], label='haldane')
-        _ = ax.plot(x, x, label='morgan')
-        _ = ax.plot(x, [kosambi(n) for n in x], label='kosambi')
+def _plot_canonical_map_funcs(ax: Axes):
+    ax.axhline(
+        y=0.5,
+        color='tab:red',
+        label=f'50% RF'
+    ).set_dashes((5, 2))
+    x = np.linspace(0, 2, 1000)
+    _ = ax.plot(x, [haldane_input_cM(n) for n in x], label='haldane')
+    _ = ax.plot(x, x, label='morgan')
+    _ = ax.plot(x, [kosambi(n) for n in x], label='kosambi')
 
+def plot_cM_rf_curve(*args: ChromosomeSet):
     plotter(
         gather_cM_rf_curve_data,
         lambda ax, data, chroms: ax.plot(data[0], data[1], label=chroms.label),
@@ -85,5 +85,17 @@ def plot_cM_rf_curve(*args: ChromosomeSet):
         x_label='morgans (M)',
         y_label='recombinant frequency (rf)',
         y_lim=1.0,
-        post_plot=post_plot
+        post_plot=_plot_canonical_map_funcs
+    )
+
+def plot_preinterf_cM_rf_curve(starting_bins: BinArray, *args: ChromosomeSet):
+    plotter(
+        lambda x: gather_preinterf_cM_rf_curve_data(x, starting_bins),
+        lambda ax, data, chroms: ax.plot(data[0], data[1], label=chroms.label),
+        args,
+        fig_name='preinterf_cM_rf_curve',
+        x_label='pre-interf morgans (M)',
+        y_label='recombinant frequency (rf)',
+        y_lim=1.0,
+        post_plot=_plot_canonical_map_funcs
     )

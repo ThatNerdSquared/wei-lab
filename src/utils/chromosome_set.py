@@ -3,6 +3,7 @@ import numpy.typing as npt
 
 from dataclasses import dataclass, field
 
+from src.specific_interf_sims.interf_schemes import BinArray
 from src.utils.chromosome import Chromosome
 
 
@@ -94,6 +95,26 @@ def gather_cM_rf_curve_data(
                 visible_COs += 1
 
         dataset_cM.append(total_cos_so_far / chrom_set.num_chroms)
+        dataset_rf.append(visible_COs / chrom_set.num_chroms)
+
+    return (dataset_cM, dataset_rf)
+
+def gather_preinterf_cM_rf_curve_data(
+    chrom_set: ChromosomeSet,
+    pre_interf_dist: BinArray
+) -> tuple[list[float], list[float]]:
+    dataset_cM: list[float] = []
+    dataset_rf: list[float] = []
+
+    cM_so_far = 0
+    for x in range(chrom_set.chrom_length):
+        cM_so_far += pre_interf_dist[x]
+        visible_COs = 0
+        for chrom in chrom_set:
+            if chrom.has_visible_crossover(end=x):
+                visible_COs += 1
+
+        dataset_cM.append(cM_so_far)
         dataset_rf.append(visible_COs / chrom_set.num_chroms)
 
     return (dataset_cM, dataset_rf)
