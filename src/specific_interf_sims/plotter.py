@@ -1,5 +1,6 @@
 from typing import Any, Callable
 from matplotlib.axes import Axes
+from scipy.optimize import curve_fit
 import numpy as np
 
 from src.specific_interf_sims.interf_schemes import BinArray
@@ -65,7 +66,7 @@ def plot_interevent_dist(*args: ChromosomeSet):
         y_lim_func=lambda data: [x[0] for x in data]
     )
 
-def _plot_canonical_map_funcs(ax: Axes):
+def plot_canonical_map_funcs(ax: Axes):
     ax.axhline(
         y=0.5,
         color='tab:red',
@@ -85,7 +86,7 @@ def plot_cM_rf_curve(*args: ChromosomeSet):
         x_label='morgans (M)',
         y_label='recombinant frequency (rf)',
         y_lim=1.0,
-        post_plot=_plot_canonical_map_funcs
+        post_plot=plot_canonical_map_funcs
     )
 
 def plot_preinterf_cM_rf_curve(starting_bins: BinArray, *args: ChromosomeSet):
@@ -97,5 +98,15 @@ def plot_preinterf_cM_rf_curve(starting_bins: BinArray, *args: ChromosomeSet):
         x_label='pre-interf morgans (M)',
         y_label='recombinant frequency (rf)',
         y_lim=1.0,
-        post_plot=_plot_canonical_map_funcs
+        post_plot=plot_canonical_map_funcs
     )
+
+def fit_haldane_p_to_data(
+    dataset_cM: list[float],
+    dataset_rf: list[float]
+) -> tuple[float, list[float]]:
+    """
+    return type: (p, y_data_fitted)
+    """
+    param, _ = curve_fit(haldane_input_cM, dataset_cM, dataset_rf, p0=[2])
+    return (param, haldane_input_cM(dataset_cM, param))
