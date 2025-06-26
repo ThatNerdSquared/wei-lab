@@ -73,9 +73,9 @@ def plot_canonical_map_funcs(ax: Axes):
         label=f'50% RF'
     ).set_dashes((5, 2))
     x = np.linspace(0, 2, 1000)
-    _ = ax.plot(x, [haldane_input_cM(n) for n in x], label='haldane')
+    _ = ax.plot(x, haldane_input_cM(x), label='haldane')
     _ = ax.plot(x, x, label='morgan')
-    _ = ax.plot(x, [kosambi(n) for n in x], label='kosambi')
+    _ = ax.plot(x, kosambi(x), label='kosambi')
 
 def plot_cM_rf_curve(*args: ChromosomeSet):
     plotter(

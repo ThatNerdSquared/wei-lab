@@ -33,5 +33,5 @@ plt.bar_label(mc_interf_line, padding=3)
 
 ax = plt.gca()
 plt.legend()
-plt.savefig("out--global_interf_markov_chain.png")
+plt.savefig("out--overall_interf_markov_chain.png")
 plt.show()

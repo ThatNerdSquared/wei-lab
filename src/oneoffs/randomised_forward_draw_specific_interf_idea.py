@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src.global_interf_markov_chain.recomb_markov_chain import RecombMarkovChain
+from src.overall_interf_markov_chain.recomb_markov_chain import RecombMarkovChain
 from src.utils.chromosome import Chromosome
 
 NUM_CHROMOSOMES = 3000
