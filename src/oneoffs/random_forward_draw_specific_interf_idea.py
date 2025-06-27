@@ -52,5 +52,5 @@ ax.bar([n + 0.6 for n in x], [NUM_CHROMOSOMES * rmc.get_p_cos(n) for n in x], wi
 ax.set_xlabel("# of COs")
 ax.set_ylabel("num of chromosomes")
 ax.legend()
-plt.savefig("out--randomised_forward_draw_specific_interf_idea.png")
+plt.savefig("out--random_forward_draw_specific_interf_idea.png")
 plt.show()

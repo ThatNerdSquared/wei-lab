@@ -1,10 +1,10 @@
 import numpy as np
 
-from src.randomised_forward_draw.rfd_chromosome import induce_COs_via_random_forward_draw
 from src.specific_interf_sims.interf_schemes import equalised_fixed_regional_interf, equalised_global_interf, fixed_regional_interf, global_interf, local_interf, no_interf
+from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
 from src.specific_interf_sims.plotter import fit_haldane_p_to_data, plot_canonical_map_funcs
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
-from src.utils.chromosome_set import ChromosomeSet, gather_cM_rf_curve_data
+from src.utils.chromosome_set import gather_cM_rf_curve_data
 from src.utils.cli_utils import plot_name_formatter, quickplot
 
 NUM_CHROMS = 100000

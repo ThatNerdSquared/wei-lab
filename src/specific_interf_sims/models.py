@@ -6,7 +6,6 @@ from src.utils.chromosome_set import ChromosomeSet
 
 type BinIdxArray = npt.NDArray[np.int64]
 
-
 def induce_COs_via_random_forward_draw(
     chrom_set: ChromosomeSet,
     starting_bins: BinArray,
