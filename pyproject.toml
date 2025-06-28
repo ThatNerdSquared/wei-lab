@@ -1,2 +1,10 @@
 [tool.basedpyright]
 allowedUntypedLibraries = [ "matplotlib" ]
+
+[tool.ruff.lint]
+preview = true
+explicit-preview-rules = true
+select = ["F", "E4", "E5", "E9", "I", "RUF013", "RUF027", "RUF100", "RUF102"]
+
+[tool.ruff.format]
+quote-style = "single"
