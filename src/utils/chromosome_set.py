@@ -8,23 +8,21 @@ from src.utils.chromosome import Chromosome
 
 
 @dataclass(kw_only=True, slots=True)
-class ChromosomeSet():
+class ChromosomeSet:
     label: str
     num_chroms: int
     chrom_length: int
     chroms: list[Chromosome] = field(init=False)
 
     def __post_init__(self):
-        self.chroms = [
-            Chromosome(self.chrom_length) for _ in range(self.num_chroms)
-        ]
+        self.chroms = [Chromosome(self.chrom_length) for _ in range(self.num_chroms)]
 
     def __iter__(self):
         return self.chroms.__iter__()
 
+
 def gather_recomb_curve_data(
-    chrom_set: ChromosomeSet,
-    proportional: bool = True
+    chrom_set: ChromosomeSet, proportional: bool = True
 ) -> npt.NDArray[np.float64]:
     recomb_curve_data = np.zeros(chrom_set.chrom_length)
 
@@ -38,9 +36,9 @@ def gather_recomb_curve_data(
 
     return recomb_curve_data
 
+
 def gather_co_per_chrom_dist_data(
-    chrom_set: ChromosomeSet,
-    proportional: bool = True
+    chrom_set: ChromosomeSet, proportional: bool = True
 ) -> npt.NDArray[np.float64]:
     data_dict: dict[int, float] = {}
 
@@ -50,18 +48,16 @@ def gather_co_per_chrom_dist_data(
         except KeyError:
             data_dict[chrom.get_num_crossovers()] = 1.0
 
-    dist_data = np.array([
-        data_dict.get(x, 0) for x in range(max(data_dict))
-    ])
+    dist_data = np.array([data_dict.get(x, 0) for x in range(max(data_dict))])
 
     if proportional:
         dist_data = dist_data / chrom_set.num_chroms
 
     return dist_data
 
+
 def gather_interevent_dist_data(
-    chrom_set: ChromosomeSet,
-    proportional: bool = True
+    chrom_set: ChromosomeSet, proportional: bool = True
 ) -> tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]:
     dist_data: list[float] = []
 
@@ -79,8 +75,9 @@ def gather_interevent_dist_data(
 
     return (totals, groups)
 
+
 def gather_cM_rf_curve_data(
-    chrom_set: ChromosomeSet
+    chrom_set: ChromosomeSet,
 ) -> tuple[list[float], list[float]]:
     dataset_cM: list[float] = []
     dataset_rf: list[float] = []
@@ -99,9 +96,9 @@ def gather_cM_rf_curve_data(
 
     return (dataset_cM, dataset_rf)
 
+
 def gather_preinterf_cM_rf_curve_data(
-    chrom_set: ChromosomeSet,
-    pre_interf_dist: BinArray
+    chrom_set: ChromosomeSet, pre_interf_dist: BinArray
 ) -> tuple[list[float], list[float]]:
     dataset_cM: list[float] = []
     dataset_rf: list[float] = []

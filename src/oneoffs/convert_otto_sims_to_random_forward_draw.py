@@ -36,13 +36,18 @@ def simulate_bins(react_to_co: Callable[[int, list, list[int]], None]):
 
     return chroms
 
+
 no_interf_chroms = simulate_bins(lambda x, y, z: None)
+
 
 # basic interference
 def interf_scaling_factor(bin_index, co_location) -> float:
-    return 1 - np.exp(-1 * np.abs(
-        (bin_index / BINS_PER_CHROMOSOME) - (co_location / BINS_PER_CHROMOSOME)
-    ))
+    return 1 - np.exp(
+        -1
+        * np.abs(
+            (bin_index / BINS_PER_CHROMOSOME) - (co_location / BINS_PER_CHROMOSOME)
+        )
+    )
 
 
 def basic_interf_reaction(co_loc, bins, bin_idxs):
@@ -58,8 +63,14 @@ total_cos_per_location__interf = np.zeros(BINS_PER_CHROMOSOME)
 x_range = list(range(BINS_PER_CHROMOSOME))
 
 for x in x_range:
-    total_cos_per_location__default[x] = sum([1 if y.has_crossover_at(x) else 0 for y in no_interf_chroms]) / NUM_CHROMOSOMES
-    total_cos_per_location__interf[x] = sum([1 if y.has_crossover_at(x) else 0 for y in interf_chroms]) / NUM_CHROMOSOMES
+    total_cos_per_location__default[x] = (
+        sum([1 if y.has_crossover_at(x) else 0 for y in no_interf_chroms])
+        / NUM_CHROMOSOMES
+    )
+    total_cos_per_location__interf[x] = (
+        sum([1 if y.has_crossover_at(x) else 0 for y in interf_chroms])
+        / NUM_CHROMOSOMES
+    )
 
 ax.plot(x_range, total_cos_per_location__default, label='no interf')
 ax.plot(x_range, total_cos_per_location__interf, label='interf')

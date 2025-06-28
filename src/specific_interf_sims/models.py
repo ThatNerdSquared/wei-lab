@@ -6,11 +6,12 @@ from src.utils.chromosome_set import ChromosomeSet
 
 type BinIdxArray = npt.NDArray[np.int64]
 
+
 def induce_COs_via_random_forward_draw(
     chrom_set: ChromosomeSet,
     starting_bins: BinArray,
     interf: InterferenceScheme,
-    rand: np.random.Generator
+    rand: np.random.Generator,
 ) -> None:
     bin_locs = np.arange(chrom_set.chrom_length)
 

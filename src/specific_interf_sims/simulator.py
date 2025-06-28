@@ -6,6 +6,7 @@ from src.specific_interf_sims.interf_schemes import BinArray, InterferenceScheme
 from src.utils.chromosome_set import ChromosomeSet
 from src.utils.cli_utils import elapsed_time_printer
 
+
 @dataclass(kw_only=True)
 class InterferenceSim:
     interf_scheme: InterferenceScheme
@@ -13,9 +14,12 @@ class InterferenceSim:
     chrom_set: ChromosomeSet
     rand: np.random.Generator
 
+
 @dataclass()
 class SimulationQueue:
-    model: Callable[[ChromosomeSet, BinArray, InterferenceScheme, np.random.Generator], None]
+    model: Callable[
+        [ChromosomeSet, BinArray, InterferenceScheme, np.random.Generator], None
+    ]
     default_starting_bins: BinArray | None = None
     sims: list[InterferenceSim] = field(default_factory=list)
     rand_seed: int | None = None
@@ -31,24 +35,23 @@ def queue_sim(
     provided_chroms: ChromosomeSet | None = None,
 ) -> ChromosomeSet:
     bins = starting_bins or queue.default_starting_bins
-    num_chroms=chrom_count or queue.chroms_per_sim
+    num_chroms = chrom_count or queue.chroms_per_sim
     assert bins is not None
     assert num_chroms is not None
 
     chrom_set = provided_chroms or ChromosomeSet(
-        label=label,
-        num_chroms=num_chroms,
-        chrom_length=len(bins)
+        label=label, num_chroms=num_chroms, chrom_length=len(bins)
     )
 
     sim = InterferenceSim(
         interf_scheme=interf_scheme,
         starting_bins=bins,
         chrom_set=chrom_set,
-        rand=np.random.default_rng(queue.rand_seed)
+        rand=np.random.default_rng(queue.rand_seed),
     )
     queue.sims.append(sim)
     return chrom_set
+
 
 def run_sims(queue: SimulationQueue):
     total_sims = len(queue.sims)
@@ -58,12 +61,7 @@ def run_sims(queue: SimulationQueue):
         with elapsed_time_printer(
             op_name=sim.chrom_set.label,
             op_number=(queue_num + 1, total_sims),
-            chrom_set=sim.chrom_set
+            chrom_set=sim.chrom_set,
         ):
-            queue.model(
-                sim.chrom_set,
-                sim.starting_bins,
-                sim.interf_scheme,
-                sim.rand
-            )
+            queue.model(sim.chrom_set, sim.starting_bins, sim.interf_scheme, sim.rand)
     print('all queued sims completed.')

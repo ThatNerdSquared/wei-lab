@@ -22,7 +22,7 @@ for i in range(NUM_CHROMOSOMES):
             chrom.insert_crossover(loc)
     chroms.append(chrom)
 
-dataset: dict[int,int] = {}
+dataset: dict[int, int] = {}
 
 for chrom in chroms:
     num = chrom.get_num_crossovers()
@@ -42,15 +42,25 @@ rmc = RecombMarkovChain(9)
 rmc.reset_to_poisson(np.exp(-1 * AVG_COS_PER_CHROMOSOME))
 print(rmc)
 
-ax.bar([n + 0.3 for n in x], [NUM_CHROMOSOMES * rmc.get_p_cos(n) for n in x], width=0.3, label='MC Default')
+ax.bar(
+    [n + 0.3 for n in x],
+    [NUM_CHROMOSOMES * rmc.get_p_cos(n) for n in x],
+    width=0.3,
+    label='MC Default',
+)
 
 rmc.on_all_onward_transitions(rmc.scale_transition_probability, 0.5, 1)
 
 print(rmc)
-ax.bar([n + 0.6 for n in x], [NUM_CHROMOSOMES * rmc.get_p_cos(n) for n in x], width=0.3, label='MC Interf')
+ax.bar(
+    [n + 0.6 for n in x],
+    [NUM_CHROMOSOMES * rmc.get_p_cos(n) for n in x],
+    width=0.3,
+    label='MC Interf',
+)
 
-ax.set_xlabel("# of COs")
-ax.set_ylabel("num of chromosomes")
+ax.set_xlabel('# of COs')
+ax.set_ylabel('num of chromosomes')
 ax.legend()
-plt.savefig("out--random_forward_draw_specific_interf_idea.png")
+plt.savefig('out--random_forward_draw_specific_interf_idea.png')
 plt.show()

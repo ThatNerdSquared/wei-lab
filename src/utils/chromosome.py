@@ -2,6 +2,7 @@ from random import randint
 from typing import Optional
 from uuid import uuid4
 
+
 class Chromosome:
     def __init__(self, length: int = 100):
         self.id = uuid4()
@@ -12,7 +13,7 @@ class Chromosome:
         res = ['-'] * self.length
         for co_loc in self._crossovers.keys():
             res[co_loc] = 'x'
-        return "".join(res)
+        return ''.join(res)
 
     def insert_crossover(self, location: int):
         if location > self.length:
@@ -40,7 +41,7 @@ class Chromosome:
     def has_visible_crossover(self, start: int = 0, end: Optional[int] = None) -> bool:
         endpoint: int = end if end is not None else self.length
         crossover_locations = sorted(self._crossovers.keys())
-        num_crossovers_in_region = len([
-            x for x in crossover_locations if x >= start and x <= endpoint
-        ])
+        num_crossovers_in_region = len(
+            [x for x in crossover_locations if x >= start and x <= endpoint]
+        )
         return num_crossovers_in_region % 2 == 1
