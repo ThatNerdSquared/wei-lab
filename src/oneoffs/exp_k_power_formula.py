@@ -1,7 +1,8 @@
-import numpy as np
 import collections
 import functools
 import operator
+
+import numpy as np
 
 
 def p_co_total(p_single_co: float) -> float:

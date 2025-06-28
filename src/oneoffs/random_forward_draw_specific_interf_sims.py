@@ -1,4 +1,5 @@
 from typing import cast
+
 import numpy as np
 
 from src.specific_interf_sims.interf_schemes import (

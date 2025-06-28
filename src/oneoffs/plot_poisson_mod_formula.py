@@ -1,6 +1,7 @@
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
-import math
 
 fig = plt.figure(figsize=[9, 7])
 x_range = range(10)

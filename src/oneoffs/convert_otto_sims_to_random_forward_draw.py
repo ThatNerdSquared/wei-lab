@@ -1,7 +1,8 @@
-import numpy as np
-import matplotlib.pyplot as plt
-
 from typing import Callable
+
+import matplotlib.pyplot as plt
+import numpy as np
+
 from src.utils.chromosome import Chromosome
 
 # config here is set to match otto's simulation

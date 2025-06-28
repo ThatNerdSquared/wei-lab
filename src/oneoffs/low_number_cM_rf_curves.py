@@ -1,12 +1,12 @@
 import numpy as np
 
-from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
 from src.specific_interf_sims.interf_schemes import (
     fixed_regional_interf,
     global_interf,
     local_interf,
     no_interf,
 )
+from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
 from src.specific_interf_sims.plotter import plot_cM_rf_curve
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
 

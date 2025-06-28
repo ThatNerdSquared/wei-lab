@@ -1,7 +1,8 @@
 from typing import Any, Callable
+
+import numpy as np
 from matplotlib.axes import Axes
 from scipy.optimize import curve_fit
-import numpy as np
 
 from src.specific_interf_sims.interf_schemes import BinArray
 from src.utils.chromosome_set import (
@@ -80,7 +81,7 @@ def plot_interevent_dist(*args: ChromosomeSet):
 
 
 def plot_canonical_map_funcs(ax: Axes):
-    ax.axhline(y=0.5, color='tab:red', label=f'50% RF').set_dashes((5, 2))
+    ax.axhline(y=0.5, color='tab:red', label='50% RF').set_dashes((5, 2))
     x = np.linspace(0, 2, 1000)
     _ = ax.plot(x, haldane_input_cM(x), label='haldane')
     _ = ax.plot(x, x, label='morgan')

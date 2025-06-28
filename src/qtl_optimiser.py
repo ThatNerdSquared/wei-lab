@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
 from numpy._core.numerictypes import int64
 
 NUM_SIMS = 1000

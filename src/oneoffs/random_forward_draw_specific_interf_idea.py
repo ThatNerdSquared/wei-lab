@@ -1,5 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 from src.overall_interf_markov_chain.recomb_markov_chain import RecombMarkovChain
 from src.utils.chromosome import Chromosome

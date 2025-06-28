@@ -1,10 +1,12 @@
-import numpy as np
 import math
 from collections.abc import Callable
 from textwrap import dedent
 from typing import Optional
 
+import numpy as np
 
+
+# ruff: noqa: E501
 class RecombMarkovChain:
     def __init__(self, n_states: int = 1):
         self._transition_matrix: np.ndarray[np.ndarray[np.float64]] = np.zeros(
@@ -25,7 +27,7 @@ class RecombMarkovChain:
             if state is not len(self._transition_matrix) - 1:
                 segments.append(
                     dedent(f"""
-                      {str(round(self._transition_matrix[state][state + 1], 6)).center(8, ' ')}  
+                      {str(round(self._transition_matrix[state][state + 1], 6)).center(8, ' ')}
                     ───────────>
                     ─┐          
                     ─┘ {str(round(self._transition_matrix[state][state], 6)).center(8, ' ')} 

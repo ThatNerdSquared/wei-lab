@@ -1,10 +1,10 @@
 import itertools
-from typing import Any
-import numpy as np
-import matplotlib.pyplot as plt
-
 from contextlib import contextmanager
 from datetime import datetime
+from typing import Any
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 from src.utils.chromosome_set import ChromosomeSet
 

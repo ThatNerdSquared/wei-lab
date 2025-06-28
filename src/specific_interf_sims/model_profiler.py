@@ -2,9 +2,10 @@ import cProfile
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import cast
-import numpy as np
 from pstats import SortKey, Stats
+from typing import cast
+
+import numpy as np
 
 from src.specific_interf_sims.interf_schemes import BinArray, local_interf
 from src.specific_interf_sims.models import induce_COs_via_random_forward_draw

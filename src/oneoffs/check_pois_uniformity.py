@@ -1,6 +1,6 @@
-import numpy as np
-import collections
 from random import randrange
+
+import numpy as np
 
 
 def generate_poisson(rf: float) -> np.ndarray:

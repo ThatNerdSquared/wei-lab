@@ -3,9 +3,10 @@
 #         self.saved_states = {}
 
 
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
-import math
 from recomb_markov_chain import RecombMarkovChain
 
 fig = plt.figure(figsize=[9, 7])

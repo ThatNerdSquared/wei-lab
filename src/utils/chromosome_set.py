@@ -1,7 +1,7 @@
+from dataclasses import dataclass, field
+
 import numpy as np
 import numpy.typing as npt
-
-from dataclasses import dataclass, field
 
 from src.specific_interf_sims.interf_schemes import BinArray
 from src.utils.chromosome import Chromosome
