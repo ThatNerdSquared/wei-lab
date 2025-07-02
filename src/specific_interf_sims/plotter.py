@@ -22,7 +22,7 @@ type Gatherer[T] = Callable[[ChromosomeSet], T]
 def plotter[T](
     data_gatherer: Gatherer[T],
     plot_callback: Callable[[Axes, T, ChromosomeSet], Any],
-    chrom_sets: list[ChromosomeSet] | tuple[ChromosomeSet],
+    chrom_sets: list[ChromosomeSet,] | tuple[ChromosomeSet, ...],
     y_lim: float | None = None,
     y_lim_func: Callable[[list[T]], list[Any]] | None = None,
     fig_name: str | None = None,
@@ -33,11 +33,11 @@ def plotter[T](
     print(f'processing data: {fig_name}')
     gathered_data = [data_gatherer(x) for x in chrom_sets]
     with quickplot(
-        x_label=x_label,
-        y_label=y_label,
+        x_label=x_label or '',
+        y_label=y_label or '',
         y_lim=(y_lim or gathered_data) if not y_lim_func else y_lim_func(gathered_data),
         fig_name=plot_name_formatter(
-            fig_name, chrom_sets[0].num_chroms, chrom_sets[0].chrom_length
+            fig_name or '', chrom_sets[0].num_chroms, chrom_sets[0].chrom_length
         ),
     ) as plot:
         for data, chrom_set in zip(gathered_data, chrom_sets):

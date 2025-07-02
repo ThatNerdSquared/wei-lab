@@ -15,3 +15,6 @@ fmt:
 
 fmt-dry:
 	ruff format --check
+
+typecheck:
+	basedpyright

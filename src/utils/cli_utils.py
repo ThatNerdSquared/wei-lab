@@ -31,7 +31,7 @@ def elapsed_time_printer(
         )
 
 
-def calculate_max_y(args: list) -> float:
+def calculate_max_y(args: list[Any]) -> float:
     flat_args = list(itertools.chain.from_iterable(args))
     return np.max(flat_args) * 1.1
 
@@ -49,10 +49,12 @@ def quickplot(
     try:
         yield ax
     finally:
-        ax.set_xlabel(x_label)
-        ax.set_ylabel(y_label)
-        ax.legend()
-        ax.set_ylim(0, y_lim if isinstance(y_lim, float) else calculate_max_y(y_lim))
+        _ = ax.set_xlabel(x_label)
+        _ = ax.set_ylabel(y_label)
+        _ = ax.legend()
+        _ = ax.set_ylim(
+            0, y_lim if isinstance(y_lim, float) else calculate_max_y(y_lim)
+        )
         fig.savefig(f'out--{fig_name}.png')
         print(f'plot {fig_name} saved.')
 

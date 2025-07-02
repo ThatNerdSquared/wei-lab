@@ -1,7 +1,8 @@
-from typing import Callable
+from typing import Callable, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
+import numpy.typing as npt
 
 from src.utils.chromosome import Chromosome
 
@@ -16,12 +17,14 @@ rand = np.random.default_rng(54321)
 starting_p_hit = AVG_COS_PER_CHROMOSOME / BINS_PER_CHROMOSOME
 
 
-def simulate_bins(react_to_co: Callable[[int, list, list[int]], None]):
-    chroms = []
+def simulate_bins(
+    react_to_co: Callable[[int, npt.NDArray[np.float64], list[int]], None],
+) -> list[Chromosome]:
+    chroms: list[Chromosome] = []
     for i in range(NUM_CHROMOSOMES):
         print(i)
         chrom = Chromosome(BINS_PER_CHROMOSOME)
-        bins = np.zeros(BINS_PER_CHROMOSOME)
+        bins = np.zeros(BINS_PER_CHROMOSOME, dtype=np.float64)
         bins += starting_p_hit
 
         bin_idxs = list(range(BINS_PER_CHROMOSOME))
@@ -29,7 +32,8 @@ def simulate_bins(react_to_co: Callable[[int, list, list[int]], None]):
         rand.shuffle(bin_idxs)
 
         for loc in bin_idxs:
-            if rand.binomial(1, bins[loc]):
+            p: np.float64 = bins[loc]  # pyright: ignore[reportAny]
+            if rand.binomial(1, p):
                 react_to_co(loc, bins, bin_idxs)
                 chrom.insert_crossover(loc)
 
@@ -42,16 +46,26 @@ no_interf_chroms = simulate_bins(lambda x, y, z: None)
 
 
 # basic interference
-def interf_scaling_factor(bin_index, co_location) -> float:
-    return 1 - np.exp(
-        -1
-        * np.abs(
-            (bin_index / BINS_PER_CHROMOSOME) - (co_location / BINS_PER_CHROMOSOME)
-        )
+def interf_scaling_factor(bin_index: int, co_location: int) -> np.float64:
+    return cast(
+        np.float64,
+        1
+        - np.exp(
+            cast(
+                np.float64,
+                -1
+                * np.abs(
+                    (bin_index / BINS_PER_CHROMOSOME)
+                    - (co_location / BINS_PER_CHROMOSOME)
+                ),
+            )
+        ),
     )
 
 
-def basic_interf_reaction(co_loc, bins, bin_idxs):
+def basic_interf_reaction(
+    co_loc: int, bins: npt.NDArray[np.float64], bin_idxs: list[int]
+):
     for idx in bin_idxs:
         bins[idx] *= interf_scaling_factor(idx, co_loc)
 
@@ -73,8 +87,8 @@ for x in x_range:
         / NUM_CHROMOSOMES
     )
 
-ax.plot(x_range, total_cos_per_location__default, label='no interf')
-ax.plot(x_range, total_cos_per_location__interf, label='interf')
-ax.set_ylim((0, 1))
+_ = ax.plot(x_range, total_cos_per_location__default, label='no interf')
+_ = ax.plot(x_range, total_cos_per_location__interf, label='interf')
+_ = ax.set_ylim((0, 1))
 # ax.set_ylim([0, 1])
 plt.show()

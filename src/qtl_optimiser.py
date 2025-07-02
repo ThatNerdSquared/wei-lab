@@ -17,7 +17,7 @@ def sim(avg_cos_per_chrom: int, result: dict[int, int]) -> dict[int, int]:
     }  # need to start counting distance to the left of 1st crossover
 
     allocation: int64
-    for allocation in chroms:
+    for allocation in chroms:  # pyright: ignore[reportAny]
         locations = rng.integers(0, BINS_PER_CHROMOSOME, allocation)
         event_space.update(locations)
 
@@ -59,14 +59,14 @@ for i in x_range:
 
 print('plotting...')
 fig, ax = plt.subplots(sharex=True, sharey=True, figsize=(9.0, 7.0))
-ax.bar(x_range, y_range)
-plt.axvline(
+_ = ax.bar(x_range, y_range)
+_ = plt.axvline(
     x=fifty_threshold, color='tab:orange', label=f'50%: ≤{fifty_threshold / 10}kb'
 )
-plt.axvline(
+_ = plt.axvline(
     x=ninety_five_threshold,
     color='tab:red',
     label=f'95%: ≤{ninety_five_threshold / 10}kb',
 )
-plt.legend()
+_ = plt.legend()
 plt.show()

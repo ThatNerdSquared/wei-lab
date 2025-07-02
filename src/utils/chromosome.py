@@ -1,14 +1,15 @@
 from random import randint
-from typing import Optional
-from uuid import uuid4
+from typing import override
+from uuid import UUID, uuid4
 
 
 class Chromosome:
     def __init__(self, length: int = 100):
-        self.id = uuid4()
+        self.id: UUID = uuid4()
         self.length: int = length
         self._crossovers: dict[int, bool] = {}
 
+    @override
     def __str__(self) -> str:
         res = ['-'] * self.length
         for co_loc in self._crossovers.keys():
@@ -38,7 +39,7 @@ class Chromosome:
         except KeyError:
             return False
 
-    def has_visible_crossover(self, start: int = 0, end: Optional[int] = None) -> bool:
+    def has_visible_crossover(self, start: int = 0, end: int | None = None) -> bool:
         endpoint: int = end if end is not None else self.length
         crossover_locations = sorted(self._crossovers.keys())
         num_crossovers_in_region = len(

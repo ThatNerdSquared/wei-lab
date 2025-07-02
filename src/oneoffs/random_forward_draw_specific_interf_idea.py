@@ -1,3 +1,5 @@
+from typing import cast
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -35,14 +37,19 @@ sorted_dataset = dict(sorted(dataset.items()))
 print(sorted_dataset)
 
 fig, ax = plt.subplots(sharex=True, sharey=True, figsize=(9.0, 7.0))
-ax.bar(sorted_dataset.keys(), sorted_dataset.values(), width=0.3, label='Simulated')
+_ = ax.bar(
+    list(sorted_dataset.keys()),
+    list(sorted_dataset.values()),
+    width=0.3,
+    label='Simulated',
+)
 
 x = range(9)
 rmc = RecombMarkovChain(9)
-rmc.reset_to_poisson(np.exp(-1 * AVG_COS_PER_CHROMOSOME))
+rmc.reset_to_poisson(cast(np.float64, np.exp(-1 * AVG_COS_PER_CHROMOSOME)))
 print(rmc)
 
-ax.bar(
+_ = ax.bar(
     [n + 0.3 for n in x],
     [NUM_CHROMOSOMES * rmc.get_p_cos(n) for n in x],
     width=0.3,
@@ -52,15 +59,15 @@ ax.bar(
 rmc.on_all_onward_transitions(rmc.scale_transition_probability, 0.5, 1)
 
 print(rmc)
-ax.bar(
+_ = ax.bar(
     [n + 0.6 for n in x],
     [NUM_CHROMOSOMES * rmc.get_p_cos(n) for n in x],
     width=0.3,
     label='MC Interf',
 )
 
-ax.set_xlabel('# of COs')
-ax.set_ylabel('num of chromosomes')
-ax.legend()
+_ = ax.set_xlabel('# of COs')
+_ = ax.set_ylabel('num of chromosomes')
+_ = ax.legend()
 plt.savefig('out--random_forward_draw_specific_interf_idea.png')
 plt.show()

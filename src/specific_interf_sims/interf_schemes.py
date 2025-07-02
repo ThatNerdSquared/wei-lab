@@ -10,7 +10,7 @@ class InterferenceScheme(Protocol):
     def __call__(self, co_loc: int, bins: BinArray) -> BinArray: ...
 
 
-def no_interf(co_loc: int, bins: BinArray) -> BinArray:
+def no_interf(co_loc: int, bins: BinArray) -> BinArray:  # pyright: ignore[reportUnusedParameter]
     return bins
 
 
@@ -22,7 +22,7 @@ def local_interf(co_loc: int, bins: BinArray) -> BinArray:
     )
 
 
-def global_interf(co_loc: int, bins: BinArray, strength: float = 0.7) -> BinArray:
+def global_interf(co_loc: int, bins: BinArray, strength: float = 0.7) -> BinArray:  # pyright: ignore[reportUnusedParameter]
     return bins * strength
 
 
@@ -40,7 +40,9 @@ def equalised_global_interf(co_loc: int, bins: BinArray) -> BinArray:
 
 
 def fixed_regional_interf(
-    co_loc: int, bins: BinArray, strength_high: float = 0.8
+    co_loc: int,  # pyright: ignore[reportUnusedParameter]
+    bins: BinArray,
+    strength_high: float = 0.8,
 ) -> BinArray:
     bins_per_chrom = len(bins)
     left_upper_bound, right_lower_bound = balanced_three_partition(bins_per_chrom)

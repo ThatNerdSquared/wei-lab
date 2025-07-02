@@ -1,18 +1,20 @@
 import math
 from collections.abc import Callable
 from textwrap import dedent
-from typing import Optional
+from typing import override
 
 import numpy as np
+import numpy.typing as npt
 
 
 # ruff: noqa: E501
 class RecombMarkovChain:
     def __init__(self, n_states: int = 1):
-        self._transition_matrix: np.ndarray[np.ndarray[np.float64]] = np.zeros(
+        self._transition_matrix: npt.NDArray[npt.NDArray[np.float64]] = np.zeros(
             (n_states, n_states)
         )
 
+    @override
     def __str__(self) -> str:
         segments: list[str] = []
         for state in range(len(self._transition_matrix)):
@@ -101,7 +103,7 @@ class RecombMarkovChain:
         self,
         fn: Callable[[int, int, float], None],
         arg: float,
-        start: Optional[int] = None,
+        start: int | None = None,
     ):
         for k in range(start if start else 0, len(self._transition_matrix)):
             if k == len(self._transition_matrix) - 1:

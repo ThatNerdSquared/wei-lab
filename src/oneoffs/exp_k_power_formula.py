@@ -1,6 +1,7 @@
 import collections
 import functools
 import operator
+from typing import cast
 
 import numpy as np
 
@@ -16,7 +17,7 @@ def generate_poisson(rf: float) -> np.ndarray:
 
 avg_p_co_total = 0.3
 
-sims = []
+sims: list[dict[str, float]] = []
 num_sims = 1000
 num_sims_w_2cos = 0
 
@@ -37,7 +38,9 @@ for i in range(num_sims):
     sims.append(sim_res)
 
 
-summed_sims = functools.reduce(operator.add, map(collections.Counter, sims))
+summed_sims = cast(
+    dict[str, float], functools.reduce(operator.add, map(collections.Counter, sims))
+)
 estimated_avg = summed_sims['est_p_co_total'] / num_sims
 percent_diff_p_co_total = abs(avg_p_co_total - estimated_avg) / avg_p_co_total
 p_2_diff = summed_sims['est_p_2_diff'] / num_sims_w_2cos

@@ -3,7 +3,6 @@ from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from pstats import SortKey, Stats
-from typing import cast
 
 import numpy as np
 
@@ -31,9 +30,7 @@ def example_profiling_run():
     NUM_CHROMS = 100000
     CHROM_LENGTH = 1000
     AVG_COS_PER_CHROM = 1
-    STARTING_BINS = cast(
-        BinArray, np.zeros(CHROM_LENGTH) + (AVG_COS_PER_CHROM / CHROM_LENGTH)
-    )
+    STARTING_BINS = np.zeros(CHROM_LENGTH) + (AVG_COS_PER_CHROM / CHROM_LENGTH)
 
     testset_control = ChromosomeSet(
         label='control', num_chroms=NUM_CHROMS, chrom_length=CHROM_LENGTH

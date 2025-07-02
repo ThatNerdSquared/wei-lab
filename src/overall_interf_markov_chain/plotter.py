@@ -6,15 +6,13 @@
 import math
 
 import matplotlib.pyplot as plt
-import numpy as np
-from recomb_markov_chain import RecombMarkovChain
+
+from src.utils.standard_funcs import poisson
+
+from .recomb_markov_chain import RecombMarkovChain
 
 fig = plt.figure(figsize=[9, 7])
 x_range = range(7)
-
-
-def poisson(x, lam):
-    return ((lam**x) * np.exp(-1 * lam)) / math.gamma(x + 1)
 
 
 p_zero_to_zero = 0.5
@@ -34,7 +32,7 @@ mc_default_line = plt.bar(
     width=0.3,
     label='MC Default',
 )
-plt.bar_label(mc_default_line, padding=3)
+_ = plt.bar_label(mc_default_line, padding=3)
 
 rmc2 = RecombMarkovChain(7)
 rmc2.reset_to_poisson(p_zero_to_zero)
@@ -47,9 +45,9 @@ mc_interf_line = plt.bar(
     width=0.3,
     label='MC Interf',
 )
-plt.bar_label(mc_interf_line, padding=3)
+_ = plt.bar_label(mc_interf_line, padding=3)
 
 ax = plt.gca()
-plt.legend()
+_ = plt.legend()
 plt.savefig('out--overall_interf_markov_chain.png')
 plt.show()

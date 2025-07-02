@@ -1,9 +1,6 @@
-from typing import cast
-
 import numpy as np
 
 from src.specific_interf_sims.interf_schemes import (
-    BinArray,
     global_interf,
     local_interf,
     no_interf,
@@ -24,9 +21,7 @@ AVG_COS_PER_CHROMOSOME = 1
 STARTING_P_HIT = np.float64(AVG_COS_PER_CHROMOSOME / BINS_PER_CHROMOSOME)
 RAND_SEED = 54321
 
-default_bins = cast(
-    BinArray, np.zeros(BINS_PER_CHROMOSOME, dtype=np.float64) + STARTING_P_HIT
-)
+default_bins = np.zeros(BINS_PER_CHROMOSOME, dtype=np.float64) + STARTING_P_HIT
 queue = SimulationQueue(
     induce_COs_via_random_forward_draw,
     default_bins,

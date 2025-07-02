@@ -1,4 +1,4 @@
-from recomb_markov_chain import RecombMarkovChain
+from .recomb_markov_chain import RecombMarkovChain
 
 
 def main():

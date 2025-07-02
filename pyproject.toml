@@ -1,5 +1,6 @@
 [tool.basedpyright]
 allowedUntypedLibraries = [ "matplotlib" ]
+reportUnnecessaryTypeIgnoreComment = true
 
 [tool.ruff.lint]
 preview = true

@@ -1,9 +1,10 @@
 from random import randrange
 
 import numpy as np
+import numpy.typing as npt
 
 
-def generate_poisson(rf: float) -> np.ndarray:
+def generate_poisson(rf: float) -> npt.NDArray[np.int64]:
     rng = np.random.default_rng()
     return rng.poisson(lam=rf, size=100)
 
@@ -15,9 +16,10 @@ totals_only_2COs: dict[int, int] = {}
 
 for i in range(1000):
     chromosomes = generate_poisson(avg_p_co_total)
-    chromosomes_with_windows = []
-    for chrom in chromosomes:
-        this_chrom = []
+    chromosomes_with_windows: list[list[int]] = []
+    chrom: int
+    for chrom in chromosomes:  # pyright: ignore[reportAny]
+        this_chrom: list[int] = []
         for i in range(chrom):
             window = randrange(10)
             this_chrom.append(window)
