@@ -1,5 +1,9 @@
+from collections.abc import Generator
+from dataclasses import dataclass
+from enum import Enum
+from functools import singledispatch
 from random import randint
-from typing import override
+from typing import NamedTuple, override
 from uuid import UUID, uuid4
 
 
@@ -46,3 +50,77 @@ class Chromosome:
             [x for x in crossover_locations if x >= start and x <= endpoint]
         )
         return num_crossovers_in_region % 2 == 1
+
+
+class Haplotype(Enum):
+    RED = 0
+    BLACK = 1
+
+    def __bool__(self) -> bool:
+        return self is Haplotype.BLACK
+
+
+class Crossover(NamedTuple):
+    loc: int
+    haplotype: Haplotype
+    """
+    specifies the haplotype to the right of this crossover.
+    """
+
+
+@dataclass(slots=True, kw_only=True)
+class Chromatid:
+    base_haplotype: Haplotype
+    crossovers: list[Crossover]
+    length: int
+
+
+@singledispatch
+def insert_crossover(
+    chrom: Chromatid, location: int, haplotype: Haplotype
+) -> list[Crossover]:
+    new_co = Crossover(location, haplotype)
+    result: list[Crossover] = []
+
+    while chrom.crossovers and location < chrom.crossovers[-1].loc:
+        result.append(chrom.crossovers.pop())
+
+    chrom.crossovers.append(new_co)
+    return result
+
+
+@singledispatch
+def get_num_crossovers(chrom: Chromatid) -> int:
+    return len(chrom.crossovers)
+
+
+@singledispatch
+def get_crossover_locations(chrom: Chromatid) -> Generator[int]:
+    return (x.loc for x in chrom.crossovers)
+
+
+@singledispatch
+def has_crossover_at(chrom: Chromatid, location: int) -> bool:
+    return any(x.loc == location for x in chrom.crossovers)
+
+
+@singledispatch
+def has_visible_crossover(
+    chrom: Chromatid, start: int = 0, end: int | None = None
+) -> bool:
+    if not chrom.crossovers:
+        return False
+
+    endpoint: int = end if end is not None else chrom.length
+    start_haplotype = None
+    end_haplotype = None
+
+    for co in reversed(chrom.crossovers):
+        if not end_haplotype and co.loc < endpoint:
+            end_haplotype = co.haplotype
+        if not start_haplotype and co.loc < start:
+            start_haplotype = co.haplotype
+
+    return (start_haplotype or chrom.base_haplotype) == (
+        end_haplotype or chrom.base_haplotype
+    )
