@@ -1,6 +1,6 @@
-.PHONY: lint lint-fix fmt fmt-dry typecheck clean
+.PHONY: lint lint-fix fmt fmt-dry typecheck test vtest clean
 
-all: lint fmt-dry typecheck
+all: fmt-dry lint typecheck test
 
 lint:
 	ruff check
@@ -16,6 +16,12 @@ fmt-dry:
 
 typecheck:
 	basedpyright
+
+test:
+	python3 -m pytest
+
+vtest:
+	python3 -m pytest -vv
 
 clean:
 	rm -f out--*.png

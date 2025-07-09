@@ -9,3 +9,10 @@ select = ["F", "E4", "E5", "E9", "I", "RUF013", "RUF027", "RUF100", "RUF102"]
 
 [tool.ruff.format]
 quote-style = "single"
+
+[tool.pytest.ini_options]
+# as recommended by pytest docs:
+# https://docs.pytest.org/en/stable/explanation/goodpractices.html#which-import-mode
+addopts = [
+    "--import-mode=importlib",
+]

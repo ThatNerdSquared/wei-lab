@@ -19,11 +19,11 @@ jobs:
       run: |
         pip3 install -r requirements.txt
         pip3 install basedpyright
-    - name: check linting
-      run: make lint
     - name: check formatting
       run: make fmt-dry
+    - name: check linting
+      run: make lint
     - name: check types
       run: make typecheck
-    # - name: run tests
-    #   run: make test
+    - name: run tests
+      run: make vtest

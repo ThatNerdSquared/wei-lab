@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from functools import singledispatch
 from typing import NamedTuple, NewType
@@ -34,7 +34,7 @@ def invert_haplotypes_in_co_stack(co_stack: CrossoverStack) -> CrossoverStack:
 class Chromatid:
     base_haplotype: Haplotype
     length: int
-    crossovers: list[Crossover] = []
+    crossovers: list[Crossover] = field(default_factory=list)
 
 
 def remove_co_stack_to_exchange(chrom: Chromatid, location: int) -> CrossoverStack:
@@ -56,7 +56,7 @@ def remove_co_stack_to_exchange(chrom: Chromatid, location: int) -> CrossoverSta
 
 
 def add_co_stack_from_exchange(chrom: Chromatid, co_stack: CrossoverStack) -> None:
-    # co_stack.reverse()
+    co_stack.reverse()
     chrom.crossovers += co_stack
 
 
@@ -95,11 +95,11 @@ def has_visible_crossover(
     end_haplotype = None
 
     for co in reversed(chrom.crossovers):
-        if not end_haplotype and co.loc < endpoint:
+        if end_haplotype is None and co.loc <= endpoint:
             end_haplotype = co.haplotype
-        if not start_haplotype and co.loc < start:
+        if start_haplotype is None and co.loc <= start:
             start_haplotype = co.haplotype
 
-    return (start_haplotype or chrom.base_haplotype) == (
-        end_haplotype or chrom.base_haplotype
-    )
+    return (
+        start_haplotype if start_haplotype is not None else chrom.base_haplotype
+    ) != (end_haplotype if end_haplotype is not None else chrom.base_haplotype)
