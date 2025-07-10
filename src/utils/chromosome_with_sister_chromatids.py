@@ -34,13 +34,13 @@ class ChromosomeSisterChromatids:
     selectSistersForCO: Callable[
         [ChromosomeSisterChromatids], tuple[Chromatid, Chromatid]
     ]
-    selectSistersForPool: Callable[[], tuple[Chromatid, ...]]
+    selectSistersForPool: Callable[[ChromosomeSisterChromatids], tuple[Chromatid, ...]]
 
     def __post_init__(self):
         self.a1 = Chromatid(base_haplotype=Haplotype.BLUE, length=self.length)
         self.a2 = Chromatid(base_haplotype=Haplotype.BLUE, length=self.length)
         self.b1 = Chromatid(base_haplotype=Haplotype.PINK, length=self.length)
-        self.b1 = Chromatid(base_haplotype=Haplotype.PINK, length=self.length)
+        self.b2 = Chromatid(base_haplotype=Haplotype.PINK, length=self.length)
         self.all_chromatids = (self.a1, self.a2, self.b1, self.b2)
 
 
@@ -49,6 +49,24 @@ def uniformlyRandomSisterSelector(
 ) -> tuple[Chromatid, Chromatid]:
     selected = random.sample(chrom.all_chromatids, k=2)
     return (selected[0], selected[1])
+
+
+class SequentialSisterSelector:
+    _counter: int
+
+    def __init__(self) -> None:
+        self._counter = -1
+
+    def __call__(
+        self, chrom: ChromosomeSisterChromatids
+    ) -> tuple[Chromatid, Chromatid]:
+        self._counter += 1
+        try:
+            return chrom.all_chromatids[self._counter], chrom.all_chromatids[
+                self._counter + 1
+            ]
+        except IndexError:
+            return chrom.all_chromatids[self._counter], chrom.all_chromatids[0]
 
 
 def selectSingleSisterForPool(
@@ -70,13 +88,17 @@ def _(chrom: ChromosomeSisterChromatids, location: int) -> None:
 
 @get_num_crossovers.register
 def _(chrom: ChromosomeSisterChromatids) -> int:
-    return sum(map(get_num_crossovers, chrom.all_chromatids))
+    return int(sum(map(get_num_crossovers, chrom.all_chromatids)) / 2)
 
 
 @get_crossover_locations.register
 def _(chrom: ChromosomeSisterChromatids) -> Iterable[int]:
-    return itertools.chain.from_iterable(
-        map(get_crossover_locations, chrom.all_chromatids)
+    return sorted(
+        set(
+            itertools.chain.from_iterable(
+                map(get_crossover_locations, chrom.all_chromatids)
+            )
+        )
     )
 
 

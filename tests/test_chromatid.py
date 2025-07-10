@@ -14,7 +14,12 @@ from src.utils.chromatid import (
     invert_haplotypes_in_co_stack,
     remove_co_stack_to_exchange,
 )
-from tests.fixtures import *  # noqa: F403
+from tests.fixtures import (
+    mock_chromatid,  # pyright: ignore[reportUnusedImport]
+    mock_chromatid_empty,  # pyright: ignore[reportUnusedImport]
+    mock_co_stack,  # pyright: ignore[reportUnusedImport]
+    mock_crossovers,  # pyright: ignore[reportUnusedImport]
+)
 
 
 def test_invert_haplotypes_in_co_stack(mock_co_stack: CrossoverStack):

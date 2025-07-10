@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from functools import singledispatch
 from typing import NamedTuple, NewType
+from uuid import UUID, uuid4
 
 
 class Haplotype(Enum):
@@ -32,9 +33,13 @@ def invert_haplotypes_in_co_stack(co_stack: CrossoverStack) -> CrossoverStack:
 
 @dataclass(slots=True, kw_only=True)
 class Chromatid:
+    id: UUID = field(init=False)
     base_haplotype: Haplotype
     length: int
     crossovers: list[Crossover] = field(default_factory=list)
+
+    def __post_init__(self):
+        self.id = uuid4()
 
 
 def remove_co_stack_to_exchange(chrom: Chromatid, location: int) -> CrossoverStack:
