@@ -1,4 +1,3 @@
-from collections.abc import Iterable
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import singledispatch
@@ -79,8 +78,8 @@ def get_num_crossovers(chrom: Chromatid) -> int:
 
 
 @singledispatch
-def get_crossover_locations(chrom: Chromatid) -> Iterable[int]:
-    return (x.loc for x in chrom.crossovers)
+def get_crossover_locations(chrom: Chromatid) -> list[int]:
+    return [x.loc for x in chrom.crossovers]
 
 
 @singledispatch

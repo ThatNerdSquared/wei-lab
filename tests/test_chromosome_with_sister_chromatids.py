@@ -123,7 +123,7 @@ def test_get_co_locations_for_sister_chromatids(
     insert_crossover(mock_chromosome_w_sisters, 42)
     insert_crossover(mock_chromosome_w_sisters, 99)
     insert_crossover(mock_chromosome_w_sisters, 402)
-    assert list(get_crossover_locations(mock_chromosome_w_sisters)) == [42, 99, 402]
+    assert get_crossover_locations(mock_chromosome_w_sisters) == [42, 99, 402]
 
 
 def test_has_co_at_for_sister_chromatids(

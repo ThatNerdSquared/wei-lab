@@ -79,6 +79,14 @@ def test_add_co_stack(mock_chromatid: Chromatid, mock_crossovers: list[Crossover
     assert mock_chromatid.crossovers == sorted(expected_cos, key=attrgetter('loc'))
 
 
+def test_insert_co_for_chromatid_empty(mock_chromatid_empty: Chromatid):
+    expected_cos = [
+        Crossover(77, Haplotype.BLUE),
+    ]
+    insert_crossover(mock_chromatid_empty, 77)
+    assert mock_chromatid_empty.crossovers == expected_cos
+
+
 def test_insert_co_for_chromatid(mock_chromatid: Chromatid):
     expected_cos = [
         Crossover(10, Haplotype.BLUE),
@@ -96,7 +104,7 @@ def test_get_num_cos(mock_chromatid: Chromatid):
 
 
 def test_get_co_locs(mock_chromatid: Chromatid):
-    assert list(get_crossover_locations(mock_chromatid)) == [10, 39, 42, 400]
+    assert get_crossover_locations(mock_chromatid) == [10, 39, 42, 400]
 
 
 def test_has_co_at_loc(mock_chromatid: Chromatid):

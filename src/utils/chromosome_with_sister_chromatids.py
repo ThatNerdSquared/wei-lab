@@ -4,7 +4,6 @@ from __future__ import (
 
 import itertools
 import random
-from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import Callable
 
@@ -92,7 +91,7 @@ def _(chrom: ChromosomeSisterChromatids) -> int:
 
 
 @get_crossover_locations.register
-def _(chrom: ChromosomeSisterChromatids) -> Iterable[int]:
+def _(chrom: ChromosomeSisterChromatids) -> list[int]:
     return sorted(
         set(
             itertools.chain.from_iterable(
