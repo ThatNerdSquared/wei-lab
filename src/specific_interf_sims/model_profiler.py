@@ -8,6 +8,7 @@ import numpy as np
 
 from src.specific_interf_sims.interf_schemes import BinArray, local_interf
 from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
+from src.utils.chromosome import Chromosome
 from src.utils.chromosome_set import ChromosomeSet
 
 
@@ -33,10 +34,16 @@ def example_profiling_run():
     STARTING_BINS = np.zeros(CHROM_LENGTH) + (AVG_COS_PER_CHROM / CHROM_LENGTH)
 
     testset_control = ChromosomeSet(
-        label='control', num_chroms=NUM_CHROMS, chrom_length=CHROM_LENGTH
+        label='control',
+        num_chroms=NUM_CHROMS,
+        chrom_length=CHROM_LENGTH,
+        chrom_maker=Chromosome,
     )
     testset_attempt_optimise = ChromosomeSet(
-        label='attempted optimisation', num_chroms=NUM_CHROMS, chrom_length=CHROM_LENGTH
+        label='attempted optimisation',
+        num_chroms=NUM_CHROMS,
+        chrom_length=CHROM_LENGTH,
+        chrom_maker=Chromosome,
     )
 
     rand = np.random.default_rng(77777)

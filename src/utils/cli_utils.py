@@ -6,15 +6,15 @@ from typing import Any
 import matplotlib.pyplot as plt
 import numpy as np
 
-from src.utils.chromosome_set import ChromosomeSet
+from src.utils.chromosome_set import ChromosomeLike, ChromosomeSet
 
 
 @contextmanager
-def elapsed_time_printer(
+def elapsed_time_printer[C: ChromosomeLike](
     *,
     op_name: str,
     op_number: tuple[int, int] | None = None,
-    chrom_set: ChromosomeSet | None = None,
+    chrom_set: ChromosomeSet[C] | None = None,
 ):
     start_time = datetime.now()
     try:

@@ -9,6 +9,7 @@ from src.specific_interf_sims.interf_schemes import (
 from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
 from src.specific_interf_sims.plotter import plot_cM_rf_curve
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
+from src.utils.chromosome_set import make_chromset_with_legacy_chromosome
 
 CHROM_LEN = 1000
 AVG_COS_PER_CHROMOSOME = 1
@@ -18,6 +19,7 @@ queue = SimulationQueue(
     induce_COs_via_random_forward_draw,
     np.zeros(CHROM_LEN) + STARTING_P_HIT,
     rand_seed=54321,
+    default_chromset_maker=make_chromset_with_legacy_chromosome,
 )
 
 hundred_chrom_sets = [

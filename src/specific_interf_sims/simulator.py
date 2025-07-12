@@ -4,45 +4,52 @@ from typing import Callable
 import numpy as np
 
 from src.specific_interf_sims.interf_schemes import BinArray, InterferenceScheme
-from src.utils.chromosome_set import ChromosomeSet
+from src.utils.chromosome_set import ChromosomeLike, ChromosomeSet, ChromsetMaker
 from src.utils.cli_utils import elapsed_time_printer
 
 
 @dataclass(kw_only=True)
-class InterferenceSim:
+class InterferenceSim[C: ChromosomeLike]:
     interf_scheme: InterferenceScheme
     starting_bins: BinArray
-    chrom_set: ChromosomeSet
+    chrom_set: ChromosomeSet[C]
     rand: np.random.Generator
 
 
 @dataclass()
-class SimulationQueue:
+class SimulationQueue[C: ChromosomeLike]:
     model: Callable[
-        [ChromosomeSet, BinArray, InterferenceScheme, np.random.Generator], None
+        [ChromosomeSet[C], BinArray, InterferenceScheme, np.random.Generator], None
     ]
     default_starting_bins: BinArray | None = None
-    sims: list[InterferenceSim] = field(default_factory=list)
+    sims: list[InterferenceSim[C]] = field(default_factory=list)
     rand_seed: int | None = None
     chroms_per_sim: int | None = None
+    default_chromset_maker: ChromsetMaker[C] | None = None
 
 
-def queue_sim(
-    queue: SimulationQueue,
+def queue_sim[C: ChromosomeLike](
+    queue: SimulationQueue[C],
     label: str,
     interf_scheme: InterferenceScheme,
     chrom_count: int | None = None,
     starting_bins: BinArray | None = None,
-    provided_chroms: ChromosomeSet | None = None,
-) -> ChromosomeSet:
+    provided_chroms: ChromosomeSet[C] | None = None,
+) -> ChromosomeSet[C]:
     bins = starting_bins or queue.default_starting_bins
     num_chroms = chrom_count or queue.chroms_per_sim
     assert bins is not None
     assert num_chroms is not None
 
-    chrom_set = provided_chroms or ChromosomeSet(
-        label=label, num_chroms=num_chroms, chrom_length=len(bins)
+    assert provided_chroms or queue.default_chromset_maker
+    chrom_set = (
+        queue.default_chromset_maker(
+            label=label, num_chroms=num_chroms, chrom_length=len(bins)
+        )
+        if queue.default_chromset_maker
+        else provided_chroms
     )
+    assert chrom_set is not None
 
     sim = InterferenceSim(
         interf_scheme=interf_scheme,
@@ -54,7 +61,7 @@ def queue_sim(
     return chrom_set
 
 
-def run_sims(queue: SimulationQueue):
+def run_sims[C: ChromosomeLike](queue: SimulationQueue[C]):
     total_sims = len(queue.sims)
     print('simulating crossovers...')
     for queue_num in range(total_sims):

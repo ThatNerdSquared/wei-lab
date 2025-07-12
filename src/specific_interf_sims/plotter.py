@@ -14,6 +14,7 @@ from src.specific_interf_sims.data_collectors import (
 )
 from src.specific_interf_sims.interf_schemes import BinArray
 from src.utils.chromosome_set import (
+    ChromosomeLike,
     ChromosomeSet,
     gather_cM_rf_curve_data,
     gather_co_per_chrom_dist_data,
@@ -24,13 +25,13 @@ from src.utils.chromosome_set import (
 from src.utils.cli_utils import plot_name_formatter, quickplot
 from src.utils.standard_funcs import haldane_input_cM, kosambi
 
-type Gatherer[T] = Callable[[ChromosomeSet], T]
+type Gatherer[T, C: ChromosomeLike] = Callable[[ChromosomeSet[C]], T]
 
 
-def plotter[T](
-    data_gatherer: Gatherer[T],
-    plot_callback: Callable[[Axes, T, ChromosomeSet], Any],
-    chrom_sets: list[ChromosomeSet,] | tuple[ChromosomeSet, ...],
+def plotter[T, C: ChromosomeLike](
+    data_gatherer: Gatherer[T, C],
+    plot_callback: Callable[[Axes, T, ChromosomeSet[C]], Any],
+    chrom_sets: list[ChromosomeSet[C],] | tuple[ChromosomeSet[C], ...],
     y_lim: float | None = None,
     y_lim_func: Callable[[list[T]], list[Any]] | None = None,
     fig_name: str | None = None,
@@ -107,7 +108,7 @@ def _(data: RecombCurveDataPacket, ax: Axes):
         _ = ax.plot(v, label=k)
 
 
-def plot_recomb_curve(*args: ChromosomeSet):
+def plot_recomb_curve[C: ChromosomeLike](*args: ChromosomeSet[C]):
     plotter(
         gather_recomb_curve_data,
         lambda ax, data, chroms: ax.plot(data, label=chroms.label),
@@ -118,7 +119,7 @@ def plot_recomb_curve(*args: ChromosomeSet):
     )
 
 
-def plot_co_per_chrom_dist(*args: ChromosomeSet):
+def plot_co_per_chrom_dist[C: ChromosomeLike](*args: ChromosomeSet[C]):
     plotter(
         gather_co_per_chrom_dist_data,
         lambda ax, data, chroms: ax.stairs(data, label=chroms.label),
@@ -129,7 +130,7 @@ def plot_co_per_chrom_dist(*args: ChromosomeSet):
     )
 
 
-def plot_interevent_dist(*args: ChromosomeSet):
+def plot_interevent_dist[C: ChromosomeLike](*args: ChromosomeSet[C]):
     plotter(
         gather_interevent_dist_data,
         lambda ax, data, chroms: ax.stairs(data[0], data[1], label=chroms.label),
@@ -149,7 +150,7 @@ def plot_canonical_map_funcs(ax: Axes):
     _ = ax.plot(x, kosambi(x), label='kosambi')
 
 
-def plot_cM_rf_curve(*args: ChromosomeSet):
+def plot_cM_rf_curve[C: ChromosomeLike](*args: ChromosomeSet[C]):
     plotter(
         gather_cM_rf_curve_data,
         lambda ax, data, chroms: ax.plot(data[0], data[1], label=chroms.label),
@@ -162,7 +163,9 @@ def plot_cM_rf_curve(*args: ChromosomeSet):
     )
 
 
-def plot_preinterf_cM_rf_curve(starting_bins: BinArray, *args: ChromosomeSet):
+def plot_preinterf_cM_rf_curve[C: ChromosomeLike](
+    starting_bins: BinArray, *args: ChromosomeSet[C]
+):
     plotter(
         lambda x: gather_preinterf_cM_rf_curve_data(x, starting_bins),
         lambda ax, data, chroms: ax.plot(data[0], data[1], label=chroms.label),

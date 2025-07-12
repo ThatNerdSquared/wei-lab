@@ -14,6 +14,7 @@ from src.specific_interf_sims.plotter import (
     plot_recomb_curve,
 )
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
+from src.utils.chromosome_set import make_chromset_with_legacy_chromosome
 
 NUM_CHROMOSOMES = 100000
 BINS_PER_CHROMOSOME = 1000
@@ -27,6 +28,7 @@ queue = SimulationQueue(
     default_bins,
     rand_seed=RAND_SEED,
     chroms_per_sim=NUM_CHROMOSOMES,
+    default_chromset_maker=make_chromset_with_legacy_chromosome,
 )
 print('setting up chromosomes...')
 no_interf_chroms = queue_sim(queue, 'no interf', no_interf)

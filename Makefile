@@ -1,4 +1,4 @@
-.PHONY: lint lint-fix fmt fmt-dry typecheck test vtest clean
+.PHONY: lint lint-fix fmt fmt-dry typecheck override-typecheck test vtest clean
 
 all: fmt-dry lint typecheck test
 
@@ -16,6 +16,9 @@ fmt-dry:
 
 typecheck:
 	basedpyright
+
+override-typecheck:
+	basedpyright --writebaseline
 
 test:
 	python3 -m pytest

@@ -5,7 +5,7 @@ import numpy as np
 import numpy.typing as npt
 
 from src.specific_interf_sims.data_transformers import DataTransformer
-from src.utils.chromosome_set import ChromosomeSet
+from src.utils.chromosome_set import ChromosomeLike, ChromosomeSet
 from src.utils.cli_utils import calculate_max_y
 
 
@@ -32,9 +32,9 @@ class RecombCurveDataPacket:
     fig_name: str = 'recomb curve'
 
 
-def collect_recomb_curve_data[T](
-    transformer: DataTransformer[npt.NDArray[np.float64]],
-    chrom_sets: list[ChromosomeSet],
+def collect_recomb_curve_data[T, C: ChromosomeLike](
+    transformer: DataTransformer[npt.NDArray[np.float64], C],
+    chrom_sets: list[ChromosomeSet[C]],
 ) -> RecombCurveDataPacket:
     transformed_data = list(map(transformer, chrom_sets))
     return RecombCurveDataPacket(

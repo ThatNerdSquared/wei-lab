@@ -660,22 +660,14 @@
                     "endColumn": 33,
                     "lineCount": 1
                 }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 39,
-                    "endColumn": 42,
-                    "lineCount": 1
-                }
             }
         ],
         "./src/specific_interf_sims/plotter.py": [
             {
                 "code": "reportExplicitAny",
                 "range": {
-                    "startColumn": 54,
-                    "endColumn": 57,
+                    "startColumn": 57,
+                    "endColumn": 60,
                     "lineCount": 1
                 }
             },
@@ -714,6 +706,30 @@
             {
                 "code": "reportArgumentType",
                 "range": {
+                    "startColumn": 8,
+                    "endColumn": 12,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 12,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 12,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
                     "startColumn": 36,
                     "endColumn": 37,
                     "lineCount": 1
@@ -724,6 +740,14 @@
                 "range": {
                     "startColumn": 27,
                     "endColumn": 28,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 12,
                     "lineCount": 1
                 }
             },

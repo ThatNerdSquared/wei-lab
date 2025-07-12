@@ -14,6 +14,7 @@ from src.specific_interf_sims.plotter import (
     standard_plotter,
 )
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
+from src.utils.chromosome_set import make_chromset_with_legacy_chromosome
 
 NUM_CHROMS = 100000
 CHROM_LEN = 1000
@@ -25,6 +26,7 @@ queue = SimulationQueue(
     np.zeros(CHROM_LEN) + STARTING_P_HIT,
     rand_seed=54321,
     chroms_per_sim=NUM_CHROMS,
+    default_chromset_maker=make_chromset_with_legacy_chromosome,
 )
 no_interf_chroms = queue_sim(queue, 'no interf', no_interf)
 local_chroms = queue_sim(queue, 'local', local_interf)

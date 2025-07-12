@@ -1,34 +1,59 @@
-from dataclasses import dataclass, field
+import functools
+from dataclasses import InitVar, dataclass, field
+from typing import Callable, Protocol
 
 import numpy as np
 import numpy.typing as npt
 
 from src.specific_interf_sims.interf_schemes import BinArray
+from src.utils.chromatid import (
+    Chromatid,
+    get_crossover_locations,
+    get_num_crossovers,
+    has_crossover_at,
+    has_visible_crossover,
+)
 from src.utils.chromosome import Chromosome
+from src.utils.chromosome_with_sister_chromatids import ChromosomeSisterChromatids
+
+type ChromosomeLike = Chromatid | ChromosomeSisterChromatids | Chromosome
+type ChromosomeMaker[C: ChromosomeLike] = Callable[[int], C]
 
 
 @dataclass(kw_only=True, slots=True)
-class ChromosomeSet:
+class ChromosomeSet[C: ChromosomeLike]:
     label: str
     num_chroms: int
     chrom_length: int
-    chroms: list[Chromosome] = field(init=False)
+    chroms: list[C] = field(init=False)
+    chrom_maker: InitVar[ChromosomeMaker[C]]
 
-    def __post_init__(self):
-        self.chroms = [Chromosome(self.chrom_length) for _ in range(self.num_chroms)]
+    def __post_init__(self, chrom_maker: ChromosomeMaker[C]):
+        self.chroms = [chrom_maker(self.chrom_length) for _ in range(self.num_chroms)]
 
     def __iter__(self):
         return self.chroms.__iter__()
 
 
-def gather_recomb_curve_data(
-    chrom_set: ChromosomeSet, proportional: bool = True
+class ChromsetMaker[C: ChromosomeLike](Protocol):
+    def __call__(
+        self, *, label: str, num_chroms: int, chrom_length: int
+    ) -> ChromosomeSet[C]: ...
+
+
+make_chromset_with_legacy_chromosome = functools.partial(
+    ChromosomeSet[Chromosome], chrom_maker=Chromosome
+)
+
+
+def gather_recomb_curve_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C], proportional: bool = True
 ) -> npt.NDArray[np.float64]:
     recomb_curve_data = np.zeros(chrom_set.chrom_length)
 
     for loc in range(chrom_set.chrom_length):
         recomb_curve_data[loc] = sum(
-            [1 if x.has_crossover_at(loc) else 0 for x in chrom_set]
+            [1 if has_crossover_at(x, loc) else 0 for x in chrom_set]
         )
 
     if proportional:
@@ -37,16 +62,16 @@ def gather_recomb_curve_data(
     return recomb_curve_data
 
 
-def gather_co_per_chrom_dist_data(
-    chrom_set: ChromosomeSet, proportional: bool = True
+def gather_co_per_chrom_dist_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C], proportional: bool = True
 ) -> npt.NDArray[np.float64]:
     data_dict: dict[int, float] = {}
 
     for chrom in chrom_set:
         try:
-            data_dict[chrom.get_num_crossovers()] += 1.0
+            data_dict[get_num_crossovers(chrom)] += 1.0
         except KeyError:
-            data_dict[chrom.get_num_crossovers()] = 1.0
+            data_dict[get_num_crossovers(chrom)] = 1.0
 
     dist_data = np.array([data_dict.get(x, 0) for x in range(max(data_dict))])
 
@@ -56,13 +81,13 @@ def gather_co_per_chrom_dist_data(
     return dist_data
 
 
-def gather_interevent_dist_data(
-    chrom_set: ChromosomeSet, proportional: bool = True
+def gather_interevent_dist_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C], proportional: bool = True
 ) -> tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]:
     dist_data: list[float] = []
 
     for chrom in chrom_set:
-        co_locs = chrom.get_crossover_locations()
+        co_locs = get_crossover_locations(chrom)
 
         for loc_idx in range(1, len(co_locs)):
             interevent_dist = co_locs[loc_idx] - co_locs[loc_idx - 1] - 1
@@ -76,8 +101,8 @@ def gather_interevent_dist_data(
     return (totals, groups)
 
 
-def gather_cM_rf_curve_data(
-    chrom_set: ChromosomeSet,
+def gather_cM_rf_curve_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C],
 ) -> tuple[list[float], list[float]]:
     dataset_cM: list[float] = []
     dataset_rf: list[float] = []
@@ -86,9 +111,9 @@ def gather_cM_rf_curve_data(
     for x in range(chrom_set.chrom_length):
         visible_COs = 0
         for chrom in chrom_set:
-            if chrom.has_crossover_at(x):
+            if has_crossover_at(chrom, x):
                 total_cos_so_far += 1
-            if chrom.has_visible_crossover(0, x):
+            if has_visible_crossover(chrom, 0, x):
                 visible_COs += 1
 
         dataset_cM.append(total_cos_so_far / chrom_set.num_chroms)
@@ -97,8 +122,8 @@ def gather_cM_rf_curve_data(
     return (dataset_cM, dataset_rf)
 
 
-def gather_preinterf_cM_rf_curve_data(
-    chrom_set: ChromosomeSet, pre_interf_dist: BinArray
+def gather_preinterf_cM_rf_curve_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C], pre_interf_dist: BinArray
 ) -> tuple[list[float], list[float]]:
     dataset_cM: list[float] = []
     dataset_rf: list[float] = []
@@ -108,7 +133,7 @@ def gather_preinterf_cM_rf_curve_data(
         cM_so_far += pre_interf_dist[x]
         visible_COs = 0
         for chrom in chrom_set:
-            if chrom.has_visible_crossover(end=x):
+            if has_visible_crossover(chrom, end=x):
                 visible_COs += 1
 
         dataset_cM.append(cM_so_far)
