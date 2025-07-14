@@ -43,3 +43,28 @@ def collect_recomb_curve_data[T, C: ChromosomeLike](
         num_bins=chrom_sets[0].chrom_length,
         ylim=calculate_max_y([x[1] for x in transformed_data]),
     )
+
+
+@dataclass(slots=True)
+class cMRFCurveDataPacket:
+    data: dict[str, tuple[list[float], list[float]]]
+    num_chroms: int
+    num_bins: int
+
+    ylim: float = 1.0
+    xlabel: str = 'morgans (M)'
+    ylabel: str = 'recombinant frequency (rf)'
+    fig_name: str = 'cM_rf_curve'
+
+
+def collect_cM_rf_curve_data[T, C: ChromosomeLike](
+    transformer: DataTransformer[tuple[list[float], list[float]], C],
+    chrom_sets: list[ChromosomeSet[C]],
+) -> cMRFCurveDataPacket:
+    transformed_data = list(map(transformer, chrom_sets))
+    return cMRFCurveDataPacket(
+        data=dict(transformed_data),
+        num_chroms=chrom_sets[0].num_chroms,
+        num_bins=chrom_sets[0].chrom_length,
+        ylim=calculate_max_y([x[1] for x in transformed_data]),
+    )

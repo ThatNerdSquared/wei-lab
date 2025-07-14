@@ -1,7 +1,13 @@
 import numpy as np
 
-from src.specific_interf_sims.data_collectors import collect_recomb_curve_data
-from src.specific_interf_sims.data_transformers import transform_recomb_curve_data
+from src.specific_interf_sims.data_collectors import (
+    collect_cM_rf_curve_data,
+    collect_recomb_curve_data,
+)
+from src.specific_interf_sims.data_transformers import (
+    transform_cM_rf_curve_data,
+    transform_recomb_curve_data,
+)
 from src.specific_interf_sims.interf_schemes import (
     equalised_fixed_regional_interf,
     equalised_global_interf,
@@ -10,15 +16,19 @@ from src.specific_interf_sims.interf_schemes import (
 )
 from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
 from src.specific_interf_sims.plotter import (
+    plot_canonical_map_funcs,
+    plot_co_per_chrom_dist,
+    plot_interevent_dist,
     save_plot,
     standard_plotter,
 )
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
+from src.utils.chromatid import get_num_crossovers
 from src.utils.chromosome_set import make_default_chromset
 
 NUM_CHROMS = 100000
 CHROM_LEN = 1000
-AVG_COS_PER_CHROMOSOME = 2
+AVG_COS_PER_CHROMOSOME = 4
 STARTING_P_HIT = AVG_COS_PER_CHROMOSOME / CHROM_LEN
 
 queue = SimulationQueue(
@@ -47,3 +57,19 @@ chrom_sets = [
 recomb_curve_data = collect_recomb_curve_data(transform_recomb_curve_data, chrom_sets)
 recomb_curve_plot = standard_plotter(recomb_curve_data)
 save_plot(recomb_curve_plot)
+
+plot_co_per_chrom_dist(*chrom_sets)
+
+plot_interevent_dist(*chrom_sets)
+
+print(np.mean([get_num_crossovers(x) for x in no_interf_chroms]))
+print(np.mean([get_num_crossovers(x) for x in local_chroms]))
+print(np.mean([get_num_crossovers(x) for x in equalised_global_chroms]))
+print(np.mean([get_num_crossovers(x) for x in equalised_fixed_regional_chroms]))
+
+cM_rf_curve_data = collect_cM_rf_curve_data(transform_cM_rf_curve_data, chrom_sets)
+cM_rf_curve_plot = standard_plotter(cM_rf_curve_data)
+cM_rf_ax = cM_rf_curve_plot.get_axes()[0]
+plot_canonical_map_funcs(cM_rf_ax)
+_ = cM_rf_ax.legend()
+save_plot(cM_rf_curve_plot)

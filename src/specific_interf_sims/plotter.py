@@ -11,6 +11,7 @@ from scipy.optimize import curve_fit
 from src.specific_interf_sims.data_collectors import (
     DataPacket,
     RecombCurveDataPacket,
+    cMRFCurveDataPacket,
 )
 from src.specific_interf_sims.interf_schemes import BinArray
 from src.utils.chromosome_set import (
@@ -108,6 +109,12 @@ def _(data: RecombCurveDataPacket, ax: Axes):
         _ = ax.plot(v, label=k)
 
 
+@add_curve.register
+def _(data: cMRFCurveDataPacket, ax: Axes):
+    for k, v in data.data.items():
+        _ = ax.plot(v[0], v[1], label=k)
+
+
 def plot_recomb_curve[C: ChromosomeLike](*args: ChromosomeSet[C]):
     plotter(
         gather_recomb_curve_data,
@@ -144,7 +151,7 @@ def plot_interevent_dist[C: ChromosomeLike](*args: ChromosomeSet[C]):
 
 def plot_canonical_map_funcs(ax: Axes):
     ax.axhline(y=0.5, color='tab:red', label='50% RF').set_dashes((5, 2))
-    x = np.linspace(0, 2, 1000)
+    x = np.linspace(0, 1, 1000)
     _ = ax.plot(x, haldane_input_cM(x), label='haldane')
     _ = ax.plot(x, x, label='morgan')
     _ = ax.plot(x, kosambi(x), label='kosambi')

@@ -252,6 +252,16 @@
                 }
             }
         ],
+        "./src/oneoffs/testing_new_plotter_and_chromosome_apis.py": [
+            {
+                "code": "reportUnknownMemberType",
+                "range": {
+                    "startColumn": 4,
+                    "endColumn": 19,
+                    "lineCount": 1
+                }
+            }
+        ],
         "./src/overall_interf_markov_chain/plotter.py": [
             {
                 "code": "reportUnknownMemberType",
