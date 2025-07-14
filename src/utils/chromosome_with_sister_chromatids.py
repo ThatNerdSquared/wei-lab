@@ -42,6 +42,9 @@ class ChromosomeSisterChromatids:
         self.b2 = Chromatid(base_haplotype=Haplotype.PINK, length=self.length)
         self.all_chromatids = (self.a1, self.a2, self.b1, self.b2)
 
+    def __iter__(self):
+        return self.selectSistersForPool(self).__iter__()
+
 
 def uniformlyRandomSisterSelector(
     chrom: ChromosomeSisterChromatids,
@@ -72,6 +75,14 @@ def selectSingleSisterForPool(
     chrom: ChromosomeSisterChromatids,
 ) -> tuple[Chromatid]:
     return (random.choice(chrom.all_chromatids),)
+
+
+def make_default_chrom_w_sisters(length: int) -> ChromosomeSisterChromatids:
+    return ChromosomeSisterChromatids(
+        length=length,
+        selectSistersForCO=uniformlyRandomSisterSelector,
+        selectSistersForPool=selectSingleSisterForPool,
+    )
 
 
 @insert_crossover.register

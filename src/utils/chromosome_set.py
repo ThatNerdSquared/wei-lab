@@ -1,4 +1,6 @@
 import functools
+import itertools
+from collections.abc import Iterable, Iterator
 from dataclasses import InitVar, dataclass, field
 from typing import Callable, Protocol
 
@@ -14,7 +16,10 @@ from src.utils.chromatid import (
     has_visible_crossover,
 )
 from src.utils.chromosome import Chromosome
-from src.utils.chromosome_with_sister_chromatids import ChromosomeSisterChromatids
+from src.utils.chromosome_with_sister_chromatids import (
+    ChromosomeSisterChromatids,
+    make_default_chrom_w_sisters,
+)
 
 type ChromosomeLike = Chromatid | ChromosomeSisterChromatids | Chromosome
 type ChromosomeMaker[C: ChromosomeLike] = Callable[[int], C]
@@ -31,8 +36,12 @@ class ChromosomeSet[C: ChromosomeLike]:
     def __post_init__(self, chrom_maker: ChromosomeMaker[C]):
         self.chroms = [chrom_maker(self.chrom_length) for _ in range(self.num_chroms)]
 
-    def __iter__(self):
-        return self.chroms.__iter__()
+    def __iter__(self) -> Iterator[ChromosomeLike]:
+        if len(self.chroms) == 0:
+            return iter(())
+        if isinstance(self.chroms[0], Iterable):
+            return itertools.chain.from_iterable(self.chroms)  # pyright: ignore[reportArgumentType, reportUnknownVariableType]
+        return iter(self.chroms)
 
 
 class ChromsetMaker[C: ChromosomeLike](Protocol):
@@ -43,6 +52,10 @@ class ChromsetMaker[C: ChromosomeLike](Protocol):
 
 make_chromset_with_legacy_chromosome = functools.partial(
     ChromosomeSet[Chromosome], chrom_maker=Chromosome
+)
+
+make_default_chromset = functools.partial(
+    ChromosomeSet[ChromosomeSisterChromatids], chrom_maker=make_default_chrom_w_sisters
 )
 
 
