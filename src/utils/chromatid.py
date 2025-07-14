@@ -41,6 +41,10 @@ class Chromatid:
         self.id = uuid4()
 
 
+def make_default_chromatid(length: int):
+    return Chromatid(base_haplotype=Haplotype.BLUE, length=length)
+
+
 def remove_co_stack_to_exchange(chrom: Chromatid, location: int) -> CrossoverStack:
     assert location <= chrom.length
     result: CrossoverStack = CrossoverStack([])
