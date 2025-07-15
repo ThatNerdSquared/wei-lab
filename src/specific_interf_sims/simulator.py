@@ -1,3 +1,4 @@
+import random
 from dataclasses import dataclass, field
 from typing import Callable
 
@@ -26,6 +27,9 @@ class SimulationQueue[C: ChromosomeLike]:
     rand_seed: int | None = None
     chroms_per_sim: int | None = None
     default_chromset_maker: ChromsetMaker[C] | None = None
+
+    def __post_init__(self):
+        random.seed(self.rand_seed)
 
 
 def queue_sim[C: ChromosomeLike](

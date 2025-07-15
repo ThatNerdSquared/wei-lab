@@ -1,18 +1,14 @@
 from datetime import datetime
-from functools import singledispatch
 from typing import Any, Callable
 
 import matplotlib.pyplot as plt
 import numpy as np
+import numpy.typing as npt
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from scipy.optimize import curve_fit
 
-from src.specific_interf_sims.data_collectors import (
-    DataPacket,
-    RecombCurveDataPacket,
-    cMRFCurveDataPacket,
-)
+from src.specific_interf_sims.data_packet import DataPacket
 from src.specific_interf_sims.interf_schemes import BinArray
 from src.utils.chromosome_set import (
     ChromosomeLike,
@@ -59,7 +55,7 @@ def plotter[T, C: ChromosomeLike](
 def _fmt_plot_name[T](data_packet: DataPacket[T]):
     num_chrom_in_ks = str(data_packet.num_chroms / 1000)
     num_bins_in_ks = str(data_packet.num_bins / 1000)
-    return f'{data_packet.fig_name} -- {num_chrom_in_ks}k chroms @ {num_bins_in_ks} bins / chrom'  # noqa: E501
+    return f'{data_packet.fig_name} -- {num_chrom_in_ks}k chroms @ {num_bins_in_ks}k bins / chrom'  # noqa: E501
 
 
 def _fmt_plot_filename(plot_title: str):
@@ -79,7 +75,7 @@ def _fmt_plot_filename(plot_title: str):
 def standard_plotter[T](data_packet: DataPacket[T]) -> Figure:
     fig = plt.figure(figsize=(9.0, 7.0))
     ax = fig.add_subplot()
-    add_curve(data_packet, ax)
+    data_packet.curve_adder(data_packet, ax)
 
     _ = ax.set_xlabel(data_packet.xlabel or '')
     _ = ax.set_ylabel(data_packet.ylabel or '')
@@ -96,23 +92,29 @@ def save_plot(plot: Figure):
     print(f'plot "{plot.get_suptitle()}" saved.')
 
 
-@singledispatch
-def add_curve(data: object, ax: Axes) -> None:  # pyright: ignore[reportUnusedParameter]
-    raise NotImplementedError(
-        'No curve adder found. Has one been implemented for this DataPacket?'
-    )
-
-
-@add_curve.register
-def _(data: RecombCurveDataPacket, ax: Axes):
+def line_curve_adder[T](data: DataPacket[npt.ArrayLike], ax: Axes):
     for k, v in data.data.items():
         _ = ax.plot(v, label=k)
 
 
-@add_curve.register
-def _(data: cMRFCurveDataPacket, ax: Axes):
+def line_unpacked_data_curve_adder(
+    data: DataPacket[tuple[list[float], list[float]]], ax: Axes
+):
     for k, v in data.data.items():
         _ = ax.plot(v[0], v[1], label=k)
+
+
+def histogram_curve_adder(data: DataPacket[npt.ArrayLike], ax: Axes):
+    for k, v in data.data.items():
+        _ = ax.stairs(v, label=k)
+
+
+def histogram_unpacked_data_curve_adder(
+    data: DataPacket[tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]],
+    ax: Axes,
+):
+    for k, v in data.data.items():
+        _ = (ax.stairs(v[0], v[1], label=k),)
 
 
 def plot_recomb_curve[C: ChromosomeLike](*args: ChromosomeSet[C]):

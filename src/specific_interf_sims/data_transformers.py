@@ -3,7 +3,12 @@ from typing import Callable
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.chromatid import has_crossover_at, has_visible_crossover
+from src.utils.chromatid import (
+    get_crossover_locations,
+    get_num_crossovers,
+    has_crossover_at,
+    has_visible_crossover,
+)
 from src.utils.chromosome_set import ChromosomeLike, ChromosomeSet
 
 type DataTransformer[T, C: ChromosomeLike] = Callable[[ChromosomeSet[C]], tuple[str, T]]
@@ -23,6 +28,45 @@ def transform_recomb_curve_data[C: ChromosomeLike](
         recomb_curve_data = recomb_curve_data / chrom_set.num_chroms
 
     return (chrom_set.label, recomb_curve_data)
+
+
+def transform_co_per_chrom_dist_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C], proportional: bool = True
+) -> tuple[str, npt.NDArray[np.float64]]:
+    data_dict: dict[int, float] = {}
+
+    for chrom in chrom_set:
+        try:
+            data_dict[get_num_crossovers(chrom)] += 1.0
+        except KeyError:
+            data_dict[get_num_crossovers(chrom)] = 1.0
+
+    dist_data = np.array([data_dict.get(x, 0) for x in range(max(data_dict))])
+
+    if proportional:
+        dist_data = dist_data / chrom_set.num_chroms
+
+    return chrom_set.label, dist_data
+
+
+def transform_interevent_dist_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C], proportional: bool = True
+) -> tuple[str, tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]]:
+    dist_data: list[float] = []
+
+    for chrom in chrom_set:
+        co_locs = get_crossover_locations(chrom)
+
+        for loc_idx in range(1, len(co_locs)):
+            interevent_dist = co_locs[loc_idx] - co_locs[loc_idx - 1] - 1
+            dist_data.append(interevent_dist)
+
+    totals, groups = np.histogram(dist_data, bins='auto')
+
+    if proportional:
+        totals = totals / chrom_set.num_chroms
+
+    return chrom_set.label, (totals, groups)
 
 
 def transform_cM_rf_curve_data[C: ChromosomeLike](
