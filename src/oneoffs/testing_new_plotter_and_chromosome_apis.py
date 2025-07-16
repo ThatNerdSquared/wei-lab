@@ -10,6 +10,7 @@ from src.specific_interf_sims.data_transformers import (
     transform_cM_rf_curve_data,
     transform_co_per_chrom_dist_data,
     transform_interevent_dist_data,
+    transform_mean_cos_per_chrom_data,
     transform_recomb_curve_data,
 )
 from src.specific_interf_sims.interf_schemes import (
@@ -25,8 +26,8 @@ from src.specific_interf_sims.plotter import (
     standard_plotter,
 )
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
-from src.utils.chromatid import get_num_crossovers
 from src.utils.chromosome_set import make_default_chromset
+from src.utils.cli_utils import mapThenPrint
 
 NUM_CHROMS = 100000
 CHROM_LEN = 1000
@@ -76,10 +77,6 @@ cM_rf_curve_data = collect_cM_rf_curve_data(transform_cM_rf_curve_data, chrom_se
 cM_rf_curve_plot = standard_plotter(cM_rf_curve_data)
 cM_rf_ax = cM_rf_curve_plot.get_axes()[0]
 plot_canonical_map_funcs(cM_rf_ax)
-_ = cM_rf_ax.legend()
 save_plot(cM_rf_curve_plot)
 
-print(np.mean([get_num_crossovers(x) for x in no_interf_chroms]))
-print(np.mean([get_num_crossovers(x) for x in local_chroms]))
-print(np.mean([get_num_crossovers(x) for x in equalised_global_chroms]))
-print(np.mean([get_num_crossovers(x) for x in equalised_fixed_regional_chroms]))
+mapThenPrint(transform_mean_cos_per_chrom_data, chrom_sets)

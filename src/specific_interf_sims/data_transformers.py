@@ -46,7 +46,9 @@ def transform_co_per_chrom_dist_data[C: ChromosomeLike](
     if proportional:
         dist_data = dist_data / chrom_set.num_chroms
 
-    return chrom_set.label, dist_data
+    result = chrom_set.label, dist_data
+    print(result)
+    return result
 
 
 def transform_interevent_dist_data[C: ChromosomeLike](
@@ -88,3 +90,11 @@ def transform_cM_rf_curve_data[C: ChromosomeLike](
         dataset_rf.append(visible_COs / chrom_set.num_chroms)
 
     return chrom_set.label, (dataset_cM, dataset_rf)
+
+
+def transform_mean_cos_per_chrom_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C],
+) -> tuple[str, np.float64]:
+    return chrom_set.label, np.float64(
+        np.mean([get_num_crossovers(x) for x in chrom_set])
+    )

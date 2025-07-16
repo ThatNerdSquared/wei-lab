@@ -157,6 +157,7 @@ def plot_canonical_map_funcs(ax: Axes):
     _ = ax.plot(x, haldane_input_cM(x), label='haldane')
     _ = ax.plot(x, x, label='morgan')
     _ = ax.plot(x, kosambi(x), label='kosambi')
+    _ = ax.legend()
 
 
 def plot_cM_rf_curve[C: ChromosomeLike](*args: ChromosomeSet[C]):
