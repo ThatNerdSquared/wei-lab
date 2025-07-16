@@ -9,7 +9,7 @@ from src.utils.chromatid import (
     has_crossover_at,
     has_visible_crossover,
 )
-from src.utils.chromosome_set import ChromosomeLike, ChromosomeSet
+from src.utils.chromosome_set import ChromosomeLike, ChromosomeSet, pool_iter
 
 type DataTransformer[T, C: ChromosomeLike] = Callable[[ChromosomeSet[C]], tuple[str, T]]
 
@@ -21,7 +21,7 @@ def transform_recomb_curve_data[C: ChromosomeLike](
 
     for loc in range(chrom_set.chrom_length):
         recomb_curve_data[loc] = sum(
-            [1 if has_crossover_at(x, loc) else 0 for x in chrom_set]
+            [1 if has_crossover_at(x, loc) else 0 for x in pool_iter(chrom_set)]
         )
 
     if proportional:
@@ -35,7 +35,7 @@ def transform_co_per_chrom_dist_data[C: ChromosomeLike](
 ) -> tuple[str, npt.NDArray[np.float64]]:
     data_dict: dict[int, float] = {}
 
-    for chrom in chrom_set:
+    for chrom in pool_iter(chrom_set):
         try:
             data_dict[get_num_crossovers(chrom)] += 1.0
         except KeyError:
@@ -54,7 +54,7 @@ def transform_interevent_dist_data[C: ChromosomeLike](
 ) -> tuple[str, tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]]:
     dist_data: list[float] = []
 
-    for chrom in chrom_set:
+    for chrom in pool_iter(chrom_set):
         co_locs = get_crossover_locations(chrom)
 
         for loc_idx in range(1, len(co_locs)):
@@ -78,7 +78,7 @@ def transform_cM_rf_curve_data[C: ChromosomeLike](
     total_cos_so_far = 0
     for x in range(chrom_set.chrom_length):
         visible_COs = 0
-        for chrom in chrom_set:
+        for chrom in pool_iter(chrom_set):
             if has_crossover_at(chrom, x):
                 total_cos_so_far += 1
             if has_visible_crossover(chrom, 0, x):

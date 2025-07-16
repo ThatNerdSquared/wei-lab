@@ -1,7 +1,7 @@
 import pytest
 
 from src.utils.chromatid import Chromatid, make_default_chromatid
-from src.utils.chromosome_set import ChromosomeSet
+from src.utils.chromosome_set import ChromosomeSet, pool_iter
 from src.utils.chromosome_with_sister_chromatids import (
     ChromosomeSisterChromatids,
     SequentialSisterSelector,
@@ -17,7 +17,7 @@ def test_chromset_iterator_when_empty():
         chrom_length=42,
         chrom_maker=make_default_chrom_w_sisters,
     )
-    chromset_iter = iter(test_chromset)
+    chromset_iter = pool_iter(test_chromset)
     with pytest.raises(StopIteration):
         _ = next(chromset_iter)
 
@@ -29,9 +29,9 @@ def test_chromset_iterator_chromatids():
         chrom_length=42,
         chrom_maker=make_default_chromatid,
     )
-    chromset_iter = iter(test_chromset)
+    chromset_iter = pool_iter(test_chromset)
     assert test_chromset.chroms == list(chromset_iter)
-    chromset_iter = iter(test_chromset)
+    chromset_iter = pool_iter(test_chromset)
     _ = next(chromset_iter)
     _ = next(chromset_iter)
     _ = next(chromset_iter)
@@ -50,9 +50,9 @@ def test_chromset_iterator_chroms_w_sisters():
             selectSistersForPool=selectSingleSisterForPool,
         ),
     )
-    chromset_iter = iter(test_chromset)
+    chromset_iter = pool_iter(test_chromset)
     assert test_chromset.chroms != list(chromset_iter)
-    chromset_iter = iter(test_chromset)
+    chromset_iter = pool_iter(test_chromset)
 
     assert isinstance(next(chromset_iter), Chromatid)
     assert isinstance(next(chromset_iter), Chromatid)
