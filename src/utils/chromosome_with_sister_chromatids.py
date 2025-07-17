@@ -77,6 +77,12 @@ def selectSingleSisterForPool(
     return (random.choice(chrom.all_chromatids),)
 
 
+def selectAllSistersForPool(
+    chrom: ChromosomeSisterChromatids,
+) -> tuple[Chromatid, Chromatid, Chromatid, Chromatid]:
+    return chrom.all_chromatids
+
+
 def make_default_chrom_w_sisters(length: int) -> ChromosomeSisterChromatids:
     return ChromosomeSisterChromatids(
         length=length,

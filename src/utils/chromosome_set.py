@@ -21,6 +21,8 @@ from src.utils.chromosome import Chromosome
 from src.utils.chromosome_with_sister_chromatids import (
     ChromosomeSisterChromatids,
     make_default_chrom_w_sisters,
+    selectAllSistersForPool,
+    uniformlyRandomSisterSelector,
 )
 
 type ChromosomeLike = Chromatid | ChromosomeSisterChromatids | Chromosome
@@ -78,6 +80,15 @@ make_chromset_with_legacy_chromosome = functools.partial(
 
 make_default_chromset = functools.partial(
     ChromosomeSet[ChromosomeSisterChromatids], chrom_maker=make_default_chrom_w_sisters
+)
+
+make_chromset_all_sisters_in_pool = functools.partial(
+    ChromosomeSet[ChromosomeSisterChromatids],
+    chrom_maker=lambda x: ChromosomeSisterChromatids(
+        length=x,
+        selectSistersForCO=uniformlyRandomSisterSelector,
+        selectSistersForPool=selectAllSistersForPool,
+    ),
 )
 
 
