@@ -2,8 +2,10 @@ import functools
 import itertools
 from collections.abc import Iterable, Iterator
 from dataclasses import InitVar, dataclass, field
-from typing import Callable, Protocol
+from typing import Callable, Protocol, override
+from uuid import UUID, uuid4
 
+import more_itertools
 import numpy as np
 import numpy.typing as npt
 
@@ -27,6 +29,7 @@ type ChromosomeMaker[C: ChromosomeLike] = Callable[[int], C]
 
 @dataclass(kw_only=True, slots=True)
 class ChromosomeSet[C: ChromosomeLike]:
+    id: UUID = field(init=False, default_factory=uuid4)
     label: str
     num_chroms: int
     chrom_length: int
@@ -39,6 +42,10 @@ class ChromosomeSet[C: ChromosomeLike]:
     def __iter__(self) -> Iterator[C]:
         return iter(self.chroms)
 
+    @override
+    def __hash__(self) -> int:
+        return hash(self.id)
+
 
 def pool_iter[C: ChromosomeLike](
     chrom_set: ChromosomeSet[C],
@@ -48,6 +55,15 @@ def pool_iter[C: ChromosomeLike](
     if isinstance(chrom_set.chroms[0], Iterable):
         return itertools.chain.from_iterable(chrom_set.chroms)  # pyright: ignore[reportArgumentType, reportUnknownVariableType]
     return iter(chrom_set.chroms)
+
+
+@functools.cache
+def pool_size[C: ChromosomeLike](chrom_set: ChromosomeSet[C]) -> int:
+    if len(chrom_set.chroms) == 0:
+        return 0
+    if isinstance(chrom_set.chroms[0], Iterable):
+        return more_itertools.ilen(pool_iter(chrom_set))
+    return chrom_set.num_chroms
 
 
 class ChromsetMaker[C: ChromosomeLike](Protocol):

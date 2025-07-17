@@ -9,7 +9,7 @@ from src.utils.chromatid import (
     has_crossover_at,
     has_visible_crossover,
 )
-from src.utils.chromosome_set import ChromosomeLike, ChromosomeSet, pool_iter
+from src.utils.chromosome_set import ChromosomeLike, ChromosomeSet, pool_iter, pool_size
 
 type DataTransformer[T, C: ChromosomeLike] = Callable[[ChromosomeSet[C]], tuple[str, T]]
 
@@ -25,7 +25,7 @@ def transform_recomb_curve_data[C: ChromosomeLike](
         )
 
     if proportional:
-        recomb_curve_data = recomb_curve_data / chrom_set.num_chroms
+        recomb_curve_data = recomb_curve_data / pool_size(chrom_set)
 
     return (chrom_set.label, recomb_curve_data)
 
@@ -44,7 +44,7 @@ def transform_co_per_chrom_dist_data[C: ChromosomeLike](
     dist_data = np.array([data_dict.get(x, 0) for x in range(max(data_dict))])
 
     if proportional:
-        dist_data = dist_data / chrom_set.num_chroms
+        dist_data = dist_data / pool_size(chrom_set)
 
     result = chrom_set.label, dist_data
     print(result)
@@ -66,7 +66,7 @@ def transform_interevent_dist_data[C: ChromosomeLike](
     totals, groups = np.histogram(dist_data, bins='auto')
 
     if proportional:
-        totals = totals / chrom_set.num_chroms
+        totals = totals / pool_size(chrom_set)
 
     return chrom_set.label, (totals, groups)
 
@@ -77,6 +77,8 @@ def transform_cM_rf_curve_data[C: ChromosomeLike](
     dataset_cM: list[float] = []
     dataset_rf: list[float] = []
 
+    NUM_CHROMS_IN_POOL = pool_size(chrom_set)
+
     total_cos_so_far = 0
     for x in range(chrom_set.chrom_length):
         visible_COs = 0
@@ -86,8 +88,8 @@ def transform_cM_rf_curve_data[C: ChromosomeLike](
             if has_visible_crossover(chrom, 0, x):
                 visible_COs += 1
 
-        dataset_cM.append(total_cos_so_far / chrom_set.num_chroms)
-        dataset_rf.append(visible_COs / chrom_set.num_chroms)
+        dataset_cM.append(total_cos_so_far / NUM_CHROMS_IN_POOL)
+        dataset_rf.append(visible_COs / NUM_CHROMS_IN_POOL)
 
     return chrom_set.label, (dataset_cM, dataset_rf)
 
