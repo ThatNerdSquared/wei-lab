@@ -12,6 +12,8 @@ from src.utils.chromatid import (
 from src.utils.chromosome_with_sister_chromatids import (
     ChromosomeSisterChromatids,
     SequentialSisterSelector,
+    haplotypeSwitchingCOsOnlySelector,
+    selectAllSistersForPool,
     selectSingleSisterForPool,
     uniformlyRandomSisterSelector,
 )
@@ -43,7 +45,7 @@ def test_uniform_random_sister_selector(
     mock_chromosome_w_sisters: ChromosomeSisterChromatids,
 ):
     _random_selector_tester(
-        0.5, lambda: uniformlyRandomSisterSelector(mock_chromosome_w_sisters)
+        0.5, lambda: uniformlyRandomSisterSelector(mock_chromosome_w_sisters, -1)
     )
 
 
@@ -51,21 +53,59 @@ def test_sequential_sister_selector(
     mock_chromosome_w_sisters: ChromosomeSisterChromatids,
 ):
     sequentialSisterSelector = SequentialSisterSelector()
-    round1_first, round1_second = sequentialSisterSelector(mock_chromosome_w_sisters)
+    round1_first, round1_second = sequentialSisterSelector(
+        mock_chromosome_w_sisters, -1
+    )
     assert round1_first == mock_chromosome_w_sisters.a1
     assert round1_second == mock_chromosome_w_sisters.a2
 
-    round2_first, round2_second = sequentialSisterSelector(mock_chromosome_w_sisters)
+    round2_first, round2_second = sequentialSisterSelector(
+        mock_chromosome_w_sisters, -1
+    )
     assert round2_first == mock_chromosome_w_sisters.a2
     assert round2_second == mock_chromosome_w_sisters.b1
 
-    round3_first, round3_second = sequentialSisterSelector(mock_chromosome_w_sisters)
+    round3_first, round3_second = sequentialSisterSelector(
+        mock_chromosome_w_sisters, -1
+    )
     assert round3_first == mock_chromosome_w_sisters.b1
     assert round3_second == mock_chromosome_w_sisters.b2
 
-    round4_first, round4_second = sequentialSisterSelector(mock_chromosome_w_sisters)
+    round4_first, round4_second = sequentialSisterSelector(
+        mock_chromosome_w_sisters, -1
+    )
     assert round4_first == mock_chromosome_w_sisters.b2
     assert round4_second == mock_chromosome_w_sisters.a1
+
+
+def test_haplotype_switching_only_sister_selector():
+    test_chrom = ChromosomeSisterChromatids(
+        length=500,
+        selectSistersForCO=haplotypeSwitchingCOsOnlySelector,
+        selectSistersForPool=selectAllSistersForPool,
+    )
+    insert_crossover(test_chrom.a2, 40)
+    insert_crossover(test_chrom.b1, 40)
+
+    selections: list[tuple[Chromatid, Chromatid]] = []
+    for _ in range(1000):
+        selections.append(haplotypeSwitchingCOsOnlySelector(test_chrom, 39))
+
+    for selection in selections:
+        assert not (selection[0] == test_chrom.a1 and selection[1] == test_chrom.a2)
+        assert not (selection[0] == test_chrom.a2 and selection[1] == test_chrom.a1)
+        assert not (selection[0] == test_chrom.b1 and selection[1] == test_chrom.b2)
+        assert not (selection[0] == test_chrom.b2 and selection[1] == test_chrom.b1)
+
+    selections_r2: list[tuple[Chromatid, Chromatid]] = []
+    for _ in range(1000):
+        selections_r2.append(haplotypeSwitchingCOsOnlySelector(test_chrom, 40))
+
+    for selection in selections_r2:
+        assert not (selection[0] == test_chrom.a1 and selection[1] == test_chrom.b1)
+        assert not (selection[0] == test_chrom.b1 and selection[1] == test_chrom.a1)
+        assert not (selection[0] == test_chrom.a2 and selection[1] == test_chrom.b2)
+        assert not (selection[0] == test_chrom.b2 and selection[1] == test_chrom.a2)
 
 
 def test_random_sister_selector_for_pool(
@@ -85,7 +125,7 @@ def test_insert_co_for_sister_chromatids(
     reset_random_state()
 
     first_selection, second_selection = uniformlyRandomSisterSelector(
-        mock_chromosome_w_sisters
+        mock_chromosome_w_sisters, -1
     )
     assert has_crossover_at(first_selection, 400)
     assert has_crossover_at(second_selection, 400)
@@ -95,7 +135,7 @@ def test_insert_co_for_sister_chromatids(
     reset_random_state()
 
     first_selection, second_selection = uniformlyRandomSisterSelector(
-        mock_chromosome_w_sisters
+        mock_chromosome_w_sisters, -1
     )
 
     assert has_crossover_at(first_selection, 400)

@@ -20,8 +20,10 @@ from src.utils.chromatid import (
 from src.utils.chromosome import Chromosome
 from src.utils.chromosome_with_sister_chromatids import (
     ChromosomeSisterChromatids,
+    haplotypeSwitchingCOsOnlySelector,
     make_default_chrom_w_sisters,
     selectAllSistersForPool,
+    selectSingleSisterForPool,
     uniformlyRandomSisterSelector,
 )
 
@@ -88,6 +90,15 @@ make_chromset_all_sisters_in_pool = functools.partial(
         length=x,
         selectSistersForCO=uniformlyRandomSisterSelector,
         selectSistersForPool=selectAllSistersForPool,
+    ),
+)
+
+make_chromset_haplotype_switching_only = functools.partial(
+    ChromosomeSet[ChromosomeSisterChromatids],
+    chrom_maker=lambda x: ChromosomeSisterChromatids(
+        length=x,
+        selectSistersForCO=haplotypeSwitchingCOsOnlySelector,
+        selectSistersForPool=selectSingleSisterForPool,
     ),
 )
 
