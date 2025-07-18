@@ -1,9 +1,10 @@
-from typing import Callable
+from typing import Callable, Literal
 
 import numpy as np
 import numpy.typing as npt
 
 from src.utils.chromatid import (
+    Chromatid,
     get_crossover_locations,
     get_num_crossovers,
     has_crossover_at,
@@ -99,4 +100,31 @@ def transform_mean_cos_per_chrom_data[C: ChromosomeLike](
 ) -> tuple[str, np.float64]:
     return chrom_set.label, np.float64(
         np.mean([get_num_crossovers(x) for x in chrom_set])
+    )
+
+
+def transform_co_haplotype_switch_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C],
+) -> tuple[
+    str,
+    tuple[Literal['non-haplotype-switching'], int],
+    tuple[Literal['haplotype-switching'], int],
+]:
+    non_haplotype_switching_counter = 0
+    haplotype_switching_counter = 0
+
+    for chrom in pool_iter(chrom_set):
+        assert isinstance(chrom, Chromatid)
+        prev_haplotype = chrom.base_haplotype
+        for co in chrom.crossovers:
+            if co.haplotype == prev_haplotype:
+                non_haplotype_switching_counter += 1
+            else:
+                haplotype_switching_counter += 1
+            prev_haplotype = co.haplotype
+
+    return (
+        chrom_set.label,
+        ('non-haplotype-switching', non_haplotype_switching_counter),
+        ('haplotype-switching', haplotype_switching_counter),
     )
