@@ -64,6 +64,17 @@ def equalised_fixed_regional_interf(co_loc: int, bins: BinArray) -> BinArray:
     )
 
 
+def extreme_fixed_regional_interf(co_loc: int, bins: BinArray) -> BinArray:  # pyright:ignore[reportUnusedParameter]
+    bins_per_chrom = len(bins)
+    left_upper_bound, right_lower_bound = balanced_three_partition(bins_per_chrom)
+    bin_locs = np.arange(len(bins))
+    return bins * np.where(
+        (bin_locs <= left_upper_bound) | (bin_locs >= right_lower_bound),
+        1,
+        0,
+    )
+
+
 def _compute_scaling_from_local_interf(co_loc: int, old_bins: BinArray) -> float:
     new_total_p_co = np.sum(local_interf(co_loc, old_bins))
     current_total_p_co = np.sum(old_bins)
