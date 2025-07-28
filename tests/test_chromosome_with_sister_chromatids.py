@@ -1,3 +1,4 @@
+import random
 from typing import Callable
 from uuid import UUID
 
@@ -14,6 +15,8 @@ from src.utils.chromosome_with_sister_chromatids import (
     SequentialSisterSelector,
     haplotypeSwitchingCOsOnlySelector,
     selectAllSistersForPool,
+    selectMostRecombinantForPool,
+    selectOnlyRecombinantsForPool,
     selectSingleSisterForPool,
     uniformlyRandomSisterSelector,
 )
@@ -115,6 +118,36 @@ def test_random_sister_selector_for_pool(
     _random_selector_tester(
         0.25, lambda: selectSingleSisterForPool(mock_chromosome_w_sisters)
     )
+
+
+def test_most_recombinant_pool_selector():
+    sequentialSelector = SequentialSisterSelector(init_count=0)
+    test_chrom = ChromosomeSisterChromatids(
+        length=500,
+        selectSistersForCO=sequentialSelector,
+        selectSistersForPool=selectMostRecombinantForPool,
+    )
+    insert_crossover(test_chrom, 42)
+    insert_crossover(test_chrom, 390)
+    assert test_chrom.selectSistersForPool(test_chrom) == (test_chrom.b1,)
+
+
+def test_only_recombinant_pool_selector():
+    selected_chromatids: list[Chromatid] = []
+
+    for _ in range(1000):
+        test_chrom = ChromosomeSisterChromatids(
+            length=500,
+            selectSistersForCO=uniformlyRandomSisterSelector,
+            selectSistersForPool=selectOnlyRecombinantsForPool,
+        )
+        insert_crossover(test_chrom, random.randint(0, 500))
+        selection_result = test_chrom.selectSistersForPool(test_chrom)
+        if selection_result:
+            selected_chromatids.append(selection_result[0])
+
+    for selection in selected_chromatids:
+        assert get_num_crossovers(selection) > 0
 
 
 def test_insert_co_for_sister_chromatids(

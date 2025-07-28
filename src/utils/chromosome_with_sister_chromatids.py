@@ -19,6 +19,14 @@ from src.utils.chromatid import (
     remove_co_stack_to_exchange,
 )
 
+type CrossoverSisterSelector = Callable[
+    [ChromosomeSisterChromatids, int], tuple[Chromatid, Chromatid]
+]
+
+type PoolSisterSelector = Callable[
+    [ChromosomeSisterChromatids], tuple[Chromatid, ...] | tuple[()]
+]
+
 
 @dataclass(slots=True, kw_only=True)
 class ChromosomeSisterChromatids:
@@ -30,10 +38,8 @@ class ChromosomeSisterChromatids:
         init=False
     )
     length: int
-    selectSistersForCO: Callable[
-        [ChromosomeSisterChromatids, int], tuple[Chromatid, Chromatid]
-    ]
-    selectSistersForPool: Callable[[ChromosomeSisterChromatids], tuple[Chromatid, ...]]
+    selectSistersForCO: CrossoverSisterSelector
+    selectSistersForPool: PoolSisterSelector
 
     def __post_init__(self):
         self.a1 = Chromatid(base_haplotype=Haplotype.BLUE, length=self.length)
@@ -56,8 +62,8 @@ def uniformlyRandomSisterSelector(
 class SequentialSisterSelector:
     _counter: int
 
-    def __init__(self) -> None:
-        self._counter = -1
+    def __init__(self, init_count: int | None = None) -> None:
+        self._counter = init_count if init_count is not None else -1
 
     def __call__(
         self, chrom: ChromosomeSisterChromatids, _: int
@@ -108,6 +114,23 @@ def selectAllSistersForPool(
     chrom: ChromosomeSisterChromatids,
 ) -> tuple[Chromatid, Chromatid, Chromatid, Chromatid]:
     return chrom.all_chromatids
+
+
+def selectMostRecombinantForPool(
+    chrom: ChromosomeSisterChromatids,
+) -> tuple[Chromatid] | tuple[()]:
+    if get_num_crossovers(chrom) == 0:
+        return ()
+    return (max(chrom.all_chromatids, key=get_num_crossovers),)
+
+
+def selectOnlyRecombinantsForPool(
+    chrom: ChromosomeSisterChromatids,
+) -> tuple[Chromatid] | tuple[()]:
+    if get_num_crossovers(chrom) == 0:
+        return ()
+    selectable = list(filter(lambda x: get_num_crossovers(x) > 0, chrom.all_chromatids))
+    return (random.choice(selectable),)
 
 
 def make_default_chrom_w_sisters(length: int) -> ChromosomeSisterChromatids:

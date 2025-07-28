@@ -20,6 +20,8 @@ from src.utils.chromatid import (
 from src.utils.chromosome import Chromosome
 from src.utils.chromosome_with_sister_chromatids import (
     ChromosomeSisterChromatids,
+    CrossoverSisterSelector,
+    PoolSisterSelector,
     haplotypeSwitchingCOsOnlySelector,
     make_default_chrom_w_sisters,
     selectAllSistersForPool,
@@ -79,6 +81,27 @@ class ChromsetMaker[C: ChromosomeLike](Protocol):
 make_chromset_with_legacy_chromosome = functools.partial(
     ChromosomeSet[Chromosome], chrom_maker=Chromosome
 )
+
+
+def make_chromset_custom_sister_selectors(
+    *,
+    label: str,
+    num_chroms: int,
+    chrom_length: int,
+    co_selector: CrossoverSisterSelector,
+    pool_selector: PoolSisterSelector,
+) -> ChromosomeSet[ChromosomeSisterChromatids]:
+    return ChromosomeSet(
+        label=label,
+        num_chroms=num_chroms,
+        chrom_length=chrom_length,
+        chrom_maker=lambda length: ChromosomeSisterChromatids(
+            length=length,
+            selectSistersForCO=co_selector,
+            selectSistersForPool=pool_selector,
+        ),
+    )
+
 
 make_default_chromset = functools.partial(
     ChromosomeSet[ChromosomeSisterChromatids], chrom_maker=make_default_chrom_w_sisters
