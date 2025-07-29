@@ -95,6 +95,29 @@ def transform_cM_rf_curve_data[C: ChromosomeLike](
     return chrom_set.label, (dataset_cM, dataset_rf)
 
 
+def transform_cM_rf_curve_data_haplotype_switching_only[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C],
+) -> tuple[str, tuple[list[float], list[float]]]:
+    dataset_cM: list[float] = []
+    dataset_rf: list[float] = []
+
+    NUM_CHROMS_IN_POOL = pool_size(chrom_set)
+
+    total_cos_so_far = 0
+    for x in range(chrom_set.chrom_length):
+        visible_COs = 0
+        for chrom in pool_iter(chrom_set):
+            if has_crossover_at(chrom, x) and has_visible_crossover(chrom, x - 1, x):
+                total_cos_so_far += 1
+            if has_visible_crossover(chrom, 0, x):
+                visible_COs += 1
+
+        dataset_cM.append(total_cos_so_far / NUM_CHROMS_IN_POOL)
+        dataset_rf.append(visible_COs / NUM_CHROMS_IN_POOL)
+
+    return chrom_set.label, (dataset_cM, dataset_rf)
+
+
 def transform_mean_cos_per_chrom_data[C: ChromosomeLike](
     chrom_set: ChromosomeSet[C],
 ) -> tuple[str, np.float64]:
