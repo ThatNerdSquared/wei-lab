@@ -10,6 +10,16 @@
                 }
             }
         ],
+        "./src/oneoffs/generate_rfd_interevent_plot_for_presentation.py": [
+            {
+                "code": "reportUnknownMemberType",
+                "range": {
+                    "startColumn": 4,
+                    "endColumn": 13,
+                    "lineCount": 1
+                }
+            }
+        ],
         "./src/oneoffs/plot_haldane_fn_with_diff_p.py": [
             {
                 "code": "reportArgumentType",

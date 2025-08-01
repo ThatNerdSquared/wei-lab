@@ -58,7 +58,7 @@ def _fmt_plot_name[T](data_packet: DataPacket[T]):
     return f'{data_packet.fig_name} -- {num_chrom_in_ks}k chroms @ {num_bins_in_ks}k bins / chrom'  # noqa: E501
 
 
-def _fmt_plot_filename(plot_title: str):
+def _fmt_plot_filename(plot_title: str, fmt: str):
     curr_time = datetime.now().strftime('%Y-%m-%d__%H-%M-%S')
     plot_title_fileready = (
         plot_title.replace(' bins / chrom', '')
@@ -69,7 +69,7 @@ def _fmt_plot_filename(plot_title: str):
         .strip()
         .lower()
     )
-    return f'out--{curr_time}--{plot_title_fileready}.png'
+    return f'out--{curr_time}--{plot_title_fileready}.{fmt}'
 
 
 def standard_plotter[T](data_packet: DataPacket[T]) -> Figure:
@@ -86,9 +86,9 @@ def standard_plotter[T](data_packet: DataPacket[T]) -> Figure:
     return fig
 
 
-def save_plot(plot: Figure):
-    plot_filename = _fmt_plot_filename(plot.get_suptitle())
-    plot.savefig(plot_filename)
+def save_plot(plot: Figure, fmt: str = 'png'):
+    plot_filename = _fmt_plot_filename(plot.get_suptitle(), fmt)
+    plot.savefig(plot_filename, format=fmt)
     print(f'plot "{plot.get_suptitle()}" saved.')
 
 
