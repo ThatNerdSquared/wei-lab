@@ -1,11 +1,14 @@
 from operator import attrgetter
 
+import numpy as np
+
 from src.utils.chromatid import (
     Chromatid,
     Crossover,
     CrossoverStack,
     Haplotype,
     add_co_stack_from_exchange,
+    convert_chromatid_to_haplotype_tbl,
     get_crossover_locations,
     get_num_crossovers,
     has_crossover_at,
@@ -77,6 +80,23 @@ def test_add_co_stack(mock_chromatid: Chromatid, mock_crossovers: list[Crossover
     add_co_stack_from_exchange(mock_chromatid, stack_to_add)
     assert mock_chromatid.crossovers == expected_cos
     assert mock_chromatid.crossovers == sorted(expected_cos, key=attrgetter('loc'))
+
+
+def test_convert_chromatid_to_haplotype_tbl(
+    mock_chromatid: Chromatid, mock_chromatid_empty: Chromatid
+):
+    input_array = np.zeros(mock_chromatid_empty.length, dtype=np.int64)
+    assert np.sum(input_array) == 0
+    convert_chromatid_to_haplotype_tbl(mock_chromatid_empty, input_array)
+    assert np.sum(input_array) == mock_chromatid_empty.length
+
+    input_array = np.zeros(mock_chromatid.length, dtype=np.int64)
+    assert np.sum(input_array) == 0
+    input_array -= 1
+    convert_chromatid_to_haplotype_tbl(mock_chromatid, input_array)
+    assert -1 not in input_array
+    expected_array = np.array([1] * 10 + [0] * 29 + [1] * 3 + [1] * 358 + [0] * 100)
+    assert np.array_equal(input_array, expected_array)
 
 
 def test_insert_co_for_chromatid_empty(mock_chromatid_empty: Chromatid):

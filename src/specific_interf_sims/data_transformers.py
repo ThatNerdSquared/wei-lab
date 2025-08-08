@@ -1,10 +1,12 @@
-from typing import Callable, Literal
+from datetime import datetime
+from typing import Callable, Literal, NamedTuple
 
 import numpy as np
 import numpy.typing as npt
 
 from src.utils.chromatid import (
     Chromatid,
+    convert_chromatid_to_haplotype_tbl,
     get_crossover_locations,
     get_num_crossovers,
     has_crossover_at,
@@ -159,3 +161,56 @@ def transform_co_haplotype_switch_data[C: ChromosomeLike](
         ('non-haplotype-switching', non_haplotype_switching_counter),
         ('haplotype-switching', haplotype_switching_counter),
     )
+
+
+class Region(NamedTuple):
+    start: int
+    end: int
+
+
+DEFAULT_REF_REGION = Region(0, 9)
+
+
+def transform_single_refregion_coc_curve_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C], ref_region: Region = DEFAULT_REF_REGION
+) -> tuple[str, np.ndarray[tuple[Literal[1]], np.dtype[np.float64]]]:
+    start_time = datetime.now()
+    assert ref_region.start <= ref_region.end
+    NUM_CHROMS_IN_POOL = pool_size(chrom_set)
+    haplotype_tbl = np.zeros(
+        (NUM_CHROMS_IN_POOL, chrom_set.chrom_length), dtype=np.int64
+    )
+    for idx, chrom in enumerate(pool_iter(chrom_set)):
+        assert isinstance(chrom, Chromatid)
+        convert_chromatid_to_haplotype_tbl(chrom, haplotype_tbl[idx])
+
+    print('haplotype tbl built.')
+    print((datetime.now() - start_time).total_seconds(), 's')
+    proportion_refregion_visible_co = (
+        np.sum(haplotype_tbl[:, ref_region.start] ^ haplotype_tbl[:, ref_region.end])
+        / NUM_CHROMS_IN_POOL
+    )
+
+    haplotype_tbl[:, ref_region.end + 1 :] = haplotype_tbl[
+        :, ref_region.end + 1 :
+    ] ^ np.expand_dims(haplotype_tbl[:, ref_region.end], axis=1)
+    haplotype_tbl[:, : ref_region.start] = haplotype_tbl[
+        :, : ref_region.start
+    ] ^ np.expand_dims(haplotype_tbl[:, ref_region.start], axis=1)
+    numerator_unproportionalised = (
+        np.expand_dims(
+            haplotype_tbl[:, ref_region.start] ^ haplotype_tbl[:, ref_region.end],
+            axis=1,
+        )
+        & haplotype_tbl
+    )
+    numerator_proportionalised = (
+        np.sum(numerator_unproportionalised, axis=0) / NUM_CHROMS_IN_POOL
+    )
+    coc_data = numerator_proportionalised / (
+        proportion_refregion_visible_co
+        * (np.sum(haplotype_tbl, axis=0) / NUM_CHROMS_IN_POOL)
+        + 1e-10
+    )
+    coc_data[ref_region.start : ref_region.end + 1] = -1
+    return chrom_set.label, coc_data

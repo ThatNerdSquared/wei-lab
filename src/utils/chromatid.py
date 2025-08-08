@@ -1,8 +1,11 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import singledispatch
+from itertools import pairwise
 from typing import NamedTuple, NewType
 from uuid import UUID, uuid4
+
+import numpy as np
 
 
 class Haplotype(Enum):
@@ -66,6 +69,21 @@ def remove_co_stack_to_exchange(chrom: Chromatid, location: int) -> CrossoverSta
 def add_co_stack_from_exchange(chrom: Chromatid, co_stack: CrossoverStack) -> None:
     co_stack.reverse()
     chrom.crossovers += co_stack
+
+
+def convert_chromatid_to_haplotype_tbl(
+    chrom: Chromatid, input_array: np.ndarray[tuple[int], np.dtype[np.int64]]
+) -> None:
+    assert chrom.length == input_array.size
+
+    if not chrom.crossovers:
+        input_array[0 : chrom.length] = chrom.base_haplotype.value
+        return
+
+    input_array[0 : chrom.crossovers[0].loc] = chrom.base_haplotype.value
+    for curr_co, next_co in pairwise(chrom.crossovers):
+        input_array[curr_co.loc : next_co.loc] = curr_co.haplotype.value
+    input_array[chrom.crossovers[-1].loc :] = chrom.crossovers[-1].haplotype.value
 
 
 @singledispatch

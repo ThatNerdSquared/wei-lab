@@ -4,8 +4,11 @@ from typing import Callable
 import pytest
 
 from src.utils.chromatid import Chromatid, Crossover, CrossoverStack, Haplotype
+from src.utils.chromosome_set import ChromosomeSet
 from src.utils.chromosome_with_sister_chromatids import (
     ChromosomeSisterChromatids,
+    SequentialSisterSelector,
+    selectAllSistersForPool,
     selectSingleSisterForPool,
     uniformlyRandomSisterSelector,
 )
@@ -55,3 +58,17 @@ def reset_random_state() -> ResetRandomCallback:
     random.seed(77777)
     starting_state = random.getstate()
     return lambda: random.setstate(starting_state)
+
+
+@pytest.fixture
+def mock_chromset() -> ChromosomeSet[ChromosomeSisterChromatids]:
+    return ChromosomeSet(
+        label='test',
+        num_chroms=20,
+        chrom_length=50,
+        chrom_maker=lambda x: ChromosomeSisterChromatids(
+            length=x,
+            selectSistersForCO=SequentialSisterSelector(0),
+            selectSistersForPool=selectAllSistersForPool,
+        ),
+    )
