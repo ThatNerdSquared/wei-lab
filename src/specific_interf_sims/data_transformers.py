@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Callable, Literal, NamedTuple
 
 import numpy as np
@@ -13,6 +12,7 @@ from src.utils.chromatid import (
     has_visible_crossover,
 )
 from src.utils.chromosome_set import ChromosomeLike, ChromosomeSet, pool_iter, pool_size
+from src.utils.cli_utils import elapsed_time_printer
 
 type DataTransformer[T, C: ChromosomeLike] = Callable[[ChromosomeSet[C]], tuple[str, T]]
 
@@ -173,19 +173,17 @@ DEFAULT_REF_REGION = Region(0, 9)
 
 def transform_single_refregion_coc_curve_data[C: ChromosomeLike](
     chrom_set: ChromosomeSet[C], ref_region: Region = DEFAULT_REF_REGION
-) -> tuple[str, np.ndarray[tuple[Literal[1]], np.dtype[np.float64]]]:
-    start_time = datetime.now()
+) -> tuple[str, np.ndarray[tuple[int], np.dtype[np.float64]]]:
     assert ref_region.start <= ref_region.end
     NUM_CHROMS_IN_POOL = pool_size(chrom_set)
     haplotype_tbl = np.zeros(
         (NUM_CHROMS_IN_POOL, chrom_set.chrom_length), dtype=np.int64
     )
-    for idx, chrom in enumerate(pool_iter(chrom_set)):
-        assert isinstance(chrom, Chromatid)
-        convert_chromatid_to_haplotype_tbl(chrom, haplotype_tbl[idx])
+    with elapsed_time_printer(op_name='haplotype tbl build'):
+        for idx, chrom in enumerate(pool_iter(chrom_set)):
+            assert isinstance(chrom, Chromatid)
+            convert_chromatid_to_haplotype_tbl(chrom, haplotype_tbl[idx])
 
-    print('haplotype tbl built.')
-    print((datetime.now() - start_time).total_seconds(), 's')
     proportion_refregion_visible_co = (
         np.sum(haplotype_tbl[:, ref_region.start] ^ haplotype_tbl[:, ref_region.end])
         / NUM_CHROMS_IN_POOL
@@ -214,3 +212,83 @@ def transform_single_refregion_coc_curve_data[C: ChromosomeLike](
     )
     coc_data[ref_region.start : ref_region.end + 1] = -1
     return chrom_set.label, coc_data
+
+
+def transform_sliding_compare_region_coc_curve_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C],
+    ref_region: Region = DEFAULT_REF_REGION,
+    sliding_region_size: int = 10,
+) -> tuple[str, np.ndarray[tuple[int], np.dtype[np.float64]]]:
+    assert ref_region.start <= ref_region.end
+    NUM_CHROMS_IN_POOL = pool_size(chrom_set)
+    haplotype_tbl = np.zeros(
+        (NUM_CHROMS_IN_POOL, chrom_set.chrom_length), dtype=np.int64
+    )
+    with elapsed_time_printer(op_name='haplotype tbl build'):
+        for idx, chrom in enumerate(pool_iter(chrom_set)):
+            assert isinstance(chrom, Chromatid)
+            convert_chromatid_to_haplotype_tbl(chrom, haplotype_tbl[idx])
+
+    proportion_refregion_visible_co = (
+        np.sum(haplotype_tbl[:, ref_region.start] ^ haplotype_tbl[:, ref_region.end])
+        / NUM_CHROMS_IN_POOL
+    )
+
+    if sliding_region_size <= ref_region.start + 1:
+        haplotype_tbl[:, : ref_region.start - sliding_region_size + 2] = (
+            haplotype_tbl[:, : ref_region.start - sliding_region_size + 2]
+            ^ haplotype_tbl[:, sliding_region_size - 1 : ref_region.start + 1]
+        )
+        haplotype_tbl[
+            :, ref_region.start - sliding_region_size + 2 : ref_region.start
+        ] = -2
+    else:
+        print('skipping area left of refregion start due to no space.')
+        haplotype_tbl[:, : ref_region.start] = -2
+
+    if sliding_region_size < chrom_set.chrom_length - ref_region.end:
+        haplotype_tbl[
+            :, ref_region.end + 1 : chrom_set.chrom_length - sliding_region_size + 1
+        ] = (
+            haplotype_tbl[
+                :, ref_region.end + 1 : chrom_set.chrom_length - sliding_region_size + 1
+            ]
+            ^ haplotype_tbl[:, ref_region.end + sliding_region_size :]
+        )
+        haplotype_tbl[:, chrom_set.chrom_length - sliding_region_size + 1 :] = -2
+    else:
+        print('skipping area right of refregion start due to no space.')
+        haplotype_tbl[:, ref_region.end + 1 :] = -2
+
+    numerator_unproportionalised = (
+        np.expand_dims(
+            haplotype_tbl[:, ref_region.start] ^ haplotype_tbl[:, ref_region.end],
+            axis=1,
+        )
+        & haplotype_tbl
+    )
+    numerator_proportionalised = (
+        np.sum(numerator_unproportionalised, axis=0) / NUM_CHROMS_IN_POOL
+    )
+    coc_data = numerator_proportionalised / (
+        proportion_refregion_visible_co
+        * (np.sum(haplotype_tbl, axis=0) / NUM_CHROMS_IN_POOL)
+        + 1e-10
+    )
+    coc_data[ref_region.start : ref_region.end + 1] = -2
+    return chrom_set.label, coc_data
+
+
+def transform_sliding_refregion_coc_curve_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C],
+) -> tuple[str, np.ndarray[tuple[int, int], np.dtype[np.float64]]]:
+    result = np.zeros((chrom_set.chrom_length - 9, chrom_set.chrom_length))
+    result -= 2
+    print(result)
+    for region_start in range(chrom_set.chrom_length - 9):
+        result[region_start] = transform_single_refregion_coc_curve_data(
+            chrom_set, ref_region=Region(region_start, region_start + 9)
+        )
+
+    assert -2 not in result
+    return chrom_set.label, result

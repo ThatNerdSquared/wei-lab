@@ -98,3 +98,20 @@ def collect_single_refregion_coc_curve_data[C: ChromosomeLike](
         ylabel='CoC',
         fig_name='single_refregion_coc_curve',
     )
+
+
+def collect_sliding_compareregion_coc_curve_data[C: ChromosomeLike](
+    transformer: DataTransformer[np.ndarray[tuple[int], np.dtype[np.float64]], C],
+    chrom_sets: list[ChromosomeSet[C]],
+) -> DataPacket[np.ndarray[tuple[int], np.dtype[np.float64]]]:
+    transformed_data = list(map(transformer, chrom_sets))
+    return DataPacket(
+        data=dict(transformed_data),
+        num_chroms=chrom_sets[0].num_chroms,
+        num_bins=chrom_sets[0].chrom_length,
+        curve_adder=line_curve_adder,
+        ylim=calculate_max_y([x[1] for x in transformed_data]),
+        xlabel='chromosome location',
+        ylabel='CoC',
+        fig_name='sliding_compareregion_coc_curve',
+    )
