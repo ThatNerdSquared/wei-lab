@@ -86,7 +86,7 @@ def standard_plotter[T](data_packet: DataPacket[T]) -> Figure:
     return fig
 
 
-def save_plot(plot: Figure, fmt: str = 'png'):
+def save_plot(plot: Figure, fmt: str = 'svg'):
     plot_filename = _fmt_plot_filename(plot.get_suptitle(), fmt)
     plot.savefig(plot_filename, format=fmt)
     print(f'plot "{plot.get_suptitle()}" saved.')
