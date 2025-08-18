@@ -20,6 +20,7 @@ from src.utils.chromosome_set import make_default_chromset
 from src.utils.cli_utils import mapThenPrint
 
 NUM_CHROMS = 100000
+# NUM_CHROMS = 1000000
 CHROM_LEN = 1000
 AVG_COS_PER_CHROMOSOME = 2
 STARTING_P_HIT = AVG_COS_PER_CHROMOSOME / CHROM_LEN
@@ -27,7 +28,8 @@ STARTING_P_HIT = AVG_COS_PER_CHROMOSOME / CHROM_LEN
 queue = SimulationQueue(
     induce_COs_via_random_forward_draw,
     np.zeros(CHROM_LEN) + STARTING_P_HIT,
-    rand_seed=54321,
+    # rand_seed=54321,
+    rand_seed=93719,
     chroms_per_sim=NUM_CHROMS,
     default_chromset_maker=make_default_chromset,
 )
