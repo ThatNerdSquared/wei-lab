@@ -27,5 +27,4 @@ vtest:
 	python3 -m pytest -vv
 
 clean:
-	rm -f out--*.png
-	rm -f **/out--*.png
+	rm -f out--*.png out--*.svg *.out *.err
