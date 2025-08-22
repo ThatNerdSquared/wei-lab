@@ -40,6 +40,10 @@ def queue_sim[C: ChromosomeLike](
     starting_bins: BinArray | None = None,
     provided_chroms: ChromosomeSet[C] | None = None,
 ) -> ChromosomeSet[C]:
+    if any(x.chrom_set.label == label for x in queue.sims):
+        raise ValueError(
+            f'Label {label} already in queue - please use a unique label name instead.'
+        )
     bins = starting_bins if starting_bins is not None else queue.default_starting_bins
     num_chroms = chrom_count or queue.chroms_per_sim
     assert bins is not None
