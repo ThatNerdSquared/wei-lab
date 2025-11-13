@@ -172,7 +172,10 @@ DEFAULT_REF_REGION = Region(0, 9)
 
 
 def transform_single_refregion_coc_curve_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C], ref_region: Region = DEFAULT_REF_REGION
+    chrom_set: ChromosomeSet[C],
+    ref_region: Region = DEFAULT_REF_REGION,
+    min_testregion_size: int = 1,
+    calculate_inside_refregion: bool = False,
 ) -> tuple[str, np.ndarray[tuple[int], np.dtype[np.float64]]]:
     assert ref_region.start <= ref_region.end
     NUM_CHROMS_IN_POOL = pool_size(chrom_set)
@@ -210,7 +213,39 @@ def transform_single_refregion_coc_curve_data[C: ChromosomeLike](
         * (np.sum(haplotype_tbl, axis=0) / NUM_CHROMS_IN_POOL)
         + 1e-10
     )
-    coc_data[ref_region.start : ref_region.end + 1] = -1
+
+    if calculate_inside_refregion:
+        has_visible_co_with_start = haplotype_tbl[
+            :, ref_region.start : ref_region.end + 1
+        ] ^ np.expand_dims(haplotype_tbl[:, ref_region.start], axis=1)
+        has_visible_co_with_end = haplotype_tbl[
+            :, ref_region.start : ref_region.end + 1
+        ] ^ np.expand_dims(haplotype_tbl[:, ref_region.end], axis=1)
+        numerator_for_inside_refregion = (
+            np.sum(has_visible_co_with_start & has_visible_co_with_end, axis=0)
+            / NUM_CHROMS_IN_POOL
+        )
+        denominator_for_inside_refregion = (
+            np.sum(has_visible_co_with_start, axis=0) / NUM_CHROMS_IN_POOL
+        ) * (np.sum(has_visible_co_with_end, axis=0) / NUM_CHROMS_IN_POOL)
+        coc_data[ref_region.start : ref_region.end + 1] = (
+            numerator_for_inside_refregion / (denominator_for_inside_refregion + 1e-10)
+        )
+        coc_data[
+            max(0, ref_region.start - (min_testregion_size - 1)) : ref_region.start
+            + min_testregion_size
+        ] = -1
+        coc_data[
+            ref_region.end - (min_testregion_size - 1) : min(
+                chrom_set.chrom_length, ref_region.end + min_testregion_size
+            )
+        ] = -1
+    else:
+        coc_data[
+            max(0, ref_region.start - (min_testregion_size - 1)) : ref_region.end
+            + 1
+            + (min_testregion_size - 1)
+        ] = -1
     return chrom_set.label, coc_data
 
 

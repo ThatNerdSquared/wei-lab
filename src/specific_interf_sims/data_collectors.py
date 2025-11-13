@@ -86,6 +86,7 @@ def collect_cM_rf_curve_data[C: ChromosomeLike](
 def collect_single_refregion_coc_curve_data[C: ChromosomeLike](
     transformer: DataTransformer[np.ndarray[tuple[int], np.dtype[np.float64]], C],
     chrom_sets: list[ChromosomeSet[C]],
+    refregion_size: int = 10,
 ) -> DataPacket[np.ndarray[tuple[int], np.dtype[np.float64]]]:
     transformed_data = list(map(transformer, chrom_sets))
     return DataPacket(
@@ -96,7 +97,7 @@ def collect_single_refregion_coc_curve_data[C: ChromosomeLike](
         ylim=calculate_max_y([x[1] for x in transformed_data]),
         xlabel='chromosome location',
         ylabel='CoC',
-        fig_name='single_refregion_coc_curve',
+        fig_name=f'single_refregion_coc_curve_{refregion_size}bin',
     )
 
 

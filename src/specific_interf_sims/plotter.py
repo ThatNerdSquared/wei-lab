@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Callable
+from typing import Any, Callable, NamedTuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -58,7 +58,7 @@ def _fmt_plot_name[T](data_packet: DataPacket[T]):
     return f'{data_packet.fig_name} -- {num_chrom_in_ks}k chroms @ {num_bins_in_ks}k bins / chrom'  # noqa: E501
 
 
-def _fmt_plot_filename(plot_title: str, fmt: str):
+def _fmt_plot_filename(plot_title: str, fmt: str, additional_annotation: str = ''):
     curr_time = datetime.now().strftime('%Y-%m-%d__%H-%M-%S')
     plot_title_fileready = (
         plot_title.replace(' bins / chrom', '')
@@ -69,7 +69,55 @@ def _fmt_plot_filename(plot_title: str, fmt: str):
         .strip()
         .lower()
     )
-    return f'out--{curr_time}--{plot_title_fileready}.{fmt}'
+    return f'out--{curr_time}--{plot_title_fileready}{additional_annotation}.{fmt}'
+
+
+class PlotGridDimensions(NamedTuple):
+    width: int
+    height: int
+
+
+class SingleFigPlotter:
+    fig: Figure
+    fig_grid_size: PlotGridDimensions
+    _subplot_idx: int = 1
+    _individual_legends: bool
+
+    def __init__(
+        self,
+        fig_grid_size: PlotGridDimensions,
+        figtitle: str,
+        subplot_size: tuple[float, float],
+        individual_legends: bool = False,
+    ):
+        self.fig = plt.figure(
+            figsize=(
+                float(fig_grid_size.width * subplot_size[0]),
+                float(fig_grid_size.height * subplot_size[1]),
+            ),
+            layout='constrained',
+        )
+        _ = self.fig.suptitle(figtitle)
+        self.fig_grid_size = fig_grid_size
+        self._individual_legends = individual_legends
+
+    def add_plot[T](self, data_packet: DataPacket[T], title: str):
+        ax = self.fig.add_subplot(
+            self.fig_grid_size.width, self.fig_grid_size.height, self._subplot_idx
+        )
+        data_packet.curve_adder(data_packet, ax)
+
+        _ = ax.set_xlabel(data_packet.xlabel or '')
+        _ = ax.set_ylabel(data_packet.ylabel or '')
+        if self._individual_legends:
+            _ = ax.legend()
+        else:
+            handles, labels = ax.get_legend_handles_labels()
+            _ = self.fig.legend(handles, labels)
+        _ = ax.set_ylim(bottom=0, top=data_packet.ylim)
+        _ = ax.set_title(title)
+
+        self._subplot_idx += 1
 
 
 def standard_plotter[T](data_packet: DataPacket[T]) -> Figure:
@@ -86,8 +134,8 @@ def standard_plotter[T](data_packet: DataPacket[T]) -> Figure:
     return fig
 
 
-def save_plot(plot: Figure, fmt: str = 'svg'):
-    plot_filename = _fmt_plot_filename(plot.get_suptitle(), fmt)
+def save_plot(plot: Figure, fmt: str = 'svg', additional_annotation: str = ''):
+    plot_filename = _fmt_plot_filename(plot.get_suptitle(), fmt, additional_annotation)
     plot.savefig(plot_filename, format=fmt)
     print(f'plot "{plot.get_suptitle()}" saved.')
 
