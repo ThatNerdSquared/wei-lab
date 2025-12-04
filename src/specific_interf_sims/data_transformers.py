@@ -315,15 +315,15 @@ def transform_sliding_compare_region_coc_curve_data[C: ChromosomeLike](
 
 
 def transform_sliding_refregion_coc_curve_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C],
+    chrom_set: ChromosomeSet[C], region_size: int = 10, step_size: int = 1
 ) -> tuple[str, np.ndarray[tuple[int, int], np.dtype[np.float64]]]:
-    result = np.zeros((chrom_set.chrom_length - 9, chrom_set.chrom_length))
+    result = np.zeros((chrom_set.chrom_length - region_size, chrom_set.chrom_length))
     result -= 2
     print(result)
-    for region_start in range(chrom_set.chrom_length - 9):
+    for region_start in range(0, chrom_set.chrom_length - region_size, step_size):
         result[region_start] = transform_single_refregion_coc_curve_data(
-            chrom_set, ref_region=Region(region_start, region_start + 9)
-        )
+            chrom_set, ref_region=Region(region_start, region_start + region_size)
+        )[1]
 
     assert -2 not in result
     return chrom_set.label, result

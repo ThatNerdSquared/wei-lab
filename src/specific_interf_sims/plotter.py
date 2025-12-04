@@ -97,13 +97,13 @@ class SingleFigPlotter:
             ),
             layout='constrained',
         )
-        _ = self.fig.suptitle(figtitle)
+        _ = self.fig.suptitle(figtitle, wrap=True)
         self.fig_grid_size = fig_grid_size
         self._individual_legends = individual_legends
 
     def add_plot[T](self, data_packet: DataPacket[T], title: str):
         ax = self.fig.add_subplot(
-            self.fig_grid_size.width, self.fig_grid_size.height, self._subplot_idx
+            self.fig_grid_size.height, self.fig_grid_size.width, self._subplot_idx
         )
         data_packet.curve_adder(data_packet, ax)
 
