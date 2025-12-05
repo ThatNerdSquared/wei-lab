@@ -644,6 +644,26 @@
                 }
             }
         ],
+        "./src/specific_interf_sims/data_collectors.py": [
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 31,
+                    "endColumn": 38,
+                    "lineCount": 1
+                }
+            }
+        ],
+        "./src/specific_interf_sims/data_packet.py": [
+            {
+                "code": "reportMissingTypeStubs",
+                "range": {
+                    "startColumn": 5,
+                    "endColumn": 32,
+                    "lineCount": 1
+                }
+            }
+        ],
         "./src/specific_interf_sims/data_transformers.py": [
             {
                 "code": "reportAny",
@@ -740,6 +760,14 @@
         ],
         "./src/specific_interf_sims/plotter.py": [
             {
+                "code": "reportMissingTypeStubs",
+                "range": {
+                    "startColumn": 5,
+                    "endColumn": 32,
+                    "lineCount": 1
+                }
+            },
+            {
                 "code": "reportExplicitAny",
                 "range": {
                     "startColumn": 57,
@@ -766,16 +794,6 @@
             {
                 "code": "reportUnknownMemberType",
                 "range": {
-                    "startColumn": 16,
-                    "endColumn": 25,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportUnknownMemberType",
-                "range": {
-                    "startColumn": 16,
-                    "endColumn": 31,
                     "lineCount": 1
                 }
             },
@@ -784,6 +802,22 @@
                 "range": {
                     "startColumn": 8,
                     "endColumn": 17,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportUnknownMemberType",
+                "range": {
+                    "startColumn": 4,
+                    "endColumn": 15,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportUnknownMemberType",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 23,
                     "lineCount": 1
                 }
             },

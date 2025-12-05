@@ -4,11 +4,13 @@ from typing import Any, Callable, NamedTuple
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
+from matplotlib import colormaps
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
+from mpl_toolkits.mplot3d.axes3d import Axes3D
 from scipy.optimize import curve_fit
 
-from src.specific_interf_sims.data_packet import DataPacket
+from src.specific_interf_sims.data_packet import DataPacket, ThreeDimDataPacket
 from src.specific_interf_sims.interf_schemes import BinArray
 from src.utils.chromosome_set import (
     ChromosomeLike,
@@ -52,7 +54,7 @@ def plotter[T, C: ChromosomeLike](
             post_plot(plot)
 
 
-def _fmt_plot_name[T](data_packet: DataPacket[T]):
+def _fmt_plot_name[T](data_packet: DataPacket[T] | ThreeDimDataPacket[T]):
     num_chrom_in_ks = str(data_packet.num_chroms / 1000)
     num_bins_in_ks = str(data_packet.num_bins / 1000)
     return f'{data_packet.fig_name} -- {num_chrom_in_ks}k chroms @ {num_bins_in_ks}k bins / chrom'  # noqa: E501
@@ -134,6 +136,20 @@ def standard_plotter[T](data_packet: DataPacket[T]) -> Figure:
     return fig
 
 
+def standard_plotter_threedim[T](data_packet: ThreeDimDataPacket[T]) -> Figure:
+    fig = plt.figure(figsize=(9.0, 7.0))
+    ax = fig.add_subplot(projection='3d')
+    data_packet.surface_adder(data_packet, ax)
+
+    _ = ax.set_xlabel(data_packet.xlabel or '')
+    _ = ax.set_ylabel(data_packet.ylabel or '')
+    _ = ax.legend()
+    ax.set_zlim(bottom=0, top=data_packet.zlim)
+
+    _ = fig.suptitle(_fmt_plot_name(data_packet))
+    return fig
+
+
 def save_plot(plot: Figure, fmt: str = 'svg', additional_annotation: str = ''):
     plot_filename = _fmt_plot_filename(plot.get_suptitle(), fmt, additional_annotation)
     plot.savefig(plot_filename, format=fmt)
@@ -163,6 +179,20 @@ def histogram_unpacked_data_curve_adder(
 ):
     for k, v in data.data.items():
         _ = (ax.stairs(v[0], v[1], label=k),)
+
+
+def three_dim_surface_adder(
+    data: ThreeDimDataPacket[
+        tuple[
+            np.ndarray[tuple[int, int], np.dtype[np.int64]],
+            np.ndarray[tuple[int, int], np.dtype[np.int64]],
+            np.ndarray[tuple[int, int], np.dtype[np.float64]],
+        ]
+    ],
+    ax: Axes3D,
+):
+    label, raw_data = data.data
+    _ = ax.plot_surface(*raw_data, label=label, cmap=colormaps['magma'])
 
 
 def plot_recomb_curve[C: ChromosomeLike](*args: ChromosomeSet[C]):
