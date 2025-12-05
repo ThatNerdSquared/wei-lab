@@ -10,6 +10,16 @@
                 }
             }
         ],
+        "./src/oneoffs/generate_haplotype_tbl_for_grant.py": [
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 46,
+                    "endColumn": 64,
+                    "lineCount": 1
+                }
+            }
+        ],
         "./src/oneoffs/generate_rfd_interevent_plot_for_presentation.py": [
             {
                 "code": "reportUnknownMemberType",
@@ -794,6 +804,24 @@
             {
                 "code": "reportUnknownMemberType",
                 "range": {
+                    "startColumn": 16,
+                    "endColumn": 25,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportUnknownMemberType",
+                "range": {
+                    "startColumn": 16,
+                    "endColumn": 31,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportUnknownMemberType",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 17,
                     "lineCount": 1
                 }
             },
