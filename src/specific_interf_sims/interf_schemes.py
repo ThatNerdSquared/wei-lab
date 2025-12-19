@@ -40,6 +40,15 @@ def faster_rising_local_interf(co_loc: int, bins: BinArray) -> BinArray:
     )
 
 
+def very_fast_rising_local_interf(co_loc: int, bins: BinArray) -> BinArray:
+    bins_per_chrom = len(bins)
+    bin_locs = np.arange(bins_per_chrom)
+    return bins * (
+        1
+        - np.exp(-3.5 * np.abs((bin_locs / bins_per_chrom) - (co_loc / bins_per_chrom)))
+    )
+
+
 def global_interf(co_loc: int, bins: BinArray, strength: float = 0.7) -> BinArray:  # pyright: ignore[reportUnusedParameter]
     return bins * strength
 
