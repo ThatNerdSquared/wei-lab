@@ -1,6 +1,10 @@
 [tool.basedpyright]
 allowedUntypedLibraries = [ "matplotlib" ]
 reportUnnecessaryTypeIgnoreComment = true
+exclude = ["**/__pycache__", "**/.*", "**/*.ipynb"]
+
+[tool.ruff]
+extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
 preview = true
