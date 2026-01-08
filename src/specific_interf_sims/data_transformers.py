@@ -136,6 +136,14 @@ def transform_mean_cos_per_chrom_in_pool_data[C: ChromosomeLike](
     )
 
 
+def transform_variance_cos_per_chrom_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C],
+) -> tuple[str, np.float64]:
+    return chrom_set.label, np.float64(
+        np.var([get_num_crossovers(x) for x in chrom_set])
+    )
+
+
 def transform_co_haplotype_switch_data[C: ChromosomeLike](
     chrom_set: ChromosomeSet[C],
 ) -> tuple[

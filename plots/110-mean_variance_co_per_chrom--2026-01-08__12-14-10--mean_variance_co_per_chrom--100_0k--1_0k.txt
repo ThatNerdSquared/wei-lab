@@ -1,0 +1,7 @@
+INTERF SCHEME	MEAN(COs per chrom)	VAR(COS per chrom)
+
+no interf	7.49132	7.3842846576
+local	1.99803	0.4021461190999999
+equalised global	2.01734	0.42823932440000007
+equalised fixed regional	2.02974	0.44355553239999995
+no interf (avg=2)	1.99914	1.9775392604000004

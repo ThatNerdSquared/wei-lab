@@ -9,3 +9,4 @@ mplconfigdir/
 # outputs
 **/out--*.png
 **/out--*.svg
+**/out--*.txt
