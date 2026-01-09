@@ -706,6 +706,22 @@
                     "endColumn": 33,
                     "lineCount": 1
                 }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 64,
+                    "endColumn": 73,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 30,
+                    "endColumn": 33,
+                    "lineCount": 1
+                }
             }
         ],
         "./src/specific_interf_sims/plotter.py": [
