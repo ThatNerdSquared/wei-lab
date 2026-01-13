@@ -173,6 +173,15 @@ def histogram_curve_adder(data: DataPacket[npt.ArrayLike], ax: Axes):
         _ = ax.stairs(v, label=k)
 
 
+def histogram_curve_adder_minor_tick_size_1(data: DataPacket[npt.ArrayLike], ax: Axes):
+    _ = ax.set_xticks(np.arange(0, 20, 1), minor=True)
+    for k, v in data.data.items():
+        _ = ax.stairs(
+            v,
+            label=k,
+        )
+
+
 def histogram_unpacked_data_curve_adder(
     data: DataPacket[tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]],
     ax: Axes,

@@ -4,7 +4,7 @@ import numpy.typing as npt
 from src.specific_interf_sims.data_packet import DataPacket, ThreeDimDataPacket
 from src.specific_interf_sims.data_transformers import DataTransformer
 from src.specific_interf_sims.plotter import (
-    histogram_curve_adder,
+    histogram_curve_adder_minor_tick_size_1,
     histogram_unpacked_data_curve_adder,
     line_curve_adder,
     line_unpacked_data_curve_adder,
@@ -40,7 +40,7 @@ def collect_co_per_chrom_dist_data[C: ChromosomeLike](
         data=dict(transformed_data),
         num_chroms=chrom_sets[0].num_chroms,
         num_bins=chrom_sets[0].chrom_length,
-        curve_adder=histogram_curve_adder,
+        curve_adder=histogram_curve_adder_minor_tick_size_1,
         ylim=calculate_max_y([x[1] for x in transformed_data]),
         xlabel='# of COs',
         ylabel='% of chroms',
