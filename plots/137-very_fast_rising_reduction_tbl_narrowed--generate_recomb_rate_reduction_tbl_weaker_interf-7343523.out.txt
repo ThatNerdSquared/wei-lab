@@ -1,0 +1,57 @@
+simulating crossovers...
+op complete [1/22]:
+131.109553s elapsed for no interf (3.0) on 100000 chroms @ 1000 bins/chrom.
+op complete [2/22]:
+143.569566s elapsed for very-fast-rising local (3.0) on 100000 chroms @ 1000 bins/chrom.
+op complete [3/22]:
+130.905054s elapsed for no interf (3.1) on 100000 chroms @ 1000 bins/chrom.
+op complete [4/22]:
+144.086363s elapsed for very-fast-rising local (3.1) on 100000 chroms @ 1000 bins/chrom.
+op complete [5/22]:
+130.989627s elapsed for no interf (3.2) on 100000 chroms @ 1000 bins/chrom.
+op complete [6/22]:
+143.953879s elapsed for very-fast-rising local (3.2) on 100000 chroms @ 1000 bins/chrom.
+op complete [7/22]:
+137.784074s elapsed for no interf (3.3) on 100000 chroms @ 1000 bins/chrom.
+op complete [8/22]:
+145.366529s elapsed for very-fast-rising local (3.3) on 100000 chroms @ 1000 bins/chrom.
+op complete [9/22]:
+131.020168s elapsed for no interf (3.4) on 100000 chroms @ 1000 bins/chrom.
+op complete [10/22]:
+147.837697s elapsed for very-fast-rising local (3.4) on 100000 chroms @ 1000 bins/chrom.
+op complete [11/22]:
+121.656569s elapsed for no interf (3.5) on 100000 chroms @ 1000 bins/chrom.
+op complete [12/22]:
+148.211184s elapsed for very-fast-rising local (3.5) on 100000 chroms @ 1000 bins/chrom.
+op complete [13/22]:
+122.738373s elapsed for no interf (3.6) on 100000 chroms @ 1000 bins/chrom.
+op complete [14/22]:
+154.349695s elapsed for very-fast-rising local (3.6) on 100000 chroms @ 1000 bins/chrom.
+op complete [15/22]:
+122.447614s elapsed for no interf (3.7) on 100000 chroms @ 1000 bins/chrom.
+op complete [16/22]:
+145.389598s elapsed for very-fast-rising local (3.7) on 100000 chroms @ 1000 bins/chrom.
+op complete [17/22]:
+129.57499s elapsed for no interf (3.8) on 100000 chroms @ 1000 bins/chrom.
+op complete [18/22]:
+147.343702s elapsed for very-fast-rising local (3.8) on 100000 chroms @ 1000 bins/chrom.
+op complete [19/22]:
+112.349767s elapsed for no interf (3.9) on 100000 chroms @ 1000 bins/chrom.
+op complete [20/22]:
+146.835182s elapsed for very-fast-rising local (3.9) on 100000 chroms @ 1000 bins/chrom.
+op complete [21/22]:
+113.325957s elapsed for no interf (4.0) on 100000 chroms @ 1000 bins/chrom.
+op complete [22/22]:
+146.891637s elapsed for very-fast-rising local (4.0) on 100000 chroms @ 1000 bins/chrom.
+all queued sims completed.
+('no interf (3.0)', np.float64(2.99285)) ('very-fast-rising local (3.0)', np.float64(1.87286))
+('no interf (3.1)', np.float64(3.09176)) ('very-fast-rising local (3.1)', np.float64(1.91332))
+('no interf (3.2)', np.float64(3.19136)) ('very-fast-rising local (3.2)', np.float64(1.95214))
+('no interf (3.3)', np.float64(3.29234)) ('very-fast-rising local (3.3)', np.float64(1.99111))
+('no interf (3.4)', np.float64(3.39243)) ('very-fast-rising local (3.4)', np.float64(2.02808))
+('no interf (3.5)', np.float64(3.49281)) ('very-fast-rising local (3.5)', np.float64(2.06439))
+('no interf (3.6)', np.float64(3.59264)) ('very-fast-rising local (3.6)', np.float64(2.0992))
+('no interf (3.7)', np.float64(3.69174)) ('very-fast-rising local (3.7)', np.float64(2.13392))
+('no interf (3.8)', np.float64(3.79242)) ('very-fast-rising local (3.8)', np.float64(2.16775))
+('no interf (3.9)', np.float64(3.89371)) ('very-fast-rising local (3.9)', np.float64(2.20046))
+('no interf (4.0)', np.float64(3.99146)) ('very-fast-rising local (4.0)', np.float64(2.23383))

@@ -1,0 +1,47 @@
+simulating crossovers...
+op complete [1/18]:
+143.286227s elapsed for no interf (2) on 100000 chroms @ 1000 bins/chrom.
+op complete [2/18]:
+150.7645s elapsed for very-fast-rising local (2) on 100000 chroms @ 1000 bins/chrom.
+op complete [3/18]:
+143.279451s elapsed for no interf (3) on 100000 chroms @ 1000 bins/chrom.
+op complete [4/18]:
+156.915403s elapsed for very-fast-rising local (3) on 100000 chroms @ 1000 bins/chrom.
+op complete [5/18]:
+144.897465s elapsed for no interf (4) on 100000 chroms @ 1000 bins/chrom.
+op complete [6/18]:
+160.94409s elapsed for very-fast-rising local (4) on 100000 chroms @ 1000 bins/chrom.
+op complete [7/18]:
+143.660315s elapsed for no interf (5) on 100000 chroms @ 1000 bins/chrom.
+op complete [8/18]:
+163.80508s elapsed for very-fast-rising local (5) on 100000 chroms @ 1000 bins/chrom.
+op complete [9/18]:
+153.668558s elapsed for no interf (6) on 100000 chroms @ 1000 bins/chrom.
+op complete [10/18]:
+166.635047s elapsed for very-fast-rising local (6) on 100000 chroms @ 1000 bins/chrom.
+op complete [11/18]:
+146.278745s elapsed for no interf (7) on 100000 chroms @ 1000 bins/chrom.
+op complete [12/18]:
+169.537197s elapsed for very-fast-rising local (7) on 100000 chroms @ 1000 bins/chrom.
+op complete [13/18]:
+147.383349s elapsed for no interf (8) on 100000 chroms @ 1000 bins/chrom.
+op complete [14/18]:
+171.134419s elapsed for very-fast-rising local (8) on 100000 chroms @ 1000 bins/chrom.
+op complete [15/18]:
+142.408198s elapsed for no interf (9) on 100000 chroms @ 1000 bins/chrom.
+op complete [16/18]:
+180.784986s elapsed for very-fast-rising local (9) on 100000 chroms @ 1000 bins/chrom.
+op complete [17/18]:
+144.709857s elapsed for no interf (10) on 100000 chroms @ 1000 bins/chrom.
+op complete [18/18]:
+173.826475s elapsed for very-fast-rising local (10) on 100000 chroms @ 1000 bins/chrom.
+all queued sims completed.
+('no interf (2)', np.float64(1.99306)) ('very-fast-rising local (2)', np.float64(1.4201))
+('no interf (3)', np.float64(2.99285)) ('very-fast-rising local (3)', np.float64(1.87286))
+('no interf (4)', np.float64(3.99146)) ('very-fast-rising local (4)', np.float64(2.23383))
+('no interf (5)', np.float64(4.99328)) ('very-fast-rising local (5)', np.float64(2.53114))
+('no interf (6)', np.float64(5.99767)) ('very-fast-rising local (6)', np.float64(2.78387))
+('no interf (7)', np.float64(6.99813)) ('very-fast-rising local (7)', np.float64(3.00385))
+('no interf (8)', np.float64(7.99917)) ('very-fast-rising local (8)', np.float64(3.19588))
+('no interf (9)', np.float64(8.99514)) ('very-fast-rising local (9)', np.float64(3.36743))
+('no interf (10)', np.float64(9.98639)) ('very-fast-rising local (10)', np.float64(3.52245))
