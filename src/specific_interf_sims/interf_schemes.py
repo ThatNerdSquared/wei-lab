@@ -66,6 +66,12 @@ def equalised_global_interf(co_loc: int, bins: BinArray) -> BinArray:
     return global_interf(co_loc, bins, _compute_scaling_from_local_interf(co_loc, bins))
 
 
+def equalised_very_fast_global_interf(co_loc: int, bins: BinArray) -> BinArray:
+    return global_interf(
+        co_loc, bins, _compute_scaling_from_very_fast_local_interf(co_loc, bins)
+    )
+
+
 def fixed_regional_interf(
     co_loc: int,  # pyright: ignore[reportUnusedParameter]
     bins: BinArray,
@@ -91,6 +97,16 @@ def equalised_fixed_regional_interf(co_loc: int, bins: BinArray) -> BinArray:
     )
 
 
+def equalised_very_fast_fixed_regional_interf(co_loc: int, bins: BinArray) -> BinArray:
+    left_upper_bound, right_lower_bound = balanced_three_partition(len(bins))
+    p_low_region = np.sum(bins[left_upper_bound + 1 : right_lower_bound])
+    p_total_old = np.sum(bins)
+    p_total_new = np.sum(very_fast_rising_local_interf(co_loc, bins))
+    return fixed_regional_interf(
+        co_loc, bins, p_total_new / (p_total_old - 0.5 * p_low_region)
+    )
+
+
 def extreme_fixed_regional_interf(co_loc: int, bins: BinArray) -> BinArray:  # pyright:ignore[reportUnusedParameter]
     bins_per_chrom = len(bins)
     left_upper_bound, right_lower_bound = balanced_three_partition(bins_per_chrom)
@@ -104,6 +120,14 @@ def extreme_fixed_regional_interf(co_loc: int, bins: BinArray) -> BinArray:  # p
 
 def _compute_scaling_from_local_interf(co_loc: int, old_bins: BinArray) -> float:
     new_total_p_co = np.sum(local_interf(co_loc, old_bins))
+    current_total_p_co = np.sum(old_bins)
+    return new_total_p_co / current_total_p_co
+
+
+def _compute_scaling_from_very_fast_local_interf(
+    co_loc: int, old_bins: BinArray
+) -> float:
+    new_total_p_co = np.sum(very_fast_rising_local_interf(co_loc, old_bins))
     current_total_p_co = np.sum(old_bins)
     return new_total_p_co / current_total_p_co
 
