@@ -41,3 +41,29 @@ class LastBinWinsAssurance(AssuranceScheme):
     @override
     def reset(self):
         self.num_failed_COs = 0
+
+
+class LinearPotentialAssurance(AssuranceScheme):
+    num_bins: int
+    num_failed_COs: int
+
+    def __init__(self, num_bins: int):
+        self.num_bins = num_bins
+        self.num_failed_COs = 0
+
+    @override
+    def handle_co_failed(self):
+        self.num_failed_COs += 1
+
+    @override
+    def handle_co_succeeded(self):
+        self.reset()
+
+    @override
+    def modify_co_probability(self, p: np.float64) -> np.float64:
+        # return p + (self.num_failed_COs / (self.num_bins * 10))
+        return p + (self.num_failed_COs / self.num_bins)
+
+    @override
+    def reset(self):
+        self.num_failed_COs = 0
