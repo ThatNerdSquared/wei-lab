@@ -7,6 +7,8 @@ import random
 from dataclasses import dataclass, field
 from typing import Callable
 
+import numpy as np
+
 from src.utils.chromatid import (
     Chromatid,
     Haplotype,
@@ -131,6 +133,19 @@ def selectOnlyRecombinantsForPool(
         return ()
     selectable = list(filter(lambda x: get_num_crossovers(x) > 0, chrom.all_chromatids))
     return (random.choice(selectable),)
+
+
+def probabilistic_selector(
+    chrom: ChromosomeSisterChromatids,
+    rand: np.random.Generator,
+    selector1: PoolSisterSelector,
+    selector2: PoolSisterSelector,
+    p1: float,
+) -> tuple[Chromatid, ...] | tuple[()]:
+    if rand.binomial(1, p1):
+        return selector1(chrom)
+    else:
+        return selector2(chrom)
 
 
 def make_default_chrom_w_sisters(length: int) -> ChromosomeSisterChromatids:
