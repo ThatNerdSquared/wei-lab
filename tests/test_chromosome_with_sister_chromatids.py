@@ -10,8 +10,8 @@ from src.utils.chromatid import (
     has_visible_crossover,
     insert_crossover,
 )
-from src.utils.chromosome_with_sister_chromatids import (
-    ChromosomeSisterChromatids,
+from src.utils.chromosome_tetrad import (
+    ChromosomeTetrad,
     SequentialSisterSelector,
     haplotypeSwitchingCOsOnlySelector,
     selectAllSistersForPool,
@@ -45,7 +45,7 @@ def _random_selector_tester(
 
 def test_uniform_random_sister_selector(
     reset_random_state: ResetRandomCallback,  # pyright: ignore[reportUnusedParameter]
-    mock_chromosome_w_sisters: ChromosomeSisterChromatids,
+    mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
     _random_selector_tester(
         0.5, lambda: uniformlyRandomSisterSelector(mock_chromosome_w_sisters, -1)
@@ -53,7 +53,7 @@ def test_uniform_random_sister_selector(
 
 
 def test_sequential_sister_selector(
-    mock_chromosome_w_sisters: ChromosomeSisterChromatids,
+    mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
     sequentialSisterSelector = SequentialSisterSelector()
     round1_first, round1_second = sequentialSisterSelector(
@@ -82,7 +82,7 @@ def test_sequential_sister_selector(
 
 
 def test_haplotype_switching_only_sister_selector():
-    test_chrom = ChromosomeSisterChromatids(
+    test_chrom = ChromosomeTetrad(
         length=500,
         selectSistersForCO=haplotypeSwitchingCOsOnlySelector,
         selectSistersForPool=selectAllSistersForPool,
@@ -113,7 +113,7 @@ def test_haplotype_switching_only_sister_selector():
 
 def test_random_sister_selector_for_pool(
     reset_random_state: ResetRandomCallback,  # pyright: ignore[reportUnusedParameter]
-    mock_chromosome_w_sisters: ChromosomeSisterChromatids,
+    mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
     _random_selector_tester(
         0.25, lambda: selectSingleSisterForPool(mock_chromosome_w_sisters)
@@ -122,7 +122,7 @@ def test_random_sister_selector_for_pool(
 
 def test_most_recombinant_pool_selector():
     sequentialSelector = SequentialSisterSelector(init_count=0)
-    test_chrom = ChromosomeSisterChromatids(
+    test_chrom = ChromosomeTetrad(
         length=500,
         selectSistersForCO=sequentialSelector,
         selectSistersForPool=selectMostRecombinantForPool,
@@ -136,7 +136,7 @@ def test_only_recombinant_pool_selector():
     selected_chromatids: list[Chromatid] = []
 
     for _ in range(1000):
-        test_chrom = ChromosomeSisterChromatids(
+        test_chrom = ChromosomeTetrad(
             length=500,
             selectSistersForCO=uniformlyRandomSisterSelector,
             selectSistersForPool=selectOnlyRecombinantsForPool,
@@ -152,7 +152,7 @@ def test_only_recombinant_pool_selector():
 
 def test_insert_co_for_sister_chromatids(
     reset_random_state: ResetRandomCallback,
-    mock_chromosome_w_sisters: ChromosomeSisterChromatids,
+    mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
     insert_crossover(mock_chromosome_w_sisters, 400)
     reset_random_state()
@@ -180,7 +180,7 @@ def test_insert_co_for_sister_chromatids(
 
 
 def test_get_num_cos_for_sister_chromatids(
-    mock_chromosome_w_sisters: ChromosomeSisterChromatids,
+    mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
     insert_crossover(mock_chromosome_w_sisters, 42)
     assert get_num_crossovers(mock_chromosome_w_sisters) == 1
@@ -191,7 +191,7 @@ def test_get_num_cos_for_sister_chromatids(
 
 
 def test_get_co_locations_for_sister_chromatids(
-    mock_chromosome_w_sisters: ChromosomeSisterChromatids,
+    mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
     insert_crossover(mock_chromosome_w_sisters, 42)
     insert_crossover(mock_chromosome_w_sisters, 99)
@@ -200,7 +200,7 @@ def test_get_co_locations_for_sister_chromatids(
 
 
 def test_has_co_at_for_sister_chromatids(
-    mock_chromosome_w_sisters: ChromosomeSisterChromatids,
+    mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
     insert_crossover(mock_chromosome_w_sisters, 42)
     assert has_crossover_at(mock_chromosome_w_sisters, 42)
@@ -218,7 +218,7 @@ def test_has_co_at_for_sister_chromatids(
 
 
 def test_has_visible_co_for_sister_chromatids(
-    mock_chromosome_w_sisters: ChromosomeSisterChromatids,
+    mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
     mock_chromosome_w_sisters.selectSistersForCO = SequentialSisterSelector()
     insert_crossover(mock_chromosome_w_sisters, 39)

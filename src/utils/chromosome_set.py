@@ -17,9 +17,8 @@ from src.utils.chromatid import (
     has_crossover_at,
     has_visible_crossover,
 )
-from src.utils.chromosome import Chromosome
-from src.utils.chromosome_with_sister_chromatids import (
-    ChromosomeSisterChromatids,
+from src.utils.chromosome_tetrad import (
+    ChromosomeTetrad,
     CrossoverSisterSelector,
     PoolSisterSelector,
     haplotypeSwitchingCOsOnlySelector,
@@ -28,8 +27,9 @@ from src.utils.chromosome_with_sister_chromatids import (
     selectSingleSisterForPool,
     uniformlyRandomSisterSelector,
 )
+from src.utils.legacy_chromosome import LegacyChromosome
 
-type ChromosomeLike = Chromatid | ChromosomeSisterChromatids | Chromosome
+type ChromosomeLike = Chromatid | ChromosomeTetrad | LegacyChromosome
 type ChromosomeMaker[C: ChromosomeLike] = Callable[[int], C]
 
 
@@ -79,7 +79,7 @@ class ChromsetMaker[C: ChromosomeLike](Protocol):
 
 
 make_chromset_with_legacy_chromosome = functools.partial(
-    ChromosomeSet[Chromosome], chrom_maker=Chromosome
+    ChromosomeSet[LegacyChromosome], chrom_maker=LegacyChromosome
 )
 
 
@@ -90,12 +90,12 @@ def make_chromset_custom_sister_selectors(
     chrom_length: int,
     co_selector: CrossoverSisterSelector,
     pool_selector: PoolSisterSelector,
-) -> ChromosomeSet[ChromosomeSisterChromatids]:
+) -> ChromosomeSet[ChromosomeTetrad]:
     return ChromosomeSet(
         label=label,
         num_chroms=num_chroms,
         chrom_length=chrom_length,
-        chrom_maker=lambda length: ChromosomeSisterChromatids(
+        chrom_maker=lambda length: ChromosomeTetrad(
             length=length,
             selectSistersForCO=co_selector,
             selectSistersForPool=pool_selector,
@@ -104,12 +104,12 @@ def make_chromset_custom_sister_selectors(
 
 
 make_default_chromset = functools.partial(
-    ChromosomeSet[ChromosomeSisterChromatids], chrom_maker=make_default_chrom_w_sisters
+    ChromosomeSet[ChromosomeTetrad], chrom_maker=make_default_chrom_w_sisters
 )
 
 make_chromset_all_sisters_in_pool = functools.partial(
-    ChromosomeSet[ChromosomeSisterChromatids],
-    chrom_maker=lambda x: ChromosomeSisterChromatids(
+    ChromosomeSet[ChromosomeTetrad],
+    chrom_maker=lambda x: ChromosomeTetrad(
         length=x,
         selectSistersForCO=uniformlyRandomSisterSelector,
         selectSistersForPool=selectAllSistersForPool,
@@ -117,8 +117,8 @@ make_chromset_all_sisters_in_pool = functools.partial(
 )
 
 make_chromset_haplotype_switching_only = functools.partial(
-    ChromosomeSet[ChromosomeSisterChromatids],
-    chrom_maker=lambda x: ChromosomeSisterChromatids(
+    ChromosomeSet[ChromosomeTetrad],
+    chrom_maker=lambda x: ChromosomeTetrad(
         length=x,
         selectSistersForCO=haplotypeSwitchingCOsOnlySelector,
         selectSistersForPool=selectSingleSisterForPool,

@@ -25,7 +25,7 @@ from src.specific_interf_sims.plotter import (
 )
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
 from src.utils.chromosome_set import make_chromset_custom_sister_selectors
-from src.utils.chromosome_with_sister_chromatids import (
+from src.utils.chromosome_tetrad import (
     haplotypeSwitchingCOsOnlySelector,
     selectMostRecombinantForPool,
     selectOnlyRecombinantsForPool,

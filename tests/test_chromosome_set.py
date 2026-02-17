@@ -2,8 +2,8 @@ import pytest
 
 from src.utils.chromatid import Chromatid, make_default_chromatid
 from src.utils.chromosome_set import ChromosomeSet, pool_iter
-from src.utils.chromosome_with_sister_chromatids import (
-    ChromosomeSisterChromatids,
+from src.utils.chromosome_tetrad import (
+    ChromosomeTetrad,
     SequentialSisterSelector,
     make_default_chrom_w_sisters,
     selectSingleSisterForPool,
@@ -44,7 +44,7 @@ def test_chromset_iterator_chroms_w_sisters():
         label='test',
         num_chroms=3,
         chrom_length=42,
-        chrom_maker=lambda x: ChromosomeSisterChromatids(
+        chrom_maker=lambda x: ChromosomeTetrad(
             length=x,
             selectSistersForCO=SequentialSisterSelector(),
             selectSistersForPool=selectSingleSisterForPool,

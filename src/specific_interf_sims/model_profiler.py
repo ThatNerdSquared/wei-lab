@@ -8,8 +8,8 @@ import numpy as np
 
 from src.specific_interf_sims.interf_schemes import BinArray, local_interf
 from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
-from src.utils.chromosome import Chromosome
 from src.utils.chromosome_set import ChromosomeSet
+from src.utils.legacy_chromosome import LegacyChromosome
 
 
 @contextmanager
@@ -37,13 +37,13 @@ def example_profiling_run():
         label='control',
         num_chroms=NUM_CHROMS,
         chrom_length=CHROM_LENGTH,
-        chrom_maker=Chromosome,
+        chrom_maker=LegacyChromosome,
     )
     testset_attempt_optimise = ChromosomeSet(
         label='attempted optimisation',
         num_chroms=NUM_CHROMS,
         chrom_length=CHROM_LENGTH,
-        chrom_maker=Chromosome,
+        chrom_maker=LegacyChromosome,
     )
 
     rand = np.random.default_rng(77777)

@@ -22,16 +22,16 @@ from src.utils.chromatid import (
 )
 
 type CrossoverSisterSelector = Callable[
-    [ChromosomeSisterChromatids, int], tuple[Chromatid, Chromatid]
+    [ChromosomeTetrad, int], tuple[Chromatid, Chromatid]
 ]
 
 type PoolSisterSelector = Callable[
-    [ChromosomeSisterChromatids], tuple[Chromatid, ...] | tuple[()]
+    [ChromosomeTetrad], tuple[Chromatid, ...] | tuple[()]
 ]
 
 
 @dataclass(slots=True, kw_only=True)
-class ChromosomeSisterChromatids:
+class ChromosomeTetrad:
     a1: Chromatid = field(init=False)
     a2: Chromatid = field(init=False)
     b1: Chromatid = field(init=False)
@@ -55,7 +55,7 @@ class ChromosomeSisterChromatids:
 
 
 def uniformlyRandomSisterSelector(
-    chrom: ChromosomeSisterChromatids, _: int
+    chrom: ChromosomeTetrad, _: int
 ) -> tuple[Chromatid, Chromatid]:
     selected = random.sample(chrom.all_chromatids, k=2)
     return (selected[0], selected[1])
@@ -67,9 +67,7 @@ class SequentialSisterSelector:
     def __init__(self, init_count: int | None = None) -> None:
         self._counter = init_count if init_count is not None else -1
 
-    def __call__(
-        self, chrom: ChromosomeSisterChromatids, _: int
-    ) -> tuple[Chromatid, Chromatid]:
+    def __call__(self, chrom: ChromosomeTetrad, _: int) -> tuple[Chromatid, Chromatid]:
         self._counter += 1
         try:
             return chrom.all_chromatids[self._counter], chrom.all_chromatids[
@@ -80,7 +78,7 @@ class SequentialSisterSelector:
 
 
 def haplotypeSwitchingCOsOnlySelector(
-    chrom: ChromosomeSisterChromatids, loc: int
+    chrom: ChromosomeTetrad, loc: int
 ) -> tuple[Chromatid, Chromatid]:
     blue_haplotype_at_loc: list[Chromatid] = []
     pink_haplotype_at_loc: list[Chromatid] = []
@@ -107,19 +105,19 @@ def haplotypeSwitchingCOsOnlySelector(
 
 
 def selectSingleSisterForPool(
-    chrom: ChromosomeSisterChromatids,
+    chrom: ChromosomeTetrad,
 ) -> tuple[Chromatid]:
     return (random.choice(chrom.all_chromatids),)
 
 
 def selectAllSistersForPool(
-    chrom: ChromosomeSisterChromatids,
+    chrom: ChromosomeTetrad,
 ) -> tuple[Chromatid, Chromatid, Chromatid, Chromatid]:
     return chrom.all_chromatids
 
 
 def selectMostRecombinantForPool(
-    chrom: ChromosomeSisterChromatids,
+    chrom: ChromosomeTetrad,
 ) -> tuple[Chromatid] | tuple[()]:
     if get_num_crossovers(chrom) == 0:
         return ()
@@ -127,7 +125,7 @@ def selectMostRecombinantForPool(
 
 
 def selectOnlyRecombinantsForPool(
-    chrom: ChromosomeSisterChromatids,
+    chrom: ChromosomeTetrad,
 ) -> tuple[Chromatid] | tuple[()]:
     if get_num_crossovers(chrom) == 0:
         return ()
@@ -136,7 +134,7 @@ def selectOnlyRecombinantsForPool(
 
 
 def probabilistic_selector(
-    chrom: ChromosomeSisterChromatids,
+    chrom: ChromosomeTetrad,
     rand: np.random.Generator,
     selector1: PoolSisterSelector,
     selector2: PoolSisterSelector,
@@ -148,8 +146,8 @@ def probabilistic_selector(
         return selector2(chrom)
 
 
-def make_default_chrom_w_sisters(length: int) -> ChromosomeSisterChromatids:
-    return ChromosomeSisterChromatids(
+def make_default_chrom_w_sisters(length: int) -> ChromosomeTetrad:
+    return ChromosomeTetrad(
         length=length,
         selectSistersForCO=uniformlyRandomSisterSelector,
         selectSistersForPool=selectSingleSisterForPool,
@@ -157,7 +155,7 @@ def make_default_chrom_w_sisters(length: int) -> ChromosomeSisterChromatids:
 
 
 @insert_crossover.register
-def _(chrom: ChromosomeSisterChromatids, location: int) -> None:
+def _(chrom: ChromosomeTetrad, location: int) -> None:
     involved_one, involved_two = chrom.selectSistersForCO(chrom, location)
 
     haplotype_moved_to_two = remove_co_stack_to_exchange(involved_one, location)
@@ -168,12 +166,12 @@ def _(chrom: ChromosomeSisterChromatids, location: int) -> None:
 
 
 @get_num_crossovers.register
-def _(chrom: ChromosomeSisterChromatids) -> int:
+def _(chrom: ChromosomeTetrad) -> int:
     return int(sum(map(get_num_crossovers, chrom.all_chromatids)) / 2)
 
 
 @get_crossover_locations.register
-def _(chrom: ChromosomeSisterChromatids) -> list[int]:
+def _(chrom: ChromosomeTetrad) -> list[int]:
     return sorted(
         set(
             itertools.chain.from_iterable(
@@ -184,12 +182,10 @@ def _(chrom: ChromosomeSisterChromatids) -> list[int]:
 
 
 @has_crossover_at.register
-def _(chrom: ChromosomeSisterChromatids, location: int) -> bool:
+def _(chrom: ChromosomeTetrad, location: int) -> bool:
     return any([has_crossover_at(x, location) for x in chrom.all_chromatids])
 
 
 @has_visible_crossover.register
-def _(
-    chrom: ChromosomeSisterChromatids, start: int = 0, end: int | None = None
-) -> bool:
+def _(chrom: ChromosomeTetrad, start: int = 0, end: int | None = None) -> bool:
     return any([has_visible_crossover(x, start, end) for x in chrom.all_chromatids])

@@ -2,14 +2,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from src.overall_interf_markov_chain.recomb_markov_chain import RecombMarkovChain
-from src.utils.chromosome import Chromosome
+from src.utils.legacy_chromosome import LegacyChromosome
 from src.utils.standard_funcs import haldane_input_cM
 
 NUM_STATES = 25
 NUM_CHROMS = 3000
 CHROM_LENGTH = 500
 
-chromosomes: list[Chromosome] = []
+chromosomes: list[LegacyChromosome] = []
 
 rmc = RecombMarkovChain(NUM_STATES)
 rmc.reset_to_poisson(0.1)
@@ -17,7 +17,7 @@ rmc.reset_to_poisson(0.1)
 for state in range(NUM_STATES):
     allocation = round(rmc.get_p_cos(state) * NUM_CHROMS)
     for _ in range(allocation):
-        chrom = Chromosome(CHROM_LENGTH)
+        chrom = LegacyChromosome(CHROM_LENGTH)
         chrom.randomly_add_crossovers(state)
         chromosomes.append(chrom)
 

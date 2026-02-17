@@ -5,8 +5,8 @@ import pytest
 
 from src.utils.chromatid import Chromatid, Crossover, CrossoverStack, Haplotype
 from src.utils.chromosome_set import ChromosomeSet
-from src.utils.chromosome_with_sister_chromatids import (
-    ChromosomeSisterChromatids,
+from src.utils.chromosome_tetrad import (
+    ChromosomeTetrad,
     SequentialSisterSelector,
     selectAllSistersForPool,
     selectSingleSisterForPool,
@@ -42,8 +42,8 @@ def mock_chromatid_empty() -> Chromatid:
 
 
 @pytest.fixture
-def mock_chromosome_w_sisters() -> ChromosomeSisterChromatids:
-    return ChromosomeSisterChromatids(
+def mock_chromosome_w_sisters() -> ChromosomeTetrad:
+    return ChromosomeTetrad(
         length=500,
         selectSistersForCO=uniformlyRandomSisterSelector,
         selectSistersForPool=selectSingleSisterForPool,
@@ -61,12 +61,12 @@ def reset_random_state() -> ResetRandomCallback:
 
 
 @pytest.fixture
-def mock_chromset() -> ChromosomeSet[ChromosomeSisterChromatids]:
+def mock_chromset() -> ChromosomeSet[ChromosomeTetrad]:
     return ChromosomeSet(
         label='test',
         num_chroms=20,
         chrom_length=50,
-        chrom_maker=lambda x: ChromosomeSisterChromatids(
+        chrom_maker=lambda x: ChromosomeTetrad(
             length=x,
             selectSistersForCO=SequentialSisterSelector(0),
             selectSistersForPool=selectAllSistersForPool,

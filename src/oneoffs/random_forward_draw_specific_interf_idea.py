@@ -4,17 +4,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from src.overall_interf_markov_chain.recomb_markov_chain import RecombMarkovChain
-from src.utils.chromosome import Chromosome
+from src.utils.legacy_chromosome import LegacyChromosome
 
 NUM_CHROMOSOMES = 3000
 AVG_COS_PER_CHROMOSOME = 0.5
 BINS_PER_CHROMOSOME = 1000
 
 rand = np.random.default_rng()
-chroms: list[Chromosome] = []
+chroms: list[LegacyChromosome] = []
 
 for i in range(NUM_CHROMOSOMES):
-    chrom = Chromosome(BINS_PER_CHROMOSOME)
+    chrom = LegacyChromosome(BINS_PER_CHROMOSOME)
     p_hit = AVG_COS_PER_CHROMOSOME / BINS_PER_CHROMOSOME
     bins = list(range(BINS_PER_CHROMOSOME))
     rand.shuffle(bins)

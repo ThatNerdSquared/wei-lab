@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.chromosome import Chromosome
+from src.utils.legacy_chromosome import LegacyChromosome
 
 # config here is set to match otto's simulation
 NUM_CHROMOSOMES = 100000
@@ -19,11 +19,11 @@ starting_p_hit = AVG_COS_PER_CHROMOSOME / BINS_PER_CHROMOSOME
 
 def simulate_bins(
     react_to_co: Callable[[int, npt.NDArray[np.float64], list[int]], None],
-) -> list[Chromosome]:
-    chroms: list[Chromosome] = []
+) -> list[LegacyChromosome]:
+    chroms: list[LegacyChromosome] = []
     for i in range(NUM_CHROMOSOMES):
         print(i)
-        chrom = Chromosome(BINS_PER_CHROMOSOME)
+        chrom = LegacyChromosome(BINS_PER_CHROMOSOME)
         bins = np.zeros(BINS_PER_CHROMOSOME, dtype=np.float64)
         bins += starting_p_hit
 

@@ -5,7 +5,7 @@ from src.specific_interf_sims.interf_schemes import local_interf, no_interf
 from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
 from src.utils.chromosome_set import ChromosomeSet, make_default_chromset
-from src.utils.chromosome_with_sister_chromatids import ChromosomeSisterChromatids
+from src.utils.chromosome_tetrad import ChromosomeTetrad
 
 NUM_CHROMS = 100000
 CHROM_LEN = 1000
@@ -17,7 +17,7 @@ queue = SimulationQueue(
     default_chromset_maker=make_default_chromset,
 )
 
-type _CSet = ChromosomeSet[ChromosomeSisterChromatids]
+type _CSet = ChromosomeSet[ChromosomeTetrad]
 chrom_sets: list[tuple[_CSet, _CSet]] = []
 
 # for avg_cos_per_chrom in range(2, 11):

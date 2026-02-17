@@ -10,8 +10,8 @@ from src.specific_interf_sims.data_transformers import (
 )
 from src.utils.chromatid import insert_crossover
 from src.utils.chromosome_set import ChromosomeSet
-from src.utils.chromosome_with_sister_chromatids import (
-    ChromosomeSisterChromatids,
+from src.utils.chromosome_tetrad import (
+    ChromosomeTetrad,
     SequentialSisterSelector,
 )
 from tests.fixtures import (
@@ -20,7 +20,7 @@ from tests.fixtures import (
 
 
 def test_single_refregion_coc_calc_blank(
-    mock_chromset: ChromosomeSet[ChromosomeSisterChromatids],
+    mock_chromset: ChromosomeSet[ChromosomeTetrad],
 ):
     _, coc_data = transform_single_refregion_coc_curve_data(mock_chromset)
     expected_data_blank = np.array([-1] * 10 + [0] * 40)
@@ -28,7 +28,7 @@ def test_single_refregion_coc_calc_blank(
 
 
 def test_single_refregion_coc_calc_realistic(
-    mock_chromset: ChromosomeSet[ChromosomeSisterChromatids],
+    mock_chromset: ChromosomeSet[ChromosomeTetrad],
 ):
     test_ref_region = Region(10, 20)
 
@@ -112,7 +112,7 @@ def test_single_refregion_coc_calc_realistic(
 
 
 def test_single_refregion_coc_calc_realistic_with_calc_inside_refregion(
-    mock_chromset: ChromosomeSet[ChromosomeSisterChromatids],
+    mock_chromset: ChromosomeSet[ChromosomeTetrad],
 ):
     test_ref_region = Region(10, 20)
 

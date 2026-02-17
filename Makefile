@@ -17,6 +17,9 @@ fmt-dry:
 typecheck:
 	basedpyright
 
+typecheck-crit:
+	basedpyright --level error
+
 override-typecheck:
 	basedpyright --writebaseline
 

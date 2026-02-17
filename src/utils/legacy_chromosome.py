@@ -3,7 +3,22 @@ from typing import override
 from uuid import UUID, uuid4
 
 
-class Chromosome:
+class LegacyChromosome:
+    """
+    Legacy Chromosome class with no sister chromatids or haplotype tracking.
+
+    Previously used in simulations that did not account for sister chromatids.
+    Because of this, every crossover has a different haplotype on either side,
+    allowing us to determine whether a visible CO was present by determining
+    whether there were an even or odd number of COs. No longer recommended for
+    use as lack of sister chromatids leads to unrealistic RF (goes above 50,
+    because you don't have limiter of two sisters crossing over, or drawing one
+    of the non-recombined chromatids in the pool).
+
+    No @deprecated annotation attached, to prevent type errors in old scripts
+    that did use this.
+    """
+
     def __init__(self, length: int = 100):
         self.id: UUID = uuid4()
         self.length: int = length
