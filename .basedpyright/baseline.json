@@ -668,6 +668,22 @@
             {
                 "code": "reportAny",
                 "range": {
+                    "startColumn": 8,
+                    "endColumn": 17,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 26,
+                    "endColumn": 35,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
                     "startColumn": 54,
                     "endColumn": 72,
                     "lineCount": 1
@@ -784,30 +800,6 @@
                 }
             },
             {
-                "code": "reportExplicitAny",
-                "range": {
-                    "startColumn": 57,
-                    "endColumn": 60,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportExplicitAny",
-                "range": {
-                    "startColumn": 41,
-                    "endColumn": 44,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportExplicitAny",
-                "range": {
-                    "startColumn": 32,
-                    "endColumn": 35,
-                    "lineCount": 1
-                }
-            },
-            {
                 "code": "reportUnknownMemberType",
                 "range": {
                     "startColumn": 4,
@@ -826,30 +818,6 @@
             {
                 "code": "reportArgumentType",
                 "range": {
-                    "startColumn": 8,
-                    "endColumn": 12,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 12,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 12,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
                     "startColumn": 36,
                     "endColumn": 37,
                     "lineCount": 1
@@ -860,14 +828,6 @@
                 "range": {
                     "startColumn": 27,
                     "endColumn": 28,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 12,
                     "lineCount": 1
                 }
             },
@@ -936,24 +896,6 @@
                 }
             }
         ],
-        "./src/utils/chromosome_set.py": [
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 17,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 26,
-                    "endColumn": 35,
-                    "lineCount": 1
-                }
-            }
-        ],
         "./src/utils/cli_utils.py": [
             {
                 "code": "reportExplicitAny",
@@ -968,22 +910,6 @@
                 "range": {
                     "startColumn": 11,
                     "endColumn": 34,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportExplicitAny",
-                "range": {
-                    "startColumn": 24,
-                    "endColumn": 27,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 70,
-                    "endColumn": 75,
                     "lineCount": 1
                 }
             }

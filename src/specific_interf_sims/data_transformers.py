@@ -3,6 +3,7 @@ from typing import Callable, Literal, NamedTuple
 import numpy as np
 import numpy.typing as npt
 
+from src.specific_interf_sims.interf_schemes import BinArray
 from src.utils.chromatid import (
     Chromatid,
     convert_chromatid_to_haplotype_tbl,
@@ -115,6 +116,28 @@ def transform_cM_rf_curve_data_haplotype_switching_only[C: ChromosomeLike](
                 visible_COs += 1
 
         dataset_cM.append(total_cos_so_far / NUM_CHROMS_IN_POOL)
+        dataset_rf.append(visible_COs / NUM_CHROMS_IN_POOL)
+
+    return chrom_set.label, (dataset_cM, dataset_rf)
+
+
+def transform_preinterf_cM_rf_curve_data[C: ChromosomeLike](
+    chrom_set: ChromosomeSet[C], pre_interf_dist: BinArray
+) -> tuple[str, tuple[list[float], list[float]]]:
+    dataset_cM: list[float] = []
+    dataset_rf: list[float] = []
+
+    NUM_CHROMS_IN_POOL = pool_size(chrom_set)
+
+    cM_so_far = 0
+    for x in range(chrom_set.chrom_length):
+        cM_so_far += pre_interf_dist[x]
+        visible_COs = 0
+        for chrom in pool_iter(chrom_set):
+            if has_visible_crossover(chrom, end=x):
+                visible_COs += 1
+
+        dataset_cM.append(cM_so_far)
         dataset_rf.append(visible_COs / NUM_CHROMS_IN_POOL)
 
     return chrom_set.label, (dataset_cM, dataset_rf)

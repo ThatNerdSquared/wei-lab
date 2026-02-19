@@ -84,6 +84,23 @@ def collect_cM_rf_curve_data[C: ChromosomeLike](
     )
 
 
+def collect_preinterf_cM_rf_curve_data[C: ChromosomeLike](
+    transformer: DataTransformer[tuple[list[float], list[float]], C],
+    chrom_sets: list[ChromosomeSet[C]],
+) -> DataPacket[tuple[list[float], list[float]]]:
+    transformed_data = list(map(transformer, chrom_sets))
+    return DataPacket(
+        data=dict(transformed_data),
+        num_chroms=chrom_sets[0].num_chroms,
+        num_bins=chrom_sets[0].chrom_length,
+        curve_adder=line_unpacked_data_curve_adder,
+        ylim=1.0,
+        xlabel='pre-interf morgans (M)',
+        ylabel='recombinant frequency (rf)',
+        fig_name='preinterf_cM_rf_curve',
+    )
+
+
 def collect_single_refregion_coc_curve_data[C: ChromosomeLike](
     transformer: DataTransformer[np.ndarray[tuple[int], np.dtype[np.float64]], C],
     chrom_sets: list[ChromosomeSet[C]],

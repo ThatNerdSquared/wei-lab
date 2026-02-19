@@ -1,5 +1,9 @@
 import numpy as np
 
+from src.specific_interf_sims.data_collectors import collect_preinterf_cM_rf_curve_data
+from src.specific_interf_sims.data_transformers import (
+    transform_preinterf_cM_rf_curve_data,
+)
 from src.specific_interf_sims.interf_schemes import (
     fixed_regional_interf,
     global_interf,
@@ -7,7 +11,11 @@ from src.specific_interf_sims.interf_schemes import (
     no_interf,
 )
 from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
-from src.specific_interf_sims.plotter import plot_preinterf_cM_rf_curve
+from src.specific_interf_sims.plotter import (
+    plot_canonical_map_funcs,
+    save_plot,
+    standard_plotter,
+)
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
 from src.utils.chromosome_set import make_chromset_with_legacy_chromosome
 
@@ -30,6 +38,12 @@ fixed_regional_chroms = queue_sim(queue, 'fixed regional', fixed_regional_interf
 
 run_sims(queue)
 
-plot_preinterf_cM_rf_curve(
-    starting_bins, no_interf_chroms, local_chroms, global_chroms, fixed_regional_chroms
+chrom_sets = [no_interf_chroms, local_chroms, global_chroms, fixed_regional_chroms]
+preinterf_cM_rf_curve_data = collect_preinterf_cM_rf_curve_data(
+    lambda x: transform_preinterf_cM_rf_curve_data(x, starting_bins), chrom_sets
 )
+preinterf_cM_rf_curve_plot = standard_plotter(preinterf_cM_rf_curve_data)
+preinterf_cM_rf_ax = preinterf_cM_rf_curve_plot.get_axes()[0]
+plot_canonical_map_funcs(preinterf_cM_rf_ax)
+_ = preinterf_cM_rf_ax.set_xlim(right=1.5)
+save_plot(preinterf_cM_rf_curve_plot)

@@ -2,6 +2,14 @@ from random import randint
 from typing import override
 from uuid import UUID, uuid4
 
+from src.utils.chromatid import (
+    get_crossover_locations,
+    get_num_crossovers,
+    has_crossover_at,
+    has_visible_crossover,
+    insert_crossover,
+)
+
 
 class LegacyChromosome:
     """
@@ -61,3 +69,28 @@ class LegacyChromosome:
             [x for x in crossover_locations if x >= start and x <= endpoint]
         )
         return num_crossovers_in_region % 2 == 1
+
+
+@insert_crossover.register
+def _(chrom: LegacyChromosome, location: int) -> None:
+    chrom.insert_crossover(location)
+
+
+@get_num_crossovers.register
+def _(chrom: LegacyChromosome) -> int:
+    return chrom.get_num_crossovers()
+
+
+@get_crossover_locations.register
+def _(chrom: LegacyChromosome) -> list[int]:
+    return chrom.get_crossover_locations()
+
+
+@has_crossover_at.register
+def _(chrom: LegacyChromosome, location: int) -> bool:
+    return chrom.has_crossover_at(location)
+
+
+@has_visible_crossover.register
+def _(chrom: LegacyChromosome, start: int = 0, end: int | None = None) -> bool:
+    return chrom.has_visible_crossover(start, end)

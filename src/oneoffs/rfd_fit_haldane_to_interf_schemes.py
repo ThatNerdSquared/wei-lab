@@ -1,5 +1,7 @@
+import matplotlib.pyplot as plt
 import numpy as np
 
+from src.specific_interf_sims.data_transformers import transform_cM_rf_curve_data
 from src.specific_interf_sims.interf_schemes import (
     equalised_fixed_regional_interf,
     equalised_global_interf,
@@ -12,13 +14,12 @@ from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
 from src.specific_interf_sims.plotter import (
     fit_haldane_p_to_data,
     plot_canonical_map_funcs,
+    save_plot,
 )
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
 from src.utils.chromosome_set import (
-    gather_cM_rf_curve_data,
     make_chromset_with_legacy_chromosome,
 )
-from src.utils.cli_utils import plot_name_formatter, quickplot
 
 NUM_CHROMS = 100000
 CHROM_LENGTH = 1000
@@ -53,23 +54,27 @@ for chrom_set in [
     equalised_global_chroms,
     equalised_fixed_regional_chroms,
 ]:
-    actual_data_cM, actual_data_rf = gather_cM_rf_curve_data(chrom_set)
+    label, data = transform_cM_rf_curve_data(chrom_set)
+    actual_data_cM, actual_data_rf = data
     p, fitted_rf = fit_haldane_p_to_data(actual_data_cM, actual_data_rf)
 
+    fig = plt.figure(figsize=(9.0, 7.0))
+    ax = fig.add_subplot()
+    _ = ax.set_xlabel('morgans (M)')
+    _ = ax.set_ylabel('recombinant frequency (rf)')
+
+    _ = ax.scatter(actual_data_cM, actual_data_rf, label=chrom_set.label)
+    _ = ax.plot(actual_data_cM, fitted_rf, label=f'haldane, p = {p}', color='tab:pink')
+    plot_canonical_map_funcs(ax)
+
+    _ = ax.legend()
+    _ = ax.set_xlim(left=0.0, right=1.0)
+    _ = ax.set_ylim(bottom=0, top=0.75)
+
     fmt_name = chrom_set.label.replace(' ', '-')
-    with quickplot(
-        fig_name=plot_name_formatter(
-            f'cM_rf_curve_fitted_{fmt_name}',
-            chrom_set.num_chroms,
-            chrom_set.chrom_length,
-        ),
-        x_label='morgans (M)',
-        y_label='recombinant frequency (rf)',
-        y_lim=0.75,
-    ) as ax:
-        _ = ax.scatter(actual_data_cM, actual_data_rf, label=chrom_set.label)
-        _ = ax.plot(
-            actual_data_cM, fitted_rf, label=f'haldane, p = {p}', color='tab:pink'
-        )
-        plot_canonical_map_funcs(ax)
-        _ = ax.set_xlim(left=0.0, right=1.0)
+    num_chrom_in_ks = str(NUM_CHROMS / 1000)
+    num_bins_in_ks = str(CHROM_LENGTH / 1000)
+    _ = fig.suptitle(
+        f'cM_rf_curve_fitted_{fmt_name} -- {num_chrom_in_ks}k chroms @ {num_bins_in_ks}k bins / chrom',  # noqa: E501
+    )
+    save_plot(fig)
