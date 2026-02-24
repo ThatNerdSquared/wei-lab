@@ -1,5 +1,6 @@
 import numpy as np
 import numpy.typing as npt
+from croissant.chromosomes import ChromosomeLike, ChromosomeSet
 
 from src.specific_interf_sims.data_packet import DataPacket, ThreeDimDataPacket
 from src.specific_interf_sims.data_transformers import DataTransformer
@@ -10,7 +11,6 @@ from src.specific_interf_sims.plotter import (
     line_unpacked_data_curve_adder,
     three_dim_surface_adder,
 )
-from src.utils.chromosome_set import ChromosomeLike, ChromosomeSet
 from src.utils.cli_utils import calculate_max_y
 
 

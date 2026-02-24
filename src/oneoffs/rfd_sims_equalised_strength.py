@@ -1,4 +1,5 @@
 import numpy as np
+from croissant.chromosomes import make_chromset_with_legacy_chromosome
 
 from src.specific_interf_sims.data_collectors import (
     collect_cM_rf_curve_data,
@@ -25,7 +26,6 @@ from src.specific_interf_sims.plotter import (
     standard_plotter,
 )
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
-from src.utils.chromosome_set import make_chromset_with_legacy_chromosome
 
 NUM_CHROMS = 100000
 CHROM_LEN = 1000

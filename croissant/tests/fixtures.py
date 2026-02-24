@@ -3,9 +3,14 @@ from typing import Callable
 
 import pytest
 
-from src.utils.chromatid import Chromatid, Crossover, CrossoverStack, Haplotype
-from src.utils.chromosome_set import ChromosomeSet
-from src.utils.chromosome_tetrad import (
+from croissant.chromosomes.chromatid import (
+    Chromatid,
+    Crossover,
+    CrossoverStack,
+    Haplotype,
+)
+from croissant.chromosomes.chromosome_set import ChromosomeSet
+from croissant.chromosomes.chromosome_tetrad import (
     ChromosomeTetrad,
     SequentialSisterSelector,
     selectAllSistersForPool,

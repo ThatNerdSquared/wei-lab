@@ -2,7 +2,7 @@ from operator import attrgetter
 
 import numpy as np
 
-from src.utils.chromatid import (
+from croissant.chromosomes.chromatid import (
     Chromatid,
     Crossover,
     CrossoverStack,

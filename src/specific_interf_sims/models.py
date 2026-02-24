@@ -1,10 +1,9 @@
 import numpy as np
 import numpy.typing as npt
+from croissant.chromosomes import ChromosomeLike, ChromosomeSet, insert_crossover
 
 from src.specific_interf_sims.assurance_schemes import AssuranceScheme
 from src.specific_interf_sims.interf_schemes import BinArray, InterferenceScheme
-from src.utils.chromatid import insert_crossover
-from src.utils.chromosome_set import ChromosomeLike, ChromosomeSet
 
 type BinIdxArray = npt.NDArray[np.int64]
 

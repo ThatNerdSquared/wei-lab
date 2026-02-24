@@ -2,17 +2,20 @@ from typing import Callable, Literal, NamedTuple
 
 import numpy as np
 import numpy.typing as npt
-
-from src.specific_interf_sims.interf_schemes import BinArray
-from src.utils.chromatid import (
+from croissant.chromosomes import (
     Chromatid,
+    ChromosomeLike,
+    ChromosomeSet,
     convert_chromatid_to_haplotype_tbl,
     get_crossover_locations,
     get_num_crossovers,
     has_crossover_at,
     has_visible_crossover,
+    pool_iter,
+    pool_size,
 )
-from src.utils.chromosome_set import ChromosomeLike, ChromosomeSet, pool_iter, pool_size
+
+from src.specific_interf_sims.interf_schemes import BinArray
 from src.utils.cli_utils import elapsed_time_printer
 
 type DataTransformer[T, C: ChromosomeLike] = Callable[[ChromosomeSet[C]], tuple[str, T]]

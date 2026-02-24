@@ -5,11 +5,10 @@ from pathlib import Path
 from pstats import SortKey, Stats
 
 import numpy as np
+from croissant.chromosomes import ChromosomeSet, LegacyChromosome
 
 from src.specific_interf_sims.interf_schemes import BinArray, local_interf
 from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
-from src.utils.chromosome_set import ChromosomeSet
-from src.utils.legacy_chromosome import LegacyChromosome
 
 
 @contextmanager

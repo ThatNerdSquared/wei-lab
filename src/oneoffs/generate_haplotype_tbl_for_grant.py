@@ -1,14 +1,15 @@
 import numpy as np
-
-from src.specific_interf_sims.interf_schemes import local_interf
-from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
-from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
-from src.utils.chromatid import Chromatid, convert_chromatid_to_haplotype_tbl
-from src.utils.chromosome_set import (
+from croissant.chromosomes import (
+    Chromatid,
+    convert_chromatid_to_haplotype_tbl,
     make_chromset_haplotype_switching_only,
     pool_iter,
     pool_size,
 )
+
+from src.specific_interf_sims.interf_schemes import local_interf
+from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
+from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
 
 NUM_CHROMS = 100000
 # CHROM_LEN = 100

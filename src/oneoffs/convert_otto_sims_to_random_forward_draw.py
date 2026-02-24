@@ -3,8 +3,7 @@ from typing import Callable, cast
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
-
-from src.utils.legacy_chromosome import LegacyChromosome
+from croissant.chromosomes import LegacyChromosome
 
 # config here is set to match otto's simulation
 NUM_CHROMOSOMES = 100000

@@ -2,7 +2,7 @@ from random import randint
 from typing import override
 from uuid import UUID, uuid4
 
-from src.utils.chromatid import (
+from croissant.chromosomes.chromatid import (
     get_crossover_locations,
     get_num_crossovers,
     has_crossover_at,

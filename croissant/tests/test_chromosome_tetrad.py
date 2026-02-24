@@ -2,7 +2,7 @@ import random
 from typing import Callable
 from uuid import UUID
 
-from src.utils.chromatid import (
+from croissant.chromosomes.chromatid import (
     Chromatid,
     get_crossover_locations,
     get_num_crossovers,
@@ -10,7 +10,7 @@ from src.utils.chromatid import (
     has_visible_crossover,
     insert_crossover,
 )
-from src.utils.chromosome_tetrad import (
+from croissant.chromosomes.chromosome_tetrad import (
     ChromosomeTetrad,
     SequentialSisterSelector,
     haplotypeSwitchingCOsOnlySelector,

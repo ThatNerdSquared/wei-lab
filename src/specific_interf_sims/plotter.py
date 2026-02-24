@@ -4,6 +4,7 @@ from typing import Callable, NamedTuple
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
+from croissant.chromosomes import ChromosomeLike, ChromosomeSet
 from matplotlib import colormaps
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
@@ -11,10 +12,6 @@ from mpl_toolkits.mplot3d.axes3d import Axes3D
 from scipy.optimize import curve_fit
 
 from src.specific_interf_sims.data_packet import DataPacket, ThreeDimDataPacket
-from src.utils.chromosome_set import (
-    ChromosomeLike,
-    ChromosomeSet,
-)
 from src.utils.standard_funcs import haldane_input_cM, kosambi
 
 type Gatherer[T, C: ChromosomeLike] = Callable[[ChromosomeSet[C]], T]

@@ -3,19 +3,19 @@ from pprint import pprint
 from typing import cast
 
 import numpy as np
+from croissant.chromosomes import (
+    ChromosomeSet,
+    ChromosomeTetrad,
+    SequentialSisterSelector,
+    insert_crossover,
+)
+from tests.fixtures import (
+    mock_chromset,  # pyright: ignore[reportUnusedImport]
+)
 
 from src.specific_interf_sims.data_transformers import (
     Region,
     transform_single_refregion_coc_curve_data,
-)
-from src.utils.chromatid import insert_crossover
-from src.utils.chromosome_set import ChromosomeSet
-from src.utils.chromosome_tetrad import (
-    ChromosomeTetrad,
-    SequentialSisterSelector,
-)
-from tests.fixtures import (
-    mock_chromset,  # pyright: ignore[reportUnusedImport]
 )
 
 

@@ -2,6 +2,7 @@ import argparse
 from typing import cast
 
 import numpy as np
+from croissant.chromosomes import make_default_chromset
 
 from src.specific_interf_sims.data_collectors import (
     collect_3d_expanding_testregion_coc_curve_data,
@@ -19,7 +20,6 @@ from src.specific_interf_sims.interf_schemes import (
 from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
 from src.specific_interf_sims.plotter import save_plot, standard_plotter_threedim
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
-from src.utils.chromosome_set import make_default_chromset
 from src.utils.cli_utils import mapThenPrint
 
 parser = argparse.ArgumentParser()

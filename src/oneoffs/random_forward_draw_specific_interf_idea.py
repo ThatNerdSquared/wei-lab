@@ -2,9 +2,9 @@ from typing import cast
 
 import matplotlib.pyplot as plt
 import numpy as np
+from croissant.chromosomes import LegacyChromosome
 
 from src.overall_interf_markov_chain.recomb_markov_chain import RecombMarkovChain
-from src.utils.legacy_chromosome import LegacyChromosome
 
 NUM_CHROMOSOMES = 3000
 AVG_COS_PER_CHROMOSOME = 0.5

@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import cast
 
 import numpy as np
+from croissant.chromosomes import make_default_chromset
 
 from src.specific_interf_sims.data_transformers import (
     transform_mean_cos_per_chrom_data,
@@ -17,7 +18,6 @@ from src.specific_interf_sims.interf_schemes import (
 )
 from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
 from src.specific_interf_sims.simulator import SimulationQueue, queue_sim, run_sims
-from src.utils.chromosome_set import make_default_chromset
 
 parser = argparse.ArgumentParser()
 _ = parser.add_argument(

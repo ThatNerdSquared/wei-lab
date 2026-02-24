@@ -1,8 +1,8 @@
 import pytest
 
-from src.utils.chromatid import Chromatid, make_default_chromatid
-from src.utils.chromosome_set import ChromosomeSet, pool_iter
-from src.utils.chromosome_tetrad import (
+from croissant.chromosomes.chromatid import Chromatid, make_default_chromatid
+from croissant.chromosomes.chromosome_set import ChromosomeSet, pool_iter
+from croissant.chromosomes.chromosome_tetrad import (
     ChromosomeTetrad,
     SequentialSisterSelector,
     make_default_chrom_w_sisters,

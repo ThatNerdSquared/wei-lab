@@ -9,7 +9,7 @@ from typing import Callable
 
 import numpy as np
 
-from src.utils.chromatid import (
+from croissant.chromosomes.chromatid import (
     Chromatid,
     Haplotype,
     add_co_stack_from_exchange,
