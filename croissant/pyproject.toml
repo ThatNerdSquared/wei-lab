@@ -1,0 +1,58 @@
+[build-system]
+requires = ["hatchling >= 1.29"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["croissant"]
+
+[project]
+name = "croissant_genetics"
+version = "0.9.0"
+authors = [
+    { name="Nathan Yeung", email="nathanyeung@outlook.com" }
+]
+description = "CROISSANT: CROssover and Interference Scheme Simulator and ANalysis Tool"
+requires-python = ">= 3.10"
+dependencies = [
+    "numpy>=2.3.1",
+    "matplotlib>=3.10.3",
+    "scipy>=1.16.0",
+    "more-itertools>=10.7.0",
+]
+readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICENCE"]
+
+[project.optional-dependencies]
+dev = [
+    "scipy-stubs>=1.16.0.0",
+    "ruff>=0.12.1",
+    "pytest>=8.4.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/ThatNerdSquared/wei-lab"
+Repository = "https://github.com/ThatNerdSquared/wei-lab.git"
+
+[tool.basedpyright]
+allowedUntypedLibraries = [ "matplotlib" ]
+reportUnnecessaryTypeIgnoreComment = true
+exclude = ["**/__pycache__"]
+
+[tool.ruff.lint]
+preview = true
+explicit-preview-rules = true
+select = ["F", "E4", "E5", "E9", "I", "RUF013", "RUF027", "RUF100", "RUF102"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["F401", "F811"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.pytest.ini_options]
+# as recommended by pytest docs:
+# https://docs.pytest.org/en/stable/explanation/goodpractices.html#which-import-mode
+addopts = [
+    "--import-mode=importlib",
+]

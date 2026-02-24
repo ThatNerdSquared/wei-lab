@@ -29,5 +29,8 @@ test:
 vtest:
 	python3 -m pytest -vv
 
+deps:
+	pip3 install -e 'croissant[dev]'
+
 clean:
 	rm -f out--*.png out--*.svg *.out *.err
