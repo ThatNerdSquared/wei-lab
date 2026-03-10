@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from functools import singledispatch
 from itertools import pairwise
-from typing import NamedTuple, NewType
+from typing import ClassVar, NamedTuple, NewType
 from uuid import UUID, uuid4
 
 import numpy as np
@@ -39,9 +39,19 @@ class Chromatid:
     base_haplotype: Haplotype
     length: int
     crossovers: list[Crossover] = field(default_factory=list)
+    num_strands: ClassVar[int] = 1
 
     def __post_init__(self):
         self.id = uuid4()
+
+    def into_list[C: Chromatid](self: C, num_times: int) -> list[C]:
+        return [
+            self.__class__(base_haplotype=self.base_haplotype, length=self.length)
+            for _ in range(num_times)
+        ]
+
+    def into_haplotype_tbl(self, input_arr: np.ndarray[tuple[int], np.dtype[np.int64]]):
+        return convert_chromatid_to_haplotype_tbl(self, input_arr)
 
 
 def make_default_chromatid(length: int):

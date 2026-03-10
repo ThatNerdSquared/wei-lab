@@ -176,3 +176,33 @@ def test_no_visible_co(mock_chromatid: Chromatid):
 
     # start is last bin of pink, end is first bin of pink
     assert not has_visible_crossover(mock_chromatid, start=9, end=39)
+
+
+def test_chromatid_into_list(mock_chromatid: Chromatid):
+    res = mock_chromatid.into_list(5)
+    assert len(res) == 5
+    for item in res:
+        assert item.base_haplotype == mock_chromatid.base_haplotype
+        assert item.length == mock_chromatid.length
+        assert not item.crossovers
+
+
+def test_chromatid_into_haplotype_tbl(mock_chromatid: Chromatid):
+    holding_arr = np.zeros((4, mock_chromatid.length), dtype=np.int64)
+    holding_arr[:] = -1
+    empty_row = np.zeros(mock_chromatid.length, dtype=np.int64)
+    empty_row[:] = -1
+
+    expected_tbl_result = np.zeros(mock_chromatid.length, dtype=np.int64)
+    expected_tbl_result[0:10] = 1
+    expected_tbl_result[10:39] = 0
+    expected_tbl_result[39:42] = 1
+    expected_tbl_result[42:400] = 1
+    expected_tbl_result[400:] = 0
+
+    assert np.array_equal(holding_arr[2], empty_row)
+    mock_chromatid.into_haplotype_tbl(holding_arr[2])
+    assert np.array_equal(holding_arr[0], empty_row)
+    assert np.array_equal(holding_arr[1], empty_row)
+    assert np.array_equal(holding_arr[2], expected_tbl_result)
+    assert np.array_equal(holding_arr[3], empty_row)

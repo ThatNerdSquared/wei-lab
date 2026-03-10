@@ -3,6 +3,7 @@ from typing import Callable
 
 import pytest
 
+from croissant.chromosomes import LegacyChromosome
 from croissant.chromosomes.chromatid import (
     Chromatid,
     Crossover,
@@ -17,6 +18,14 @@ from croissant.chromosomes.chromosome_tetrad import (
     selectSingleSisterForPool,
     uniformlyRandomSisterSelector,
 )
+
+
+@pytest.fixture
+def mock_legacy_chrom() -> LegacyChromosome:
+    res = LegacyChromosome(400)
+    res.insert_crossover(57)
+    res.insert_crossover(293)
+    return res
 
 
 @pytest.fixture

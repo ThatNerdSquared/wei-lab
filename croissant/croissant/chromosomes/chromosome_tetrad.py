@@ -5,7 +5,7 @@ from __future__ import (
 import itertools
 import random
 from dataclasses import dataclass, field
-from typing import Callable
+from typing import Callable, ClassVar
 
 import numpy as np
 
@@ -42,6 +42,7 @@ class ChromosomeTetrad:
     length: int
     selectSistersForCO: CrossoverSisterSelector
     selectSistersForPool: PoolSisterSelector
+    num_strands: ClassVar[int] = 4
 
     def __post_init__(self):
         self.a1 = Chromatid(base_haplotype=Haplotype.BLUE, length=self.length)
@@ -52,6 +53,20 @@ class ChromosomeTetrad:
 
     def __iter__(self):
         return self.selectSistersForPool(self).__iter__()
+
+    def into_list[C: ChromosomeTetrad](self: C, num_times: int) -> list[C]:
+        return [
+            self.__class__(
+                length=self.length,
+                selectSistersForCO=self.selectSistersForCO,
+                selectSistersForPool=self.selectSistersForPool,
+            )
+            for _ in range(num_times)
+        ]
+
+    def into_haplotype_tbl(self, input_arr: np.ndarray[tuple[int], np.dtype[np.int64]]):
+        for idx, chrom in enumerate(self.all_chromatids):
+            chrom.into_haplotype_tbl(input_arr[idx])
 
 
 def uniformlyRandomSisterSelector(

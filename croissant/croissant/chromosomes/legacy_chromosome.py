@@ -1,6 +1,9 @@
+from itertools import pairwise
 from random import randint
 from typing import override
 from uuid import UUID, uuid4
+
+import numpy as np
 
 from croissant.chromosomes.chromatid import (
     get_crossover_locations,
@@ -26,6 +29,8 @@ class LegacyChromosome:
     No @deprecated annotation attached, to prevent type errors in old scripts
     that did use this.
     """
+
+    num_strands: int = 1
 
     def __init__(self, length: int = 100):
         self.id: UUID = uuid4()
@@ -69,6 +74,16 @@ class LegacyChromosome:
             [x for x in crossover_locations if x >= start and x <= endpoint]
         )
         return num_crossovers_in_region % 2 == 1
+
+    def into_list[C: LegacyChromosome](self: C, num_times: int) -> list[C]:
+        return [self.__class__(length=self.length) for _ in range(num_times)]
+
+    def into_haplotype_tbl(self, input_arr: np.ndarray[tuple[int], np.dtype[np.int64]]):
+        input_arr[:] = 0
+        curr_hap = True
+        for curr_co, next_co in pairwise(sorted(self._crossovers.keys())):
+            input_arr[curr_co:next_co] = 1 if curr_hap else 0
+            curr_hap = not curr_hap
 
 
 @insert_crossover.register

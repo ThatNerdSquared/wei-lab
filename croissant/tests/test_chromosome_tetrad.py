@@ -2,8 +2,11 @@ import random
 from typing import Callable
 from uuid import UUID
 
+import numpy as np
+
 from croissant.chromosomes.chromatid import (
     Chromatid,
+    Haplotype,
     get_crossover_locations,
     get_num_crossovers,
     has_crossover_at,
@@ -266,3 +269,63 @@ def test_has_visible_co_for_sister_chromatids(
     # double check visibility on chromatid
     assert has_visible_crossover(mock_chromosome_w_sisters.b1, start=42)
     assert not has_visible_crossover(mock_chromosome_w_sisters.b1)
+
+
+def test_tetrad_into_list(mock_chromosome_w_sisters: ChromosomeTetrad):
+    res = mock_chromosome_w_sisters.into_list(6)
+    assert len(res) == 6
+    for item in res:
+        assert item.length == mock_chromosome_w_sisters.length
+        assert item.selectSistersForCO == mock_chromosome_w_sisters.selectSistersForCO
+        assert (
+            item.selectSistersForPool == mock_chromosome_w_sisters.selectSistersForPool
+        )
+
+
+def test_tetrad_into_haplotype_tbl(
+    mock_chromosome_w_sisters: ChromosomeTetrad,
+):
+    holding_arr = np.zeros((16, mock_chromosome_w_sisters.length), dtype=np.int64)
+    holding_arr[:] = -1
+    empty_row = np.zeros(mock_chromosome_w_sisters.length, dtype=np.int64)
+    empty_row[:] = -1
+
+    mock_chromosome_w_sisters.selectSistersForCO = SequentialSisterSelector()
+    insert_crossover(mock_chromosome_w_sisters, 42)
+    insert_crossover(mock_chromosome_w_sisters, 339)
+    mock_chromosome_w_sisters.into_haplotype_tbl(holding_arr[4:8])
+
+    for i in range(4):
+        assert np.array_equal(holding_arr[i], empty_row)
+    assert np.array_equal(
+        holding_arr[4],
+        np.array(
+            [mock_chromosome_w_sisters.a1.base_haplotype.value]
+            * mock_chromosome_w_sisters.length
+        ),
+    )
+    assert np.array_equal(
+        holding_arr[5],
+        np.array(
+            [mock_chromosome_w_sisters.a2.base_haplotype.value] * 339
+            + [Haplotype(not mock_chromosome_w_sisters.a2.base_haplotype).value]
+            * (mock_chromosome_w_sisters.length - 339)
+        ),
+    )
+    assert np.array_equal(
+        holding_arr[6],
+        np.array(
+            [mock_chromosome_w_sisters.b2.base_haplotype.value] * 339
+            + [Haplotype(not mock_chromosome_w_sisters.b2.base_haplotype).value]
+            * (mock_chromosome_w_sisters.length - 339)
+        ),
+    )
+    assert np.array_equal(
+        holding_arr[7],
+        np.array(
+            [mock_chromosome_w_sisters.b2.base_haplotype.value]
+            * mock_chromosome_w_sisters.length
+        ),
+    )
+    for i in range(8, 16):
+        assert np.array_equal(holding_arr[i], empty_row)
