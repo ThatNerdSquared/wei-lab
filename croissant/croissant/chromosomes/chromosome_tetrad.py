@@ -65,8 +65,10 @@ class ChromosomeTetrad:
         ]
 
     def into_haplotype_tbl(self, input_arr: np.ndarray[tuple[int], np.dtype[np.int64]]):
+        assert (4, self.length) == input_arr.shape
+
         for idx, chrom in enumerate(self.all_chromatids):
-            chrom.into_haplotype_tbl(input_arr[idx])
+            chrom.into_haplotype_tbl(input_arr[idx : idx + 1])
 
 
 def uniformlyRandomSisterSelector(

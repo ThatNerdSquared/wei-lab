@@ -1,11 +1,79 @@
 {
     "files": {
-        "./croissant/croissant/chromosomes/chromosome_tetrad.py": [
+        "./croissant/croissant/chromosomes/chromatid.py": [
             {
                 "code": "reportAny",
                 "range": {
-                    "startColumn": 37,
-                    "endColumn": 51,
+                    "startColumn": 56,
+                    "endColumn": 68,
+                    "lineCount": 1
+                }
+            }
+        ],
+        "./croissant/croissant/chromosomes/legacy_chromosome.py": [
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 17,
+                    "lineCount": 1
+                }
+            }
+        ],
+        "./croissant/croissant/recomb_sim.py": [
+            {
+                "code": "reportExplicitAny",
+                "range": {
+                    "startColumn": 31,
+                    "endColumn": 34,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportExplicitAny",
+                "range": {
+                    "startColumn": 36,
+                    "endColumn": 39,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportExplicitAny",
+                "range": {
+                    "startColumn": 56,
+                    "endColumn": 59,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportExplicitAny",
+                "range": {
+                    "startColumn": 23,
+                    "endColumn": 26,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 12,
+                    "endColumn": 13,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 15,
+                    "endColumn": 16,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 36,
+                    "endColumn": 46,
                     "lineCount": 1
                 }
             }
@@ -16,14 +84,6 @@
                 "range": {
                     "startColumn": 26,
                     "endColumn": 40,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 38,
-                    "endColumn": 52,
                     "lineCount": 1
                 }
             },
@@ -122,8 +182,40 @@
             {
                 "code": "reportAny",
                 "range": {
-                    "startColumn": 41,
-                    "endColumn": 55,
+                    "startColumn": 26,
+                    "endColumn": 40,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 26,
+                    "endColumn": 40,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 26,
+                    "endColumn": 40,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 26,
+                    "endColumn": 40,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 26,
+                    "endColumn": 40,
                     "lineCount": 1
                 }
             },

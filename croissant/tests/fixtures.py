@@ -1,9 +1,10 @@
 import random
+from datetime import datetime
 from typing import Callable
 
 import pytest
 
-from croissant.chromosomes import LegacyChromosome
+from croissant.chromosomes import ChromosomeLike, LegacyChromosome
 from croissant.chromosomes.chromatid import (
     Chromatid,
     Crossover,
@@ -18,6 +19,7 @@ from croissant.chromosomes.chromosome_tetrad import (
     selectSingleSisterForPool,
     uniformlyRandomSisterSelector,
 )
+from croissant.recomb_sim import RecombSim
 
 
 @pytest.fixture
@@ -25,6 +27,13 @@ def mock_legacy_chrom() -> LegacyChromosome:
     res = LegacyChromosome(400)
     res.insert_crossover(57)
     res.insert_crossover(293)
+    return res
+
+
+@pytest.fixture
+def mock_legacy_chrom_single_co() -> LegacyChromosome:
+    res = LegacyChromosome(400)
+    res.insert_crossover(81)
     return res
 
 
@@ -86,3 +95,13 @@ def mock_chromset() -> ChromosomeSet[ChromosomeTetrad]:
             selectSistersForPool=selectAllSistersForPool,
         ),
     )
+
+
+def set_recomb_sim_date_to_newyrs[C: ChromosomeLike](sim: RecombSim[C]):
+    """
+    Sets the given RecombSim's generated time to January 1st, 2000,
+    14:50:51.123456.
+
+    NOT TO BE USED OUTSIDE OF UNIT TESTS!!
+    """
+    sim.time_generated = datetime.fromisoformat('2000-01-01 14:50:51.123456')

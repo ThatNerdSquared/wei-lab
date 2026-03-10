@@ -79,11 +79,19 @@ class LegacyChromosome:
         return [self.__class__(length=self.length) for _ in range(num_times)]
 
     def into_haplotype_tbl(self, input_arr: np.ndarray[tuple[int], np.dtype[np.int64]]):
+        assert (1, self.length) == input_arr.shape
+        input_arr = input_arr[0]
+
         input_arr[:] = 0
+        locs = self.get_crossover_locations()
+        if not locs:
+            return
+
         curr_hap = True
-        for curr_co, next_co in pairwise(sorted(self._crossovers.keys())):
+        for curr_co, next_co in pairwise(locs):
             input_arr[curr_co:next_co] = 1 if curr_hap else 0
             curr_hap = not curr_hap
+        input_arr[locs[-1] :] = 1 if curr_hap else 0
 
 
 @insert_crossover.register

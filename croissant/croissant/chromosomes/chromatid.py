@@ -51,7 +51,11 @@ class Chromatid:
         ]
 
     def into_haplotype_tbl(self, input_arr: np.ndarray[tuple[int], np.dtype[np.int64]]):
-        return convert_chromatid_to_haplotype_tbl(self, input_arr)
+        # can use arr.reshape(1, -1, copy=False) to turn 1d ndarray into 2d, if
+        # necessary
+        assert (1, self.length) == input_arr.shape
+
+        return convert_chromatid_to_haplotype_tbl(self, input_arr[0])
 
 
 def make_default_chromatid(length: int):

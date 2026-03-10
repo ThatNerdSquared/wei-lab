@@ -201,7 +201,7 @@ def test_chromatid_into_haplotype_tbl(mock_chromatid: Chromatid):
     expected_tbl_result[400:] = 0
 
     assert np.array_equal(holding_arr[2], empty_row)
-    mock_chromatid.into_haplotype_tbl(holding_arr[2])
+    mock_chromatid.into_haplotype_tbl(holding_arr[2:3])
     assert np.array_equal(holding_arr[0], empty_row)
     assert np.array_equal(holding_arr[1], empty_row)
     assert np.array_equal(holding_arr[2], expected_tbl_result)

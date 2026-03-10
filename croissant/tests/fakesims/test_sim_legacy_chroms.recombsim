@@ -1,0 +1,19 @@
+# label = "test sim (legacy chroms)"
+# sim_version = 0
+# description = "for use in unittests only - no meaningful biological interpretation."
+# time_generated = 2000-01-01 14:50:51.123456
+# num_chroms = 10
+# chrom_length = 13
+# rand_seed = 999
+# chrom_type = "LegacyChromosome"
+# 
+0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 1 1 1 1
+0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0
