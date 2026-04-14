@@ -76,6 +76,14 @@
                     "endColumn": 46,
                     "lineCount": 1
                 }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 21,
+                    "lineCount": 1
+                }
             }
         ],
         "./croissant/tests/test_chromatid.py": [

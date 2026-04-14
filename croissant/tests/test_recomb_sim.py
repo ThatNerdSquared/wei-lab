@@ -13,7 +13,7 @@ from tests.fixtures import set_recomb_sim_date_to_newyrs
 
 
 def test_dump_recomb_sim_legacy_chrom(tmp_path: Path):
-    test_recomb_sim = RecombSim(
+    test_recomb_sim = RecombSim.from_template_chrom(
         label='test sim (legacy chroms)',
         description='for use in unittests only - no meaningful biological interpretation.',  # noqa: E501
         num_chroms=10,
@@ -31,7 +31,7 @@ def test_dump_recomb_sim_legacy_chrom(tmp_path: Path):
 
 
 def test_dump_recomb_sim_chromatids(tmp_path: Path):
-    test_recomb_sim = RecombSim(
+    test_recomb_sim = RecombSim.from_template_chrom(
         label='test sim (chromatids)',
         description='for use in unittests only - no meaningful biological interpretation.',  # noqa: E501
         num_chroms=10,
@@ -49,7 +49,7 @@ def test_dump_recomb_sim_chromatids(tmp_path: Path):
 
 
 def test_dump_recomb_sim_tetrads(tmp_path: Path):
-    test_recomb_sim = RecombSim(
+    test_recomb_sim = RecombSim.from_template_chrom(
         label='test sim (tetrads)',
         description='for use in unittests only - no meaningful biological interpretation.',  # noqa: E501
         num_chroms=11,
@@ -68,3 +68,10 @@ def test_dump_recomb_sim_tetrads(tmp_path: Path):
         'croissant/tests/fakesims/test_sim_tetrads.recombsim'
     )
     assert filecmp.cmp(expected_output_fp, given_output_fp)
+
+
+# def test_read_recomb_sim_legacy_chrom():
+#     expected_fp = Path.cwd() / Path('croissant/tests/fakesims/')
+#     retrieved_sim = RecombSim.from_file('test sim (legacy chroms)', expected_fp)
+#     print(retrieved_sim)
+#     assert False

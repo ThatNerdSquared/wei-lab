@@ -1,4 +1,3 @@
-# pyright: reportUnusedImport=false
 from croissant.chromosomes.chromatid import (
     Chromatid as Chromatid,
     convert_chromatid_to_haplotype_tbl as convert_chromatid_to_haplotype_tbl,
@@ -30,3 +29,12 @@ from croissant.chromosomes.chromosome_tetrad import (
     selectSingleSisterForPool as selectSingleSisterForPool,
 )
 from croissant.chromosomes.legacy_chromosome import LegacyChromosome as LegacyChromosome
+
+CHROM_TYPES: list[type[ChromosomeLike]] = [
+    Chromatid,
+    ChromosomeTetrad,
+    LegacyChromosome,
+]
+CROISSANT_CHROM_MAPPER: dict[str, type[ChromosomeLike]] = {
+    x.__name__: x for x in CHROM_TYPES
+}

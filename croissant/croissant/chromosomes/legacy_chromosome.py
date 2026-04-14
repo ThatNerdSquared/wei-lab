@@ -1,6 +1,7 @@
+from collections.abc import Sequence
 from itertools import pairwise
 from random import randint
-from typing import override
+from typing import Self, override
 from uuid import UUID, uuid4
 
 import numpy as np
@@ -75,7 +76,7 @@ class LegacyChromosome:
         )
         return num_crossovers_in_region % 2 == 1
 
-    def into_list[C: LegacyChromosome](self: C, num_times: int) -> list[C]:
+    def into_list[C: LegacyChromosome](self: C, num_times: int) -> Sequence[C]:
         return [self.__class__(length=self.length) for _ in range(num_times)]
 
     def into_haplotype_tbl(self, input_arr: np.ndarray[tuple[int], np.dtype[np.int64]]):
@@ -92,6 +93,13 @@ class LegacyChromosome:
             input_arr[curr_co:next_co] = 1 if curr_hap else 0
             curr_hap = not curr_hap
         input_arr[locs[-1] :] = 1 if curr_hap else 0
+
+    @classmethod
+    def from_haplotype_tbl(
+        cls, input_arr: np.ndarray[tuple[int], np.dtype[np.int64]]
+    ) -> Self:
+        print(input_arr)
+        raise NotImplementedError()
 
 
 @insert_crossover.register

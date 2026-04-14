@@ -4,8 +4,9 @@ from __future__ import (
 
 import itertools
 import random
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Callable, ClassVar
+from typing import Callable, ClassVar, Self
 
 import numpy as np
 
@@ -54,7 +55,7 @@ class ChromosomeTetrad:
     def __iter__(self):
         return self.selectSistersForPool(self).__iter__()
 
-    def into_list[C: ChromosomeTetrad](self: C, num_times: int) -> list[C]:
+    def into_list[C: ChromosomeTetrad](self: C, num_times: int) -> Sequence[C]:
         return [
             self.__class__(
                 length=self.length,
@@ -70,9 +71,18 @@ class ChromosomeTetrad:
         for idx, chrom in enumerate(self.all_chromatids):
             chrom.into_haplotype_tbl(input_arr[idx : idx + 1])
 
+    @classmethod
+    def from_haplotype_tbl(
+        cls, input_arr: np.ndarray[tuple[int], np.dtype[np.int64]]
+    ) -> Self:
+        print(input_arr)
+        raise NotImplementedError()
+
 
 def uniformlyRandomSisterSelector(
-    chrom: ChromosomeTetrad, _: int
+    chrom: ChromosomeTetrad,
+    # location not used in this selector, but used in other CrossoverSisterSelectors
+    _: int,
 ) -> tuple[Chromatid, Chromatid]:
     selected = random.sample(chrom.all_chromatids, k=2)
     return (selected[0], selected[1])

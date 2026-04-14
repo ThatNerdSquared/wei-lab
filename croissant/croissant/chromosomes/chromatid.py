@@ -1,8 +1,9 @@
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import singledispatch
 from itertools import pairwise
-from typing import ClassVar, NamedTuple, NewType
+from typing import ClassVar, NamedTuple, NewType, Self
 from uuid import UUID, uuid4
 
 import numpy as np
@@ -44,7 +45,7 @@ class Chromatid:
     def __post_init__(self):
         self.id = uuid4()
 
-    def into_list[C: Chromatid](self: C, num_times: int) -> list[C]:
+    def into_list[C: Chromatid](self: C, num_times: int) -> Sequence[C]:
         return [
             self.__class__(base_haplotype=self.base_haplotype, length=self.length)
             for _ in range(num_times)
@@ -56,6 +57,13 @@ class Chromatid:
         assert (1, self.length) == input_arr.shape
 
         return convert_chromatid_to_haplotype_tbl(self, input_arr[0])
+
+    @classmethod
+    def from_haplotype_tbl(
+        cls, input_arr: np.ndarray[tuple[int], np.dtype[np.int64]]
+    ) -> Self:
+        print(input_arr)
+        raise NotImplementedError()
 
 
 def make_default_chromatid(length: int):
