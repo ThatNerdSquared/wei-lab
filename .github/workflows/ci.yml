@@ -10,20 +10,30 @@ jobs:
   check-all:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@v6
+    - uses: actions/setup-python@v6
       with:
-        python-version: '3.13'
+        python-version: '3.14'
         check-latest: true
     - name: install deps
       run: |
+        python3 -m venv .venv
+        source .venv/bin/activate
         make deps
         pip3 install basedpyright
     - name: check formatting
-      run: make fmt-dry
+      run: |
+        source .venv/bin/activate
+        make fmt-dry
     - name: check linting
-      run: make lint
+      run: |
+        source .venv/bin/activate
+        make lint
     - name: check types
-      run: make typecheck
+      run: |
+        source .venv/bin/activate
+        make typecheck
     - name: run tests
-      run: make vtest
+      run: |
+        source .venv/bin/activate
+        make vtest
