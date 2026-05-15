@@ -167,9 +167,9 @@ def three_dim_surface_adder(
     _ = ax.plot_surface(*raw_data, label=label, cmap=colormaps['magma'])
 
 
-def plot_canonical_map_funcs(ax: Axes):
+def plot_canonical_map_funcs(ax: Axes, up_to: float = 1.0):
     ax.axhline(y=0.5, color='tab:red', label='50% RF').set_dashes((5, 2))
-    x = np.linspace(0, 1, 1000)
+    x = np.linspace(0, up_to, int(1000 * up_to))
     _ = ax.plot(x, haldane_input_cM(x), label='haldane')
     _ = ax.plot(x, x, label='morgan')
     _ = ax.plot(x, kosambi(x), label='kosambi')
