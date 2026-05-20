@@ -5,7 +5,8 @@ from datetime import datetime
 from typing import Any
 
 import numpy as np
-from croissant.chromosomes import ChromosomeLike, ChromosomeSet
+from croissant.chromosomes import ChromosomeSet
+from croissant.chromosomes.core import ChromosomeLike
 
 
 @contextmanager

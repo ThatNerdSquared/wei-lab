@@ -1,31 +1,12 @@
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
-from enum import Enum
-from functools import singledispatch
 from itertools import pairwise
-from typing import ClassVar, NamedTuple, NewType, Self
+from typing import ClassVar, Self
 from uuid import UUID, uuid4
 
 import numpy as np
 
-
-class Haplotype(Enum):
-    BLUE = 0
-    PINK = 1
-
-    def __bool__(self) -> bool:
-        return self is Haplotype.PINK
-
-
-class Crossover(NamedTuple):
-    loc: int
-    haplotype: Haplotype
-    """
-    specifies the haplotype to the right of this crossover.
-    """
-
-
-CrossoverStack = NewType('CrossoverStack', list[Crossover])
+from croissant.chromosomes.core import Crossover, CrossoverStack, Haplotype, Strand
 
 
 def invert_haplotypes_in_co_stack(co_stack: CrossoverStack) -> CrossoverStack:
@@ -51,6 +32,42 @@ class Chromatid:
             for _ in range(num_times)
         ]
 
+    def insert_crossover(self, location: int) -> None:
+        assert location <= self.length
+        old_co_stack = self.remove_co_stack_to_exchange(location)
+        co_stack_flipped_haplotypes = invert_haplotypes_in_co_stack(old_co_stack)
+        self.add_co_stack_from_exchange(co_stack_flipped_haplotypes)
+
+    def get_num_crossovers(self) -> int:
+        return len(self.crossovers)
+
+    def get_crossover_locations(self) -> list[int]:
+        return [x.loc for x in self.crossovers]
+
+    def has_crossover_at(self, location: int) -> bool:
+        return any(x.loc == location for x in self.crossovers)
+
+    def has_visible_crossover(self, start: int = 0, end: int | None = None) -> bool:
+        if not self.crossovers:
+            return False
+
+        endpoint: int = end if end is not None else self.length
+        start_haplotype = None
+        end_haplotype = None
+
+        for co in reversed(self.crossovers):
+            if end_haplotype is None and co.loc <= endpoint:
+                end_haplotype = co.haplotype
+            if start_haplotype is None and co.loc <= start:
+                start_haplotype = co.haplotype
+
+        return (
+            start_haplotype if start_haplotype is not None else self.base_haplotype
+        ) != (end_haplotype if end_haplotype is not None else self.base_haplotype)
+
+    def as_strands(self) -> Iterable[Strand]:
+        yield self
+
     def into_haplotype_tbl(self, input_arr: np.ndarray[tuple[int], np.dtype[np.int64]]):
         # can use arr.reshape(1, -1, copy=False) to turn 1d ndarray into 2d, if
         # necessary
@@ -65,32 +82,26 @@ class Chromatid:
         print(input_arr)
         raise NotImplementedError()
 
+    def remove_co_stack_to_exchange(self, location: int) -> CrossoverStack:
+        assert location <= self.length
+        result: CrossoverStack = CrossoverStack([])
 
-def make_default_chromatid(length: int):
-    return Chromatid(base_haplotype=Haplotype.BLUE, length=length)
+        while self.crossovers and location < self.crossovers[-1].loc:
+            result.append(self.crossovers.pop())
 
-
-def remove_co_stack_to_exchange(chrom: Chromatid, location: int) -> CrossoverStack:
-    assert location <= chrom.length
-    result: CrossoverStack = CrossoverStack([])
-
-    while chrom.crossovers and location < chrom.crossovers[-1].loc:
-        result.append(chrom.crossovers.pop())
-
-    result.append(
-        Crossover(
-            location,
-            chrom.crossovers[-1].haplotype
-            if chrom.crossovers
-            else chrom.base_haplotype,
+        result.append(
+            Crossover(
+                location,
+                self.crossovers[-1].haplotype
+                if self.crossovers
+                else self.base_haplotype,
+            )
         )
-    )
-    return result
+        return result
 
-
-def add_co_stack_from_exchange(chrom: Chromatid, co_stack: CrossoverStack) -> None:
-    co_stack.reverse()
-    chrom.crossovers += co_stack
+    def add_co_stack_from_exchange(self, co_stack: CrossoverStack) -> None:
+        co_stack.reverse()
+        self.crossovers += co_stack
 
 
 def convert_chromatid_to_haplotype_tbl(
@@ -106,48 +117,3 @@ def convert_chromatid_to_haplotype_tbl(
     for curr_co, next_co in pairwise(chrom.crossovers):
         input_array[curr_co.loc : next_co.loc] = curr_co.haplotype.value
     input_array[chrom.crossovers[-1].loc :] = chrom.crossovers[-1].haplotype.value
-
-
-@singledispatch
-def insert_crossover(chrom: Chromatid, location: int) -> None:
-    assert location <= chrom.length
-    old_co_stack = remove_co_stack_to_exchange(chrom, location)
-    co_stack_flipped_haplotypes = invert_haplotypes_in_co_stack(old_co_stack)
-    add_co_stack_from_exchange(chrom, co_stack_flipped_haplotypes)
-
-
-@singledispatch
-def get_num_crossovers(chrom: Chromatid) -> int:
-    return len(chrom.crossovers)
-
-
-@singledispatch
-def get_crossover_locations(chrom: Chromatid) -> list[int]:
-    return [x.loc for x in chrom.crossovers]
-
-
-@singledispatch
-def has_crossover_at(chrom: Chromatid, location: int) -> bool:
-    return any(x.loc == location for x in chrom.crossovers)
-
-
-@singledispatch
-def has_visible_crossover(
-    chrom: Chromatid, start: int = 0, end: int | None = None
-) -> bool:
-    if not chrom.crossovers:
-        return False
-
-    endpoint: int = end if end is not None else chrom.length
-    start_haplotype = None
-    end_haplotype = None
-
-    for co in reversed(chrom.crossovers):
-        if end_haplotype is None and co.loc <= endpoint:
-            end_haplotype = co.haplotype
-        if start_haplotype is None and co.loc <= start:
-            start_haplotype = co.haplotype
-
-    return (
-        start_haplotype if start_haplotype is not None else chrom.base_haplotype
-    ) != (end_haplotype if end_haplotype is not None else chrom.base_haplotype)

@@ -7,7 +7,6 @@ from croissant.chromosomes import (
     ChromosomeSet,
     ChromosomeTetrad,
     SequentialSisterSelector,
-    insert_crossover,
 )
 from tests.fixtures import (
     mock_chromset,  # pyright: ignore[reportUnusedImport]
@@ -33,22 +32,22 @@ def test_single_refregion_coc_calc_realistic(
     test_ref_region = Region(10, 20)
 
     # insert visible refregion CO into 10% (4 chroms => 8 chromatids)
-    insert_crossover(mock_chromset.chroms[0], 15)
-    insert_crossover(mock_chromset.chroms[2], 16)
-    insert_crossover(mock_chromset.chroms[4], 13)
-    insert_crossover(mock_chromset.chroms[8], 11)
+    mock_chromset.chroms[0].insert_crossover(15)
+    mock_chromset.chroms[2].insert_crossover(16)
+    mock_chromset.chroms[4].insert_crossover(13)
+    mock_chromset.chroms[8].insert_crossover(11)
 
     # insert invisible refregion CO into 5% (2 chrom => 4 chromatids)
-    insert_crossover(mock_chromset.chroms[5], 13)
+    mock_chromset.chroms[5].insert_crossover(13)
     cast(
         SequentialSisterSelector, mock_chromset.chroms[5].selectSistersForCO
     )._counter = 0
-    insert_crossover(mock_chromset.chroms[5], 17)
-    insert_crossover(mock_chromset.chroms[7], 14)
+    mock_chromset.chroms[5].insert_crossover(17)
+    mock_chromset.chroms[7].insert_crossover(14)
     cast(
         SequentialSisterSelector, mock_chromset.chroms[7].selectSistersForCO
     )._counter = 0
-    insert_crossover(mock_chromset.chroms[7], 18)
+    mock_chromset.chroms[7].insert_crossover(18)
 
     # at c = 2: insert CO into 10% (4 chromatids with visible refregion CO, 4 without)
     cast(
@@ -58,36 +57,36 @@ def test_single_refregion_coc_calc_realistic(
         SequentialSisterSelector, mock_chromset.chroms[2].selectSistersForCO
     )._counter = 0
 
-    insert_crossover(mock_chromset.chroms[0], 2)
-    insert_crossover(mock_chromset.chroms[2], 2)
+    mock_chromset.chroms[0].insert_crossover(2)
+    mock_chromset.chroms[2].insert_crossover(2)
 
-    insert_crossover(mock_chromset.chroms[1], 2)
-    insert_crossover(mock_chromset.chroms[3], 2)
+    mock_chromset.chroms[1].insert_crossover(2)
+    mock_chromset.chroms[3].insert_crossover(2)
 
     # at c = 9: insert CO into 15% (2 with visible refregion CO, 10 without)
     cast(
         SequentialSisterSelector, mock_chromset.chroms[4].selectSistersForCO
     )._counter = 0
 
-    insert_crossover(mock_chromset.chroms[4], 9)
-    insert_crossover(mock_chromset.chroms[9], 9)
-    insert_crossover(mock_chromset.chroms[10], 9)
-    insert_crossover(mock_chromset.chroms[11], 9)
-    insert_crossover(mock_chromset.chroms[12], 9)
-    insert_crossover(mock_chromset.chroms[15], 9)
+    mock_chromset.chroms[4].insert_crossover(9)
+    mock_chromset.chroms[9].insert_crossover(9)
+    mock_chromset.chroms[10].insert_crossover(9)
+    mock_chromset.chroms[11].insert_crossover(9)
+    mock_chromset.chroms[12].insert_crossover(9)
+    mock_chromset.chroms[15].insert_crossover(9)
 
     # at c = 39: insert CO into 5% (1 with visible refregion CO, 3 without)
     cast(
         SequentialSisterSelector, mock_chromset.chroms[8].selectSistersForCO
     )._counter = 1
-    insert_crossover(mock_chromset.chroms[8], 39)
-    insert_crossover(mock_chromset.chroms[16], 39)
+    mock_chromset.chroms[8].insert_crossover(39)
+    mock_chromset.chroms[16].insert_crossover(39)
 
     # at c = 41: insert CO into 2.5% (cancel out previous)
     cast(
         SequentialSisterSelector, mock_chromset.chroms[16].selectSistersForCO
     )._counter = 0
-    insert_crossover(mock_chromset.chroms[16], 41)
+    mock_chromset.chroms[16].insert_crossover(41)
 
     _, result_data = transform_single_refregion_coc_curve_data(
         mock_chromset, test_ref_region
@@ -117,22 +116,22 @@ def test_single_refregion_coc_calc_realistic_with_calc_inside_refregion(
     test_ref_region = Region(10, 20)
 
     # insert visible refregion CO into 10% (4 chroms => 8 chromatids)
-    insert_crossover(mock_chromset.chroms[0], 15)
-    insert_crossover(mock_chromset.chroms[2], 16)
-    insert_crossover(mock_chromset.chroms[4], 13)
-    insert_crossover(mock_chromset.chroms[8], 11)
+    mock_chromset.chroms[0].insert_crossover(15)
+    mock_chromset.chroms[2].insert_crossover(16)
+    mock_chromset.chroms[4].insert_crossover(13)
+    mock_chromset.chroms[8].insert_crossover(11)
 
     # insert invisible refregion CO into 5% (2 chrom => 4 chromatids)
-    insert_crossover(mock_chromset.chroms[5], 13)
+    mock_chromset.chroms[5].insert_crossover(13)
     cast(
         SequentialSisterSelector, mock_chromset.chroms[5].selectSistersForCO
     )._counter = 0
-    insert_crossover(mock_chromset.chroms[5], 17)
-    insert_crossover(mock_chromset.chroms[7], 14)
+    mock_chromset.chroms[5].insert_crossover(17)
+    mock_chromset.chroms[7].insert_crossover(14)
     cast(
         SequentialSisterSelector, mock_chromset.chroms[7].selectSistersForCO
     )._counter = 0
-    insert_crossover(mock_chromset.chroms[7], 18)
+    mock_chromset.chroms[7].insert_crossover(18)
 
     # at c = 2: insert CO into 10% (4 chromatids with visible refregion CO, 4 without)
     cast(
@@ -142,36 +141,36 @@ def test_single_refregion_coc_calc_realistic_with_calc_inside_refregion(
         SequentialSisterSelector, mock_chromset.chroms[2].selectSistersForCO
     )._counter = 0
 
-    insert_crossover(mock_chromset.chroms[0], 2)
-    insert_crossover(mock_chromset.chroms[2], 2)
+    mock_chromset.chroms[0].insert_crossover(2)
+    mock_chromset.chroms[2].insert_crossover(2)
 
-    insert_crossover(mock_chromset.chroms[1], 2)
-    insert_crossover(mock_chromset.chroms[3], 2)
+    mock_chromset.chroms[1].insert_crossover(2)
+    mock_chromset.chroms[3].insert_crossover(2)
 
     # at c = 9: insert CO into 15% (2 with visible refregion CO, 10 without)
     cast(
         SequentialSisterSelector, mock_chromset.chroms[4].selectSistersForCO
     )._counter = 0
 
-    insert_crossover(mock_chromset.chroms[4], 9)
-    insert_crossover(mock_chromset.chroms[9], 9)
-    insert_crossover(mock_chromset.chroms[10], 9)
-    insert_crossover(mock_chromset.chroms[11], 9)
-    insert_crossover(mock_chromset.chroms[12], 9)
-    insert_crossover(mock_chromset.chroms[15], 9)
+    mock_chromset.chroms[4].insert_crossover(9)
+    mock_chromset.chroms[9].insert_crossover(9)
+    mock_chromset.chroms[10].insert_crossover(9)
+    mock_chromset.chroms[11].insert_crossover(9)
+    mock_chromset.chroms[12].insert_crossover(9)
+    mock_chromset.chroms[15].insert_crossover(9)
 
     # at c = 39: insert CO into 5% (1 with visible refregion CO, 3 without)
     cast(
         SequentialSisterSelector, mock_chromset.chroms[8].selectSistersForCO
     )._counter = 1
-    insert_crossover(mock_chromset.chroms[8], 39)
-    insert_crossover(mock_chromset.chroms[16], 39)
+    mock_chromset.chroms[8].insert_crossover(39)
+    mock_chromset.chroms[16].insert_crossover(39)
 
     # at c = 41: insert CO into 2.5% (cancel out previous)
     cast(
         SequentialSisterSelector, mock_chromset.chroms[16].selectSistersForCO
     )._counter = 0
-    insert_crossover(mock_chromset.chroms[16], 41)
+    mock_chromset.chroms[16].insert_crossover(41)
 
     _, result_data = transform_single_refregion_coc_curve_data(
         mock_chromset, ref_region=test_ref_region, calculate_inside_refregion=True

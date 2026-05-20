@@ -1,18 +1,12 @@
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from itertools import pairwise
 from random import randint
-from typing import Self, override
+from typing import ClassVar, Self, override
 from uuid import UUID, uuid4
 
 import numpy as np
 
-from croissant.chromosomes.chromatid import (
-    get_crossover_locations,
-    get_num_crossovers,
-    has_crossover_at,
-    has_visible_crossover,
-    insert_crossover,
-)
+from croissant.chromosomes.core import Haplotype, Strand
 
 
 class LegacyChromosome:
@@ -31,7 +25,8 @@ class LegacyChromosome:
     that did use this.
     """
 
-    num_strands: int = 1
+    num_strands: ClassVar[int] = 1
+    base_haplotype: Haplotype = Haplotype.BLUE
 
     def __init__(self, length: int = 100):
         self.id: UUID = uuid4()
@@ -79,6 +74,9 @@ class LegacyChromosome:
     def into_list[C: LegacyChromosome](self: C, num_times: int) -> Sequence[C]:
         return [self.__class__(length=self.length) for _ in range(num_times)]
 
+    def as_strands(self) -> Iterable[Strand]:
+        yield self
+
     def into_haplotype_tbl(self, input_arr: np.ndarray[tuple[int], np.dtype[np.int64]]):
         assert (1, self.length) == input_arr.shape
         input_arr = input_arr[0]
@@ -100,28 +98,3 @@ class LegacyChromosome:
     ) -> Self:
         print(input_arr)
         raise NotImplementedError()
-
-
-@insert_crossover.register
-def _(chrom: LegacyChromosome, location: int) -> None:
-    chrom.insert_crossover(location)
-
-
-@get_num_crossovers.register
-def _(chrom: LegacyChromosome) -> int:
-    return chrom.get_num_crossovers()
-
-
-@get_crossover_locations.register
-def _(chrom: LegacyChromosome) -> list[int]:
-    return chrom.get_crossover_locations()
-
-
-@has_crossover_at.register
-def _(chrom: LegacyChromosome, location: int) -> bool:
-    return chrom.has_crossover_at(location)
-
-
-@has_visible_crossover.register
-def _(chrom: LegacyChromosome, start: int = 0, end: int | None = None) -> bool:
-    return chrom.has_visible_crossover(start, end)

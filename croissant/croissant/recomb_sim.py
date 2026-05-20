@@ -9,7 +9,8 @@ import numpy as np
 import tomli_w
 
 from croissant._fmt_utils import assemble_fp
-from croissant.chromosomes import CROISSANT_CHROM_MAPPER, ChromosomeLike
+from croissant.chromosomes import CROISSANT_CHROM_MAPPER
+from croissant.chromosomes.core import ChromosomeLike
 
 _CURR_SIM_VERSION = 0
 SIM_FILE_EXT = '.recombsim'
@@ -21,6 +22,13 @@ def _assemble_simfile_path(label: str, at_location: Path | None = None) -> Path:
 
 @dataclass(slots=True, kw_only=True)
 class RecombSim[C: ChromosomeLike]:
+    """
+    A single simulation over a set of chromosomes.
+
+    Note that the constructor of this class isn't meant to be used directly -
+    use from_template_chrom or from_file instead.
+    """
+
     label: str
     sim_version: int
     description: str

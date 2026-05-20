@@ -4,15 +4,7 @@ from uuid import UUID
 
 import numpy as np
 
-from croissant.chromosomes.chromatid import (
-    Chromatid,
-    Haplotype,
-    get_crossover_locations,
-    get_num_crossovers,
-    has_crossover_at,
-    has_visible_crossover,
-    insert_crossover,
-)
+from croissant.chromosomes.chromatid import Chromatid
 from croissant.chromosomes.chromosome_tetrad import (
     ChromosomeTetrad,
     SequentialSisterSelector,
@@ -23,6 +15,7 @@ from croissant.chromosomes.chromosome_tetrad import (
     selectSingleSisterForPool,
     uniformlyRandomSisterSelector,
 )
+from croissant.chromosomes.core import Haplotype
 from tests.fixtures import (
     ResetRandomCallback,
     mock_chromosome_w_sisters,  # pyright: ignore[reportUnusedImport]
@@ -90,8 +83,8 @@ def test_haplotype_switching_only_sister_selector():
         selectSistersForCO=haplotypeSwitchingCOsOnlySelector,
         selectSistersForPool=selectAllSistersForPool,
     )
-    insert_crossover(test_chrom.a2, 40)
-    insert_crossover(test_chrom.b1, 40)
+    test_chrom.a2.insert_crossover(40)
+    test_chrom.b1.insert_crossover(40)
 
     selections: list[tuple[Chromatid, Chromatid]] = []
     for _ in range(1000):
@@ -130,8 +123,8 @@ def test_most_recombinant_pool_selector():
         selectSistersForCO=sequentialSelector,
         selectSistersForPool=selectMostRecombinantForPool,
     )
-    insert_crossover(test_chrom, 42)
-    insert_crossover(test_chrom, 390)
+    test_chrom.insert_crossover(42)
+    test_chrom.insert_crossover(390)
     assert test_chrom.selectSistersForPool(test_chrom) == (test_chrom.b1,)
 
 
@@ -144,131 +137,131 @@ def test_only_recombinant_pool_selector():
             selectSistersForCO=uniformlyRandomSisterSelector,
             selectSistersForPool=selectOnlyRecombinantsForPool,
         )
-        insert_crossover(test_chrom, random.randint(0, 500))
+        test_chrom.insert_crossover(random.randint(0, 500))
         selection_result = test_chrom.selectSistersForPool(test_chrom)
         if selection_result:
             selected_chromatids.append(selection_result[0])
 
     for selection in selected_chromatids:
-        assert get_num_crossovers(selection) > 0
+        assert selection.get_num_crossovers() > 0
 
 
 def test_insert_co_for_sister_chromatids(
     reset_random_state: ResetRandomCallback,
     mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
-    insert_crossover(mock_chromosome_w_sisters, 400)
+    mock_chromosome_w_sisters.insert_crossover(400)
     reset_random_state()
 
     first_selection, second_selection = uniformlyRandomSisterSelector(
         mock_chromosome_w_sisters, -1
     )
-    assert has_crossover_at(first_selection, 400)
-    assert has_crossover_at(second_selection, 400)
+    assert first_selection.has_crossover_at(400)
+    assert second_selection.has_crossover_at(400)
     reset_random_state()
 
-    insert_crossover(mock_chromosome_w_sisters, 3)
+    mock_chromosome_w_sisters.insert_crossover(3)
     reset_random_state()
 
     first_selection, second_selection = uniformlyRandomSisterSelector(
         mock_chromosome_w_sisters, -1
     )
 
-    assert has_crossover_at(first_selection, 400)
-    assert has_crossover_at(second_selection, 400)
-    assert has_crossover_at(first_selection, 3)
-    assert has_crossover_at(second_selection, 3)
-    assert not has_crossover_at(first_selection, 4)
-    assert not has_crossover_at(second_selection, 4)
+    assert first_selection.has_crossover_at(400)
+    assert second_selection.has_crossover_at(400)
+    assert first_selection.has_crossover_at(3)
+    assert second_selection.has_crossover_at(3)
+    assert not first_selection.has_crossover_at(4)
+    assert not second_selection.has_crossover_at(4)
 
 
 def test_get_num_cos_for_sister_chromatids(
     mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
-    insert_crossover(mock_chromosome_w_sisters, 42)
-    assert get_num_crossovers(mock_chromosome_w_sisters) == 1
-    insert_crossover(mock_chromosome_w_sisters, 99)
-    assert get_num_crossovers(mock_chromosome_w_sisters) == 2
-    insert_crossover(mock_chromosome_w_sisters, 402)
-    assert get_num_crossovers(mock_chromosome_w_sisters) == 3
+    mock_chromosome_w_sisters.insert_crossover(42)
+    assert mock_chromosome_w_sisters.get_num_crossovers() == 1
+    mock_chromosome_w_sisters.insert_crossover(99)
+    assert mock_chromosome_w_sisters.get_num_crossovers() == 2
+    mock_chromosome_w_sisters.insert_crossover(402)
+    assert mock_chromosome_w_sisters.get_num_crossovers() == 3
 
 
 def test_get_co_locations_for_sister_chromatids(
     mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
-    insert_crossover(mock_chromosome_w_sisters, 42)
-    insert_crossover(mock_chromosome_w_sisters, 99)
-    insert_crossover(mock_chromosome_w_sisters, 402)
-    assert get_crossover_locations(mock_chromosome_w_sisters) == [42, 99, 402]
+    mock_chromosome_w_sisters.insert_crossover(42)
+    mock_chromosome_w_sisters.insert_crossover(99)
+    mock_chromosome_w_sisters.insert_crossover(402)
+    assert mock_chromosome_w_sisters.get_crossover_locations() == [42, 99, 402]
 
 
 def test_has_co_at_for_sister_chromatids(
     mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
-    insert_crossover(mock_chromosome_w_sisters, 42)
-    assert has_crossover_at(mock_chromosome_w_sisters, 42)
-    assert not has_crossover_at(mock_chromosome_w_sisters, 99)
+    mock_chromosome_w_sisters.insert_crossover(42)
+    assert mock_chromosome_w_sisters.has_crossover_at(42)
+    assert not mock_chromosome_w_sisters.has_crossover_at(99)
 
-    insert_crossover(mock_chromosome_w_sisters, 99)
-    assert has_crossover_at(mock_chromosome_w_sisters, 99)
+    mock_chromosome_w_sisters.insert_crossover(99)
+    assert mock_chromosome_w_sisters.has_crossover_at(99)
 
-    insert_crossover(mock_chromosome_w_sisters, 402)
-    assert has_crossover_at(mock_chromosome_w_sisters, 402)
+    mock_chromosome_w_sisters.insert_crossover(402)
+    assert mock_chromosome_w_sisters.has_crossover_at(402)
 
-    assert not has_crossover_at(mock_chromosome_w_sisters, 43)
-    assert not has_crossover_at(mock_chromosome_w_sisters, 98)
-    assert not has_crossover_at(mock_chromosome_w_sisters, 401)
+    assert not mock_chromosome_w_sisters.has_crossover_at(43)
+    assert not mock_chromosome_w_sisters.has_crossover_at(98)
+    assert not mock_chromosome_w_sisters.has_crossover_at(401)
 
 
 def test_has_visible_co_for_sister_chromatids(
     mock_chromosome_w_sisters: ChromosomeTetrad,
 ):
     mock_chromosome_w_sisters.selectSistersForCO = SequentialSisterSelector()
-    insert_crossover(mock_chromosome_w_sisters, 39)
+    mock_chromosome_w_sisters.insert_crossover(39)
     """
     -------X-----------------
     -------X-----------------
     •••••••••••••••••••••••••
     •••••••••••••••••••••••••
     """
-    assert get_crossover_locations(mock_chromosome_w_sisters) == [39]
-    assert not has_visible_crossover(mock_chromosome_w_sisters)
+    assert mock_chromosome_w_sisters.get_crossover_locations() == [39]
+    assert not mock_chromosome_w_sisters.has_visible_crossover()
 
-    insert_crossover(mock_chromosome_w_sisters, 42)
+    mock_chromosome_w_sisters.insert_crossover(42)
     """
     -------X-----------------
     -------X-----X•••••••••••
     •••••••••••••X-----------
     •••••••••••••••••••••••••
     """
-    assert get_crossover_locations(mock_chromosome_w_sisters) == [39, 42]
-    assert not has_visible_crossover(mock_chromosome_w_sisters, end=41)
-    assert not has_visible_crossover(mock_chromosome_w_sisters, start=39, end=41)
+    assert mock_chromosome_w_sisters.get_crossover_locations() == [39, 42]
+    assert not mock_chromosome_w_sisters.has_visible_crossover(end=41)
+    assert not mock_chromosome_w_sisters.has_visible_crossover(start=39, end=41)
 
-    assert has_visible_crossover(mock_chromosome_w_sisters, start=39)
-    assert has_visible_crossover(mock_chromosome_w_sisters, start=41)
-    assert has_visible_crossover(mock_chromosome_w_sisters, start=41, end=42)
-    assert has_visible_crossover(mock_chromosome_w_sisters)
-    assert not has_visible_crossover(mock_chromosome_w_sisters, start=42)
+    assert mock_chromosome_w_sisters.has_visible_crossover(start=39)
+    assert mock_chromosome_w_sisters.has_visible_crossover(start=41)
+    assert mock_chromosome_w_sisters.has_visible_crossover(start=41, end=42)
+    assert mock_chromosome_w_sisters.has_visible_crossover()
+    assert not mock_chromosome_w_sisters.has_visible_crossover(start=42)
 
-    insert_crossover(mock_chromosome_w_sisters, 400)
+    mock_chromosome_w_sisters.insert_crossover(400)
     """
     -------X-----------------
     -------X-----X•••••••••••
     •••••••••••••X-----X•••••
     •••••••••••••••••••X-----
     """
-    assert get_crossover_locations(mock_chromosome_w_sisters) == [39, 42, 400]
-    assert has_visible_crossover(mock_chromosome_w_sisters)
-    assert has_visible_crossover(mock_chromosome_w_sisters, start=309)
+    assert mock_chromosome_w_sisters.get_crossover_locations() == [39, 42, 400]
+    assert mock_chromosome_w_sisters.has_visible_crossover()
+    assert mock_chromosome_w_sisters.has_visible_crossover(start=309)
 
     # test region not including where visible break occurred
-    assert not has_visible_crossover(mock_chromosome_w_sisters, end=41)
-    assert not has_visible_crossover(mock_chromosome_w_sisters, start=400)
+    assert not mock_chromosome_w_sisters.has_visible_crossover(end=41)
+    assert not mock_chromosome_w_sisters.has_visible_crossover(start=400)
 
     # double check visibility on chromatid
-    assert has_visible_crossover(mock_chromosome_w_sisters.b1, start=42)
-    assert not has_visible_crossover(mock_chromosome_w_sisters.b1)
+    assert mock_chromosome_w_sisters.b1.has_visible_crossover(start=42)
+    assert not mock_chromosome_w_sisters.b1.has_visible_crossover()
 
 
 def test_tetrad_into_list(mock_chromosome_w_sisters: ChromosomeTetrad):
@@ -291,8 +284,8 @@ def test_tetrad_into_haplotype_tbl(
     empty_row[:] = -1
 
     mock_chromosome_w_sisters.selectSistersForCO = SequentialSisterSelector()
-    insert_crossover(mock_chromosome_w_sisters, 42)
-    insert_crossover(mock_chromosome_w_sisters, 339)
+    mock_chromosome_w_sisters.insert_crossover(42)
+    mock_chromosome_w_sisters.insert_crossover(339)
     mock_chromosome_w_sisters.into_haplotype_tbl(holding_arr[4:8])
 
     for i in range(4):

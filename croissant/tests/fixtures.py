@@ -4,13 +4,8 @@ from typing import Callable
 
 import pytest
 
-from croissant.chromosomes import ChromosomeLike, LegacyChromosome
-from croissant.chromosomes.chromatid import (
-    Chromatid,
-    Crossover,
-    CrossoverStack,
-    Haplotype,
-)
+from croissant.chromosomes import LegacyChromosome
+from croissant.chromosomes.chromatid import Chromatid
 from croissant.chromosomes.chromosome_set import ChromosomeSet
 from croissant.chromosomes.chromosome_tetrad import (
     ChromosomeTetrad,
@@ -18,6 +13,12 @@ from croissant.chromosomes.chromosome_tetrad import (
     selectAllSistersForPool,
     selectSingleSisterForPool,
     uniformlyRandomSisterSelector,
+)
+from croissant.chromosomes.core import (
+    ChromosomeLike,
+    Crossover,
+    CrossoverStack,
+    Haplotype,
 )
 from croissant.recomb_sim import RecombSim
 

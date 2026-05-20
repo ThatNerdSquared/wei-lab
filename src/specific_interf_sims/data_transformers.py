@@ -4,16 +4,12 @@ import numpy as np
 import numpy.typing as npt
 from croissant.chromosomes import (
     Chromatid,
-    ChromosomeLike,
     ChromosomeSet,
     convert_chromatid_to_haplotype_tbl,
-    get_crossover_locations,
-    get_num_crossovers,
-    has_crossover_at,
-    has_visible_crossover,
     pool_iter,
     pool_size,
 )
+from croissant.chromosomes.core import ChromosomeLike
 
 from src.specific_interf_sims.interf_schemes import BinArray
 from src.utils.cli_utils import elapsed_time_printer
@@ -28,7 +24,7 @@ def transform_recomb_curve_data[C: ChromosomeLike](
 
     for loc in range(chrom_set.chrom_length):
         recomb_curve_data[loc] = sum(
-            [1 if has_crossover_at(x, loc) else 0 for x in pool_iter(chrom_set)]
+            [1 if x.has_crossover_at(loc) else 0 for x in pool_iter(chrom_set)]
         )
 
     if proportional:
@@ -44,9 +40,9 @@ def transform_co_per_chrom_dist_data[C: ChromosomeLike](
 
     for chrom in pool_iter(chrom_set):
         try:
-            data_dict[get_num_crossovers(chrom)] += 1.0
+            data_dict[chrom.get_num_crossovers()] += 1.0
         except KeyError:
-            data_dict[get_num_crossovers(chrom)] = 1.0
+            data_dict[chrom.get_num_crossovers()] = 1.0
 
     dist_data = np.array([data_dict.get(x, 0) for x in range(max(data_dict))])
 
@@ -64,7 +60,7 @@ def transform_interevent_dist_data[C: ChromosomeLike](
     dist_data: list[float] = []
 
     for chrom in pool_iter(chrom_set):
-        co_locs = get_crossover_locations(chrom)
+        co_locs = chrom.get_crossover_locations()
 
         for loc_idx in range(1, len(co_locs)):
             interevent_dist = co_locs[loc_idx] - co_locs[loc_idx - 1] - 1
@@ -90,9 +86,9 @@ def transform_cM_rf_curve_data[C: ChromosomeLike](
     for x in range(chrom_set.chrom_length):
         visible_COs = 0
         for chrom in pool_iter(chrom_set):
-            if has_crossover_at(chrom, x):
+            if chrom.has_crossover_at(x):
                 total_cos_so_far += 1
-            if has_visible_crossover(chrom, 0, x):
+            if chrom.has_visible_crossover(0, x):
                 visible_COs += 1
 
         dataset_cM.append(total_cos_so_far / NUM_CHROMS_IN_POOL)
@@ -113,9 +109,9 @@ def transform_cM_rf_curve_data_haplotype_switching_only[C: ChromosomeLike](
     for x in range(chrom_set.chrom_length):
         visible_COs = 0
         for chrom in pool_iter(chrom_set):
-            if has_crossover_at(chrom, x) and has_visible_crossover(chrom, x - 1, x):
+            if chrom.has_crossover_at(x) and chrom.has_visible_crossover(x - 1, x):
                 total_cos_so_far += 1
-            if has_visible_crossover(chrom, 0, x):
+            if chrom.has_visible_crossover(0, x):
                 visible_COs += 1
 
         dataset_cM.append(total_cos_so_far / NUM_CHROMS_IN_POOL)
@@ -137,7 +133,7 @@ def transform_preinterf_cM_rf_curve_data[C: ChromosomeLike](
         cM_so_far += pre_interf_dist[x]
         visible_COs = 0
         for chrom in pool_iter(chrom_set):
-            if has_visible_crossover(chrom, end=x):
+            if chrom.has_visible_crossover(end=x):
                 visible_COs += 1
 
         dataset_cM.append(cM_so_far)
@@ -150,7 +146,7 @@ def transform_mean_cos_per_chrom_data[C: ChromosomeLike](
     chrom_set: ChromosomeSet[C],
 ) -> tuple[str, np.float64]:
     return chrom_set.label, np.float64(
-        np.mean([get_num_crossovers(x) for x in chrom_set])
+        np.mean([x.get_num_crossovers() for x in chrom_set])
     )
 
 
@@ -158,7 +154,7 @@ def transform_mean_cos_per_chrom_in_pool_data[C: ChromosomeLike](
     chrom_set: ChromosomeSet[C],
 ) -> tuple[str, np.float64]:
     return chrom_set.label, np.float64(
-        np.mean([get_num_crossovers(x) for x in pool_iter(chrom_set)])
+        np.mean([x.get_num_crossovers() for x in pool_iter(chrom_set)])
     )
 
 
@@ -166,7 +162,7 @@ def transform_variance_cos_per_chrom_data[C: ChromosomeLike](
     chrom_set: ChromosomeSet[C],
 ) -> tuple[str, np.float64]:
     return chrom_set.label, np.float64(
-        np.var([get_num_crossovers(x) for x in chrom_set])
+        np.var([x.get_num_crossovers() for x in chrom_set])
     )
 
 

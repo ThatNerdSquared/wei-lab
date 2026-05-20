@@ -1,6 +1,6 @@
 import pytest
 
-from croissant.chromosomes.chromatid import Chromatid, make_default_chromatid
+from croissant.chromosomes.chromatid import Chromatid
 from croissant.chromosomes.chromosome_set import ChromosomeSet, pool_iter
 from croissant.chromosomes.chromosome_tetrad import (
     ChromosomeTetrad,
@@ -8,6 +8,11 @@ from croissant.chromosomes.chromosome_tetrad import (
     make_default_chrom_w_sisters,
     selectSingleSisterForPool,
 )
+from croissant.chromosomes.core import Haplotype
+
+
+def make_default_chromatid(length: int):
+    return Chromatid(base_haplotype=Haplotype.BLUE, length=length)
 
 
 def test_chromset_iterator_when_empty():

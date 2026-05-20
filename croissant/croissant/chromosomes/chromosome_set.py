@@ -7,7 +7,6 @@ from uuid import UUID, uuid4
 
 import more_itertools
 
-from croissant.chromosomes.chromatid import Chromatid
 from croissant.chromosomes.chromosome_tetrad import (
     ChromosomeTetrad,
     CrossoverSisterSelector,
@@ -18,9 +17,9 @@ from croissant.chromosomes.chromosome_tetrad import (
     selectSingleSisterForPool,
     uniformlyRandomSisterSelector,
 )
+from croissant.chromosomes.core import ChromosomeLike
 from croissant.chromosomes.legacy_chromosome import LegacyChromosome
 
-type ChromosomeLike = Chromatid | ChromosomeTetrad | LegacyChromosome
 type ChromosomeMaker[C: ChromosomeLike] = Callable[[int], C]
 
 

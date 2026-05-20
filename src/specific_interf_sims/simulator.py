@@ -3,11 +3,8 @@ from dataclasses import dataclass, field
 from typing import Callable
 
 import numpy as np
-from croissant.chromosomes import (
-    ChromosomeLike,
-    ChromosomeSet,
-    ChromsetMaker,
-)
+from croissant.chromosomes import ChromosomeSet, ChromsetMaker
+from croissant.chromosomes.core import ChromosomeLike
 
 from src.specific_interf_sims.interf_schemes import BinArray, InterferenceScheme
 from src.utils.cli_utils import elapsed_time_printer

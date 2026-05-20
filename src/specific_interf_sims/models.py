@@ -1,11 +1,11 @@
 import numpy as np
-import numpy.typing as npt
-from croissant.chromosomes import ChromosomeLike, ChromosomeSet, insert_crossover
+from croissant.chromosomes import ChromosomeSet
+from croissant.chromosomes.core import ChromosomeLike
 
 from src.specific_interf_sims.assurance_schemes import AssuranceScheme
 from src.specific_interf_sims.interf_schemes import BinArray, InterferenceScheme
 
-type BinIdxArray = npt.NDArray[np.int64]
+type BinIdxArray = np.ndarray[tuple[int], np.dtype[np.int64]]
 
 
 def induce_COs_via_random_forward_draw[C: ChromosomeLike](
@@ -22,7 +22,8 @@ def induce_COs_via_random_forward_draw[C: ChromosomeLike](
         for loc in bin_locs:
             if rand.binomial(1, bins[loc]):
                 bins = interf(loc, bins)
-                insert_crossover(chrom, loc)
+                # TODO: why do we need to do this conversion?
+                chrom.insert_crossover(int(loc))
 
 
 def induce_COs_via_random_forward_draw_w_assurance[C: ChromosomeLike](
@@ -42,7 +43,8 @@ def induce_COs_via_random_forward_draw_w_assurance[C: ChromosomeLike](
         for loc in bin_locs:
             if rand.binomial(1, assurance.modify_co_probability(bins[loc])):
                 bins = interf(loc, bins)
-                insert_crossover(chrom, loc)
+                # TODO: why do we need to do this conversion?
+                chrom.insert_crossover(int(loc))
                 assurance.handle_co_succeeded()
             else:
                 assurance.handle_co_failed()

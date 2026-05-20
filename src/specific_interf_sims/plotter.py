@@ -4,7 +4,8 @@ from typing import Callable, NamedTuple
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
-from croissant.chromosomes import ChromosomeLike, ChromosomeSet
+from croissant.chromosomes import ChromosomeSet
+from croissant.chromosomes.core import ChromosomeLike
 from matplotlib import colormaps
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure

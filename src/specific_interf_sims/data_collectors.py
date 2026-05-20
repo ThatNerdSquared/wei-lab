@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.typing as npt
-from croissant.chromosomes import ChromosomeLike, ChromosomeSet
+from croissant.chromosomes import ChromosomeSet
+from croissant.chromosomes.core import ChromosomeLike
 
 from src.specific_interf_sims.data_packet import DataPacket, ThreeDimDataPacket
 from src.specific_interf_sims.data_transformers import DataTransformer
