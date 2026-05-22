@@ -10,11 +10,11 @@ from croissant.chromosomes.core import ChromosomeLike
 
 
 @contextmanager
-def elapsed_time_printer[C: ChromosomeLike](
+def elapsed_time_printer(
     *,
     op_name: str,
     op_number: tuple[int, int] | None = None,
-    chrom_set: ChromosomeSet[C] | None = None,
+    chrom_set: ChromosomeSet[ChromosomeLike] | None = None,
 ):
     start_time = datetime.now()
     try:

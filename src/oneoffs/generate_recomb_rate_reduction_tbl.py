@@ -1,9 +1,6 @@
 import numpy as np
-from croissant.chromosomes import (
-    ChromosomeSet,
-    ChromosomeTetrad,
-    make_default_chromset,
-)
+from croissant.chromosomes import ChromosomeSet, make_default_chromset
+from croissant.chromosomes.core import ChromosomeLike
 
 from src.specific_interf_sims.data_transformers import transform_mean_cos_per_chrom_data
 from src.specific_interf_sims.interf_schemes import local_interf, no_interf
@@ -20,7 +17,10 @@ queue = SimulationQueue(
     default_chromset_maker=make_default_chromset,
 )
 
-type _CSet = ChromosomeSet[ChromosomeTetrad]
+# in this case, we rlly want this to be a tetrad, but for the sake of making
+# the typing work i just use the general ChromosomeLike type. these sets being
+# tetrads is still enforced by the use of default_chromset_maker above though.
+type _CSet = ChromosomeSet[ChromosomeLike]
 chrom_sets: list[tuple[_CSet, _CSet]] = []
 
 # for avg_cos_per_chrom in range(2, 11):

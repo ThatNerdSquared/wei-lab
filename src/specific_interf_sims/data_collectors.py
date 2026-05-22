@@ -16,7 +16,7 @@ from src.utils.cli_utils import calculate_max_y
 
 
 def collect_recomb_curve_data[C: ChromosomeLike](
-    transformer: DataTransformer[npt.NDArray[np.float64], C],
+    transformer: DataTransformer[npt.NDArray[np.float64]],
     chrom_sets: list[ChromosomeSet[C]],
 ) -> DataPacket[npt.NDArray[np.float64]]:
     transformed_data = list(map(transformer, chrom_sets))
@@ -33,7 +33,7 @@ def collect_recomb_curve_data[C: ChromosomeLike](
 
 
 def collect_co_per_chrom_dist_data[C: ChromosomeLike](
-    transformer: DataTransformer[npt.NDArray[np.float64], C],
+    transformer: DataTransformer[npt.NDArray[np.float64]],
     chrom_sets: list[ChromosomeSet[C]],
 ) -> DataPacket[npt.NDArray[np.float64]]:
     transformed_data = list(map(transformer, chrom_sets))
@@ -51,7 +51,7 @@ def collect_co_per_chrom_dist_data[C: ChromosomeLike](
 
 def collect_interevent_dist_data[C: ChromosomeLike](
     transformer: DataTransformer[
-        tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]], C
+        tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]
     ],
     chrom_sets: list[ChromosomeSet[C]],
 ) -> DataPacket[tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]]:
@@ -69,7 +69,7 @@ def collect_interevent_dist_data[C: ChromosomeLike](
 
 
 def collect_cM_rf_curve_data[C: ChromosomeLike](
-    transformer: DataTransformer[tuple[list[float], list[float]], C],
+    transformer: DataTransformer[tuple[list[float], list[float]]],
     chrom_sets: list[ChromosomeSet[C]],
 ) -> DataPacket[tuple[list[float], list[float]]]:
     transformed_data = list(map(transformer, chrom_sets))
@@ -86,7 +86,7 @@ def collect_cM_rf_curve_data[C: ChromosomeLike](
 
 
 def collect_preinterf_cM_rf_curve_data[C: ChromosomeLike](
-    transformer: DataTransformer[tuple[list[float], list[float]], C],
+    transformer: DataTransformer[tuple[list[float], list[float]]],
     chrom_sets: list[ChromosomeSet[C]],
 ) -> DataPacket[tuple[list[float], list[float]]]:
     transformed_data = list(map(transformer, chrom_sets))
@@ -103,7 +103,7 @@ def collect_preinterf_cM_rf_curve_data[C: ChromosomeLike](
 
 
 def collect_single_refregion_coc_curve_data[C: ChromosomeLike](
-    transformer: DataTransformer[np.ndarray[tuple[int], np.dtype[np.float64]], C],
+    transformer: DataTransformer[np.ndarray[tuple[int], np.dtype[np.float64]]],
     chrom_sets: list[ChromosomeSet[C]],
     refregion_size: int = 10,
 ) -> DataPacket[np.ndarray[tuple[int], np.dtype[np.float64]]]:
@@ -121,7 +121,7 @@ def collect_single_refregion_coc_curve_data[C: ChromosomeLike](
 
 
 def collect_sliding_compareregion_coc_curve_data[C: ChromosomeLike](
-    transformer: DataTransformer[np.ndarray[tuple[int], np.dtype[np.float64]], C],
+    transformer: DataTransformer[np.ndarray[tuple[int], np.dtype[np.float64]]],
     chrom_sets: list[ChromosomeSet[C]],
     testregion_size: int = 10,
 ) -> DataPacket[np.ndarray[tuple[int], np.dtype[np.float64]]]:
@@ -152,7 +152,7 @@ def _prepare_3d_data_for_matplotlib(
 
 
 def collect_3d_expanding_testregion_coc_curve_data[C: ChromosomeLike](
-    transformer: DataTransformer[np.ndarray[tuple[int, int], np.dtype[np.float64]], C],
+    transformer: DataTransformer[np.ndarray[tuple[int, int], np.dtype[np.float64]]],
     chrom_set: ChromosomeSet[C],
     refregion_size: int = 10,
 ) -> ThreeDimDataPacket[

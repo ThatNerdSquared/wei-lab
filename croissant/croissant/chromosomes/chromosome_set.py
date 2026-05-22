@@ -2,7 +2,7 @@ import functools
 import itertools
 from collections.abc import Iterable, Iterator
 from dataclasses import InitVar, dataclass, field
-from typing import Callable, Protocol, override
+from typing import Callable, Generic, Protocol, TypeVar, override
 from uuid import UUID, uuid4
 
 import more_itertools
@@ -22,20 +22,22 @@ from croissant.chromosomes.legacy_chromosome import LegacyChromosome
 
 type ChromosomeMaker[C: ChromosomeLike] = Callable[[int], C]
 
+C_co = TypeVar('C_co', bound=ChromosomeLike, covariant=True)
+
 
 @dataclass(kw_only=True, slots=True)
-class ChromosomeSet[C: ChromosomeLike]:
+class ChromosomeSet(Generic[C_co]):
     id: UUID = field(init=False, default_factory=uuid4)
     label: str
     num_chroms: int
     chrom_length: int
-    chroms: list[C] = field(init=False)
-    chrom_maker: InitVar[ChromosomeMaker[C]]
+    chroms: list[C_co] = field(init=False)
+    chrom_maker: InitVar[ChromosomeMaker[C_co]]
 
-    def __post_init__(self, chrom_maker: ChromosomeMaker[C]):
+    def __post_init__(self, chrom_maker: ChromosomeMaker[C_co]):
         self.chroms = [chrom_maker(self.chrom_length) for _ in range(self.num_chroms)]
 
-    def __iter__(self) -> Iterator[C]:
+    def __iter__(self) -> Iterator[C_co]:
         return iter(self.chroms)
 
     @override
@@ -43,8 +45,8 @@ class ChromosomeSet[C: ChromosomeLike]:
         return hash(self.id)
 
 
-def pool_iter[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C],
+def pool_iter(
+    chrom_set: ChromosomeSet[ChromosomeLike],
 ) -> Iterator[ChromosomeLike]:
     if len(chrom_set.chroms) == 0:
         return iter(())
@@ -54,7 +56,7 @@ def pool_iter[C: ChromosomeLike](
 
 
 @functools.cache
-def pool_size[C: ChromosomeLike](chrom_set: ChromosomeSet[C]) -> int:
+def pool_size(chrom_set: ChromosomeSet[ChromosomeLike]) -> int:
     if len(chrom_set.chroms) == 0:
         return 0
     if isinstance(chrom_set.chroms[0], Iterable):
@@ -62,10 +64,10 @@ def pool_size[C: ChromosomeLike](chrom_set: ChromosomeSet[C]) -> int:
     return chrom_set.num_chroms
 
 
-class ChromsetMaker[C: ChromosomeLike](Protocol):
+class ChromsetMaker(Protocol):
     def __call__(
         self, *, label: str, num_chroms: int, chrom_length: int
-    ) -> ChromosomeSet[C]: ...
+    ) -> ChromosomeSet[ChromosomeLike]: ...
 
 
 make_chromset_with_legacy_chromosome = functools.partial(

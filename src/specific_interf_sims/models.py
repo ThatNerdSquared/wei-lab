@@ -8,8 +8,8 @@ from src.specific_interf_sims.interf_schemes import BinArray, InterferenceScheme
 type BinIdxArray = np.ndarray[tuple[int], np.dtype[np.int64]]
 
 
-def induce_COs_via_random_forward_draw[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C],
+def induce_COs_via_random_forward_draw(
+    chrom_set: ChromosomeSet[ChromosomeLike],
     starting_bins: BinArray,
     interf: InterferenceScheme,
     rand: np.random.Generator,
@@ -26,8 +26,8 @@ def induce_COs_via_random_forward_draw[C: ChromosomeLike](
                 chrom.insert_crossover(int(loc))
 
 
-def induce_COs_via_random_forward_draw_w_assurance[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C],
+def induce_COs_via_random_forward_draw_w_assurance(
+    chrom_set: ChromosomeSet[ChromosomeLike],
     starting_bins: BinArray,
     interf: InterferenceScheme,
     rand: np.random.Generator,

@@ -98,7 +98,7 @@ def mock_chromset() -> ChromosomeSet[ChromosomeTetrad]:
     )
 
 
-def set_recomb_sim_date_to_newyrs[C: ChromosomeLike](sim: RecombSim[C]):
+def set_recomb_sim_date_to_newyrs(sim: RecombSim[ChromosomeLike]):
     """
     Sets the given RecombSim's generated time to January 1st, 2000,
     14:50:51.123456.

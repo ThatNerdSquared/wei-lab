@@ -14,11 +14,11 @@ from croissant.chromosomes.core import ChromosomeLike
 from src.specific_interf_sims.interf_schemes import BinArray
 from src.utils.cli_utils import elapsed_time_printer
 
-type DataTransformer[T, C: ChromosomeLike] = Callable[[ChromosomeSet[C]], tuple[str, T]]
+type DataTransformer[T] = Callable[[ChromosomeSet[ChromosomeLike]], tuple[str, T]]
 
 
-def transform_recomb_curve_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C], proportional: bool = True
+def transform_recomb_curve_data(
+    chrom_set: ChromosomeSet[ChromosomeLike], proportional: bool = True
 ) -> tuple[str, npt.NDArray[np.float64]]:
     recomb_curve_data = np.zeros(chrom_set.chrom_length)
 
@@ -33,8 +33,8 @@ def transform_recomb_curve_data[C: ChromosomeLike](
     return (chrom_set.label, recomb_curve_data)
 
 
-def transform_co_per_chrom_dist_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C], proportional: bool = True
+def transform_co_per_chrom_dist_data(
+    chrom_set: ChromosomeSet[ChromosomeLike], proportional: bool = True
 ) -> tuple[str, npt.NDArray[np.float64]]:
     data_dict: dict[int, float] = {}
 
@@ -54,8 +54,8 @@ def transform_co_per_chrom_dist_data[C: ChromosomeLike](
     return result
 
 
-def transform_interevent_dist_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C], proportional: bool = True
+def transform_interevent_dist_data(
+    chrom_set: ChromosomeSet[ChromosomeLike], proportional: bool = True
 ) -> tuple[str, tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]]:
     dist_data: list[float] = []
 
@@ -74,8 +74,8 @@ def transform_interevent_dist_data[C: ChromosomeLike](
     return chrom_set.label, (totals, groups)
 
 
-def transform_cM_rf_curve_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C],
+def transform_cM_rf_curve_data(
+    chrom_set: ChromosomeSet[ChromosomeLike],
 ) -> tuple[str, tuple[list[float], list[float]]]:
     dataset_cM: list[float] = []
     dataset_rf: list[float] = []
@@ -97,8 +97,8 @@ def transform_cM_rf_curve_data[C: ChromosomeLike](
     return chrom_set.label, (dataset_cM, dataset_rf)
 
 
-def transform_cM_rf_curve_data_haplotype_switching_only[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C],
+def transform_cM_rf_curve_data_haplotype_switching_only(
+    chrom_set: ChromosomeSet[ChromosomeLike],
 ) -> tuple[str, tuple[list[float], list[float]]]:
     dataset_cM: list[float] = []
     dataset_rf: list[float] = []
@@ -120,8 +120,8 @@ def transform_cM_rf_curve_data_haplotype_switching_only[C: ChromosomeLike](
     return chrom_set.label, (dataset_cM, dataset_rf)
 
 
-def transform_preinterf_cM_rf_curve_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C], pre_interf_dist: BinArray
+def transform_preinterf_cM_rf_curve_data(
+    chrom_set: ChromosomeSet[ChromosomeLike], pre_interf_dist: BinArray
 ) -> tuple[str, tuple[list[float], list[float]]]:
     dataset_cM: list[float] = []
     dataset_rf: list[float] = []
@@ -142,32 +142,32 @@ def transform_preinterf_cM_rf_curve_data[C: ChromosomeLike](
     return chrom_set.label, (dataset_cM, dataset_rf)
 
 
-def transform_mean_cos_per_chrom_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C],
+def transform_mean_cos_per_chrom_data(
+    chrom_set: ChromosomeSet[ChromosomeLike],
 ) -> tuple[str, np.float64]:
     return chrom_set.label, np.float64(
         np.mean([x.get_num_crossovers() for x in chrom_set])
     )
 
 
-def transform_mean_cos_per_chrom_in_pool_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C],
+def transform_mean_cos_per_chrom_in_pool_data(
+    chrom_set: ChromosomeSet[ChromosomeLike],
 ) -> tuple[str, np.float64]:
     return chrom_set.label, np.float64(
         np.mean([x.get_num_crossovers() for x in pool_iter(chrom_set)])
     )
 
 
-def transform_variance_cos_per_chrom_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C],
+def transform_variance_cos_per_chrom_data(
+    chrom_set: ChromosomeSet[ChromosomeLike],
 ) -> tuple[str, np.float64]:
     return chrom_set.label, np.float64(
         np.var([x.get_num_crossovers() for x in chrom_set])
     )
 
 
-def transform_co_haplotype_switch_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C],
+def transform_co_haplotype_switch_data(
+    chrom_set: ChromosomeSet[ChromosomeLike],
 ) -> tuple[
     str,
     tuple[Literal['non-haplotype-switching'], int],
@@ -201,8 +201,8 @@ class Region(NamedTuple):
 DEFAULT_REF_REGION = Region(0, 9)
 
 
-def transform_single_refregion_coc_curve_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C],
+def transform_single_refregion_coc_curve_data(
+    chrom_set: ChromosomeSet[ChromosomeLike],
     ref_region: Region = DEFAULT_REF_REGION,
     min_testregion_size: int = 1,
     calculate_inside_refregion: bool = False,
@@ -279,8 +279,8 @@ def transform_single_refregion_coc_curve_data[C: ChromosomeLike](
     return chrom_set.label, coc_data
 
 
-def transform_sliding_compare_region_coc_curve_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C],
+def transform_sliding_compare_region_coc_curve_data(
+    chrom_set: ChromosomeSet[ChromosomeLike],
     ref_region: Region = DEFAULT_REF_REGION,
     sliding_region_size: int = 10,
 ) -> tuple[str, np.ndarray[tuple[int], np.dtype[np.float64]]]:
@@ -344,8 +344,8 @@ def transform_sliding_compare_region_coc_curve_data[C: ChromosomeLike](
     return chrom_set.label, coc_data
 
 
-def transform_sliding_refregion_coc_curve_data[C: ChromosomeLike](
-    chrom_set: ChromosomeSet[C], region_size: int = 10, step_size: int = 1
+def transform_sliding_refregion_coc_curve_data(
+    chrom_set: ChromosomeSet[ChromosomeLike], region_size: int = 10, step_size: int = 1
 ) -> tuple[str, np.ndarray[tuple[int, int], np.dtype[np.float64]]]:
     result = np.zeros((chrom_set.chrom_length - region_size, chrom_set.chrom_length))
     result -= 2
