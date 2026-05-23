@@ -119,6 +119,14 @@ def test_get_co_locs(mock_chromatid: Chromatid):
     assert mock_chromatid.get_crossover_locations() == [10, 39, 42, 400]
 
 
+def test_haplotype_at_for_chromatid(mock_chromatid: Chromatid):
+    assert mock_chromatid.haplotype_at(5) == Haplotype.PINK
+    assert mock_chromatid.haplotype_at(10) == Haplotype.BLUE
+    assert mock_chromatid.haplotype_at(38) == Haplotype.BLUE
+    assert mock_chromatid.haplotype_at(39) == Haplotype.PINK
+    assert mock_chromatid.haplotype_at(267) == Haplotype.PINK
+
+
 def test_has_co_at_loc(mock_chromatid: Chromatid):
     assert mock_chromatid.has_crossover_at(10)
     assert not mock_chromatid.has_crossover_at(11)

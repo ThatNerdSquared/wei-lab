@@ -1,3 +1,4 @@
+import itertools
 from collections.abc import Iterable, Sequence
 from enum import Enum
 from typing import ClassVar, NamedTuple, NewType, Protocol, Self
@@ -100,3 +101,15 @@ class ChromosomeLike(Protocol):
 
 class Strand(ChromosomeLike, Protocol):
     base_haplotype: Haplotype
+
+    def haplotype_at(self, location: int) -> Haplotype: ...
+
+
+def strandify(chroms: Sequence[ChromosomeLike]) -> Iterable[Strand]:
+    """
+    Returns an iterable over all strands in the provided chromosomes.
+
+    To get the strands for a single chromosome, use its `as_strands()` method
+    instead.
+    """
+    return itertools.chain.from_iterable((x.as_strands() for x in chroms))

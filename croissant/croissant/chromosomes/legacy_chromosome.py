@@ -57,6 +57,19 @@ class LegacyChromosome:
     def get_crossover_locations(self) -> list[int]:
         return sorted(self._crossovers.keys())
 
+    def haplotype_at(self, location: int) -> Haplotype:
+        if self.get_num_crossovers() == 0:
+            return self.base_haplotype
+
+        num_before = 0
+        for co_loc in self._crossovers:
+            if co_loc <= location:
+                num_before += 1
+                continue
+            break
+
+        return Haplotype(num_before % 2)
+
     def has_crossover_at(self, location: int) -> bool:
         try:
             return self._crossovers[location]

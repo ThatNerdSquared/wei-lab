@@ -44,6 +44,16 @@ class Chromatid:
     def get_crossover_locations(self) -> list[int]:
         return [x.loc for x in self.crossovers]
 
+    def haplotype_at(self, location: int) -> Haplotype:
+        res = None
+
+        for co in reversed(self.crossovers):
+            if co.loc <= location:
+                res = co.haplotype
+                break
+
+        return self.base_haplotype if res is None else res
+
     def has_crossover_at(self, location: int) -> bool:
         return any(x.loc == location for x in self.crossovers)
 
