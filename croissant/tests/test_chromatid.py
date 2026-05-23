@@ -1,12 +1,6 @@
 from operator import attrgetter
 
-import numpy as np
-
-from croissant.chromosomes.chromatid import (
-    Chromatid,
-    convert_chromatid_to_haplotype_tbl,
-    invert_haplotypes_in_co_stack,
-)
+from croissant.chromosomes.chromatid import Chromatid, invert_haplotypes_in_co_stack
 from croissant.chromosomes.core import Crossover, CrossoverStack, Haplotype
 from tests.fixtures import (
     mock_chromatid,  # pyright: ignore[reportUnusedImport]
@@ -72,23 +66,6 @@ def test_add_co_stack(mock_chromatid: Chromatid, mock_crossovers: list[Crossover
     mock_chromatid.add_co_stack_from_exchange(stack_to_add)
     assert mock_chromatid.crossovers == expected_cos
     assert mock_chromatid.crossovers == sorted(expected_cos, key=attrgetter('loc'))
-
-
-def test_convert_chromatid_to_haplotype_tbl(
-    mock_chromatid: Chromatid, mock_chromatid_empty: Chromatid
-):
-    input_array = np.zeros(mock_chromatid_empty.length, dtype=np.int64)
-    assert np.sum(input_array) == 0
-    convert_chromatid_to_haplotype_tbl(mock_chromatid_empty, input_array)
-    assert np.sum(input_array) == mock_chromatid_empty.length
-
-    input_array = np.zeros(mock_chromatid.length, dtype=np.int64)
-    assert np.sum(input_array) == 0
-    input_array -= 1
-    convert_chromatid_to_haplotype_tbl(mock_chromatid, input_array)
-    assert -1 not in input_array
-    expected_array = np.array([1] * 10 + [0] * 29 + [1] * 3 + [1] * 358 + [0] * 100)
-    assert np.array_equal(input_array, expected_array)
 
 
 def test_insert_co_for_chromatid_empty(mock_chromatid_empty: Chromatid):
@@ -185,24 +162,3 @@ def test_chromatid_into_list(mock_chromatid: Chromatid):
         assert item.base_haplotype == mock_chromatid.base_haplotype
         assert item.length == mock_chromatid.length
         assert not item.crossovers
-
-
-def test_chromatid_into_haplotype_tbl(mock_chromatid: Chromatid):
-    holding_arr = np.zeros((4, mock_chromatid.length), dtype=np.int64)
-    holding_arr[:] = -1
-    empty_row = np.zeros(mock_chromatid.length, dtype=np.int64)
-    empty_row[:] = -1
-
-    expected_tbl_result = np.zeros(mock_chromatid.length, dtype=np.int64)
-    expected_tbl_result[0:10] = 1
-    expected_tbl_result[10:39] = 0
-    expected_tbl_result[39:42] = 1
-    expected_tbl_result[42:400] = 1
-    expected_tbl_result[400:] = 0
-
-    assert np.array_equal(holding_arr[2], empty_row)
-    mock_chromatid.into_haplotype_tbl(holding_arr[2:3])
-    assert np.array_equal(holding_arr[0], empty_row)
-    assert np.array_equal(holding_arr[1], empty_row)
-    assert np.array_equal(holding_arr[2], expected_tbl_result)
-    assert np.array_equal(holding_arr[3], empty_row)

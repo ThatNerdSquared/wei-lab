@@ -86,20 +86,12 @@
                 }
             }
         ],
-        "./croissant/tests/test_chromatid.py": [
+        "./croissant/tests/test_haplotype_table.py": [
             {
                 "code": "reportAny",
                 "range": {
                     "startColumn": 26,
-                    "endColumn": 40,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 26,
-                    "endColumn": 40,
+                    "endColumn": 39,
                     "lineCount": 1
                 }
             },
@@ -107,7 +99,7 @@
                 "code": "reportAny",
                 "range": {
                     "startColumn": 26,
-                    "endColumn": 40,
+                    "endColumn": 39,
                     "lineCount": 1
                 }
             },
@@ -115,7 +107,7 @@
                 "code": "reportAny",
                 "range": {
                     "startColumn": 26,
-                    "endColumn": 40,
+                    "endColumn": 39,
                     "lineCount": 1
                 }
             },
@@ -123,49 +115,7 @@
                 "code": "reportAny",
                 "range": {
                     "startColumn": 26,
-                    "endColumn": 40,
-                    "lineCount": 1
-                }
-            }
-        ],
-        "./croissant/tests/test_chromosome_tetrad.py": [
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 30,
-                    "endColumn": 44,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 22,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 22,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 22,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 22,
+                    "endColumn": 39,
                     "lineCount": 1
                 }
             },
@@ -173,17 +123,47 @@
                 "code": "reportAny",
                 "range": {
                     "startColumn": 30,
-                    "endColumn": 44,
+                    "endColumn": 43,
                     "lineCount": 1
                 }
-            }
-        ],
-        "./croissant/tests/test_legacy_chromosome.py": [
+            },
             {
                 "code": "reportAny",
                 "range": {
-                    "startColumn": 26,
-                    "endColumn": 40,
+                    "startColumn": 8,
+                    "endColumn": 21,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 21,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 21,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 21,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 30,
+                    "endColumn": 43,
                     "lineCount": 1
                 }
             },
@@ -191,7 +171,7 @@
                 "code": "reportAny",
                 "range": {
                     "startColumn": 26,
-                    "endColumn": 40,
+                    "endColumn": 39,
                     "lineCount": 1
                 }
             },
@@ -199,7 +179,7 @@
                 "code": "reportAny",
                 "range": {
                     "startColumn": 26,
-                    "endColumn": 40,
+                    "endColumn": 39,
                     "lineCount": 1
                 }
             },
@@ -207,7 +187,7 @@
                 "code": "reportAny",
                 "range": {
                     "startColumn": 26,
-                    "endColumn": 40,
+                    "endColumn": 39,
                     "lineCount": 1
                 }
             },
@@ -215,47 +195,7 @@
                 "code": "reportAny",
                 "range": {
                     "startColumn": 26,
-                    "endColumn": 40,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 26,
-                    "endColumn": 40,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 26,
-                    "endColumn": 40,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 26,
-                    "endColumn": 40,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 26,
-                    "endColumn": 40,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 26,
-                    "endColumn": 40,
+                    "endColumn": 39,
                     "lineCount": 1
                 }
             }
