@@ -200,6 +200,24 @@
                 }
             }
         ],
+        "./src/oneoffs/cM_with_and_without_drive_parametric_curve.py": [
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 4,
+                    "endColumn": 21,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 22,
+                    "endColumn": 75,
+                    "lineCount": 1
+                }
+            }
+        ],
         "./src/oneoffs/generate_haplotype_tbl_for_grant.py": [
             {
                 "code": "reportAny",
