@@ -1,16 +1,21 @@
+import itertools
 import tomllib
 from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import numpy as np
 import tomli_w
 
 from croissant._fmt_utils import assemble_fp
-from croissant.chromosomes import CROISSANT_CHROM_MAPPER
-from croissant.chromosomes.core import ChromosomeLike
+from croissant.chromosomes import (
+    CROISSANT_CHROM_MAPPER,
+    ChromosomeSet,
+    ChromosomeTetrad,
+)
+from croissant.chromosomes.core import ChromosomeLike, Strand
 
 _CURR_SIM_VERSION = 0
 SIM_FILE_EXT = '.recombsim'
@@ -128,3 +133,64 @@ class RecombSim[C: ChromosomeLike]:
             fp, stringified_chroms_buffer, header=stringified_metadata, fmt='%0d'
         )
         return fp
+
+
+type Selector = Callable[[ChromosomeTetrad], tuple[Strand,] | tuple[()]]
+
+
+def downsample(
+    input_chroms: ChromosomeSet[ChromosomeTetrad], selector: Selector, *, new_label: str
+) -> ChromosomeSet[Strand]:
+    """
+    Returns a ChromosomeSet with the same properties as the original, except
+    downsampled to a set of chromatids following the policy in the selector
+    function.
+
+    Due to the way the ChromosomeSet constructor/post-init works, this
+    implementation is super scuffed. Once I get rid of ChromosomeSet, I'll
+    refactor this to take/return RecombSim instances, which should hopefully
+    give a much cleaner implementation.
+    """
+    res: ChromosomeSet[Strand] = ChromosomeSet(  # pyright: ignore[reportUnknownVariableType]
+        label=new_label,
+        num_chroms=0,
+        chrom_length=input_chroms.chrom_length,
+        chrom_maker=None,  # pyright: ignore[reportArgumentType]
+    )
+    res.chroms = list(itertools.chain.from_iterable(map(selector, input_chroms)))
+    res.num_chroms = len(res.chroms)
+    return res
+
+
+def downsample_probabilistic(
+    input_chroms: ChromosomeSet[ChromosomeTetrad],
+    selector1: Selector,
+    selector2: Selector,
+    *,
+    p1: float,
+    new_label: str,
+    rand_seed: int = 93719,
+) -> ChromosomeSet[Strand]:
+    """
+    Same as `downsample`, except chooses between `selector1` and `selector2`
+    for each tetrad, using `selector1` with probability `p1`.
+    """
+
+    rand = np.random.default_rng(rand_seed)
+
+    res: ChromosomeSet[Strand] = ChromosomeSet(  # pyright: ignore[reportUnknownVariableType]
+        label=new_label,
+        num_chroms=0,
+        chrom_length=input_chroms.chrom_length,
+        chrom_maker=None,  # pyright: ignore[reportArgumentType]
+    )
+    res.chroms = list(
+        itertools.chain.from_iterable(
+            map(
+                lambda x: selector1(x) if rand.binomial(1, p1) else selector2(x),
+                input_chroms,
+            )
+        )
+    )
+    res.num_chroms = len(res.chroms)
+    return res

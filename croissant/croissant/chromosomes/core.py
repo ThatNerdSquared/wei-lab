@@ -113,3 +113,12 @@ def strandify(chroms: Sequence[ChromosomeLike]) -> Iterable[Strand]:
     instead.
     """
     return itertools.chain.from_iterable((x.as_strands() for x in chroms))
+
+
+def num_strands(chroms: Sequence[ChromosomeLike]) -> int:
+    """
+    Returns the number of Strands within the iterable produced by
+    calling `strandify` on the given list of chromosomes, in
+    constant time.
+    """
+    return len(chroms) * chroms[0].num_strands

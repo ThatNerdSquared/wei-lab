@@ -1,6 +1,6 @@
 import functools
 import itertools
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import InitVar, dataclass, field
 from typing import Callable, Generic, Protocol, TypeVar, override
 from uuid import UUID, uuid4
@@ -31,7 +31,7 @@ class ChromosomeSet(Generic[C_co]):
     label: str
     num_chroms: int
     chrom_length: int
-    chroms: list[C_co] = field(init=False)
+    chroms: Sequence[C_co] = field(init=False)
     chrom_maker: InitVar[ChromosomeMaker[C_co]]
 
     def __post_init__(self, chrom_maker: ChromosomeMaker[C_co]):

@@ -4,22 +4,40 @@ from typing import Self
 
 import numpy as np
 
-from croissant.chromosomes.core import ChromosomeLike, strandify
+from croissant.chromosomes.core import ChromosomeLike, num_strands, strandify
+
+type IndicatorTbl = np.ndarray[tuple[int, int], np.dtype[np.int64]]
+
+
+def make_indicator_tbl(*, height: int, width: int) -> IndicatorTbl:
+    tbl = np.zeros((height, width), dtype=np.int64)
+    tbl[:] = -1
+    return tbl
+
+
+def make_indicator_tbl_chrom_sized(
+    chroms: Sequence[ChromosomeLike],
+) -> IndicatorTbl:
+    return make_indicator_tbl(
+        height=num_strands(chroms),
+        width=chroms[0].length,
+    )
 
 
 class HaplotypeTable:
-    tbl: np.ndarray[tuple[int, int], np.dtype[np.int64]]
+    tbl: IndicatorTbl
 
-    def __init__(self, *, num_strands: int, chrom_length: int):
-        self.tbl = np.zeros((num_strands, chrom_length), dtype=np.int64)
-        self.tbl[:] = -1
+    def __init__(self, *, tbl: IndicatorTbl):
+        self.tbl = tbl
+        # if not no_build:
+
+    @classmethod
+    def of_size(cls, *, num_strands: int, chrom_length: int) -> Self:
+        return cls(tbl=make_indicator_tbl(height=num_strands, width=chrom_length))
 
     @classmethod
     def from_chromosomes(cls, chroms: Sequence[ChromosomeLike]) -> Self:
-        res = cls(
-            num_strands=len(chroms) * chroms[0].num_strands,
-            chrom_length=chroms[0].length,
-        )
+        res = cls(tbl=make_indicator_tbl_chrom_sized(chroms))
         for strand, curr_row in zip(strandify(chroms), res.tbl):
             if strand.get_num_crossovers() == 0:
                 curr_row[:] = strand.base_haplotype.value
