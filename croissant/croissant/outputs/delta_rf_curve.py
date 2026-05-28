@@ -1,3 +1,4 @@
+import operator
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import ClassVar
@@ -49,7 +50,7 @@ def process_delta_rf_data(
 
     raw_ref_chrom_data = calculate_cM_rf_data(ref_chromset)
     ref_data = smart_dictify(
-        raw_ref_chrom_data, resolver=lambda x: np.mean(x, dtype=np.dtype[np.float64])
+        raw_ref_chrom_data, resolver=lambda x: np.mean(x, dtype=np.float64)
     )
     exp_chrom_data = [calculate_cM_rf_data(x) for x in exp_chromsets]
 
@@ -62,7 +63,9 @@ def process_delta_rf_data(
             try:
                 res.append((pt[0], pt[1] - ref_data[pt[0]]))
             except KeyError:
+                num_pts_discarded += 1
                 continue
+        res.sort(key=operator.itemgetter(0))
         data[chrom_set.label] = res
         print(
             f'∆RF calculated for {chrom_set.label} with {num_pts_discarded}/{len(dataset)} points discarded.'  # noqa: E501
@@ -73,11 +76,12 @@ def process_delta_rf_data(
 def plot_delta_rf_curve(data: MultipleCurves):
     fig = plt.figure(figsize=(9.0, 7.0))
     ax = fig.add_subplot()
-    for label, points in data.items():
-        _ = ax.plot(*zip(*points), label)
+    for curve_label, points in data.items():
+        _ = ax.plot(*zip(*points), label=curve_label)
 
     raw_ref_cM, ref_rf = zip(*data['no drive'])
     ref_cM = np.array(raw_ref_cM)
+    ref_cM.sort()
     _ = ax.plot(
         ref_cM,
         list(map(float.__sub__, haldane_input_cM(ref_cM), ref_rf)),
@@ -85,7 +89,7 @@ def plot_delta_rf_curve(data: MultipleCurves):
     )
     _ = ax.plot(ref_cM, list(map(float.__sub__, ref_cM, ref_rf)), label='morgan')
     _ = ax.plot(
-        ref_cM, list(map(float.__sub__, kosambi(ref_cM), ref_cM)), label='kosambi'
+        ref_cM, list(map(float.__sub__, kosambi(ref_cM), ref_rf)), label='kosambi'
     )
     _ = ax.legend()
 

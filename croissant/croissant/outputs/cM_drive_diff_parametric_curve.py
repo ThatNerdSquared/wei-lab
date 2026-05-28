@@ -16,7 +16,7 @@ type PairedCMData = list[tuple[float, float]]
 
 @dataclass(slots=True, init=False)
 class cMDriveDiffParametricCurve:
-    fig_name: ClassVar[str] = 'cM with/without drive, parametric wrt recomb rate'
+    fig_name: ClassVar[str] = 'cM with/without drive parametric wrt recomb rate'
     xlabel: ClassVar[str] = 'morgans (M) w/o drive'
     ylabel: ClassVar[str] = 'morgans (M) w/ drive'
     data: PairedCMData

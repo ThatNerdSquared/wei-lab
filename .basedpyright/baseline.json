@@ -40,14 +40,6 @@
         ],
         "./croissant/croissant/outputs/delta_rf_curve.py": [
             {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 47,
-                    "endColumn": 85,
-                    "lineCount": 1
-                }
-            },
-            {
                 "code": "reportArgumentType",
                 "range": {
                     "startColumn": 32,

@@ -48,7 +48,7 @@ chrom_sets: list[ChromosomeSet[ChromosomeTetrad]] = []
 queue = SimulationQueue(
     induce_COs_via_random_forward_draw, rand_seed=54321, chroms_per_sim=NUM_CHROMS
 )
-for AVG_COS_PER_CHROM in np.linspace(0, 10, 100):
+for AVG_COS_PER_CHROM in np.linspace(1, 10, 100):
     chroms_to_sim = _make_chromset()
     _ = queue_sim(
         queue,
