@@ -12,7 +12,7 @@ authors = [
     { name="Nathan Yeung", email="nathanyeung@outlook.com" }
 ]
 description = "CROISSANT: CROssover and Interference Scheme Simulator and ANalysis Tool"
-requires-python = ">= 3.14"
+requires-python = ">= 3.12"
 dependencies = [
     "numpy>=2.3.1",
     "matplotlib>=3.10.3",

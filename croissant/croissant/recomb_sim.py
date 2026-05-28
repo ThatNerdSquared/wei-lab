@@ -1,3 +1,7 @@
+from __future__ import (
+    annotations,
+)  # needed to use RecombSim in its own definition
+
 import itertools
 import tomllib
 from collections.abc import Sequence

@@ -1,3 +1,7 @@
+from __future__ import (
+    annotations,
+)  # needed to have Strand and ChromosomeLike in same file
+
 import itertools
 from collections.abc import Iterable, Sequence
 from enum import Enum
