@@ -11,7 +11,10 @@ from croissant.chromosomes import (
     selectOnlyRecombinantsForPool,
     selectSingleSisterForPool,
 )
-from croissant.outputs.cM_drive_diff_parametric_curve import cMDriveDiffParametricCurve
+from croissant.outputs.cM_drive_diff_parametric_curve import (
+    cMMaxDriveDiffCurve,
+    cMPartialDriveDiffCurve,
+)
 from croissant.recomb_sim import downsample
 
 from src.specific_interf_sims.interf_schemes import (
@@ -48,7 +51,7 @@ chrom_sets: list[ChromosomeSet[ChromosomeTetrad]] = []
 queue = SimulationQueue(
     induce_COs_via_random_forward_draw, rand_seed=54321, chroms_per_sim=NUM_CHROMS
 )
-for AVG_COS_PER_CHROM in np.linspace(1, 10, 100):
+for AVG_COS_PER_CHROM in np.linspace(1, 10, 50):
     chroms_to_sim = _make_chromset()
     _ = queue_sim(
         queue,
@@ -81,9 +84,9 @@ max_drive_data = list(
     )
 )
 
-partial_drive_diff_plot = cMDriveDiffParametricCurve(with_interf=WITH_INTERF)
+partial_drive_diff_plot = cMPartialDriveDiffCurve(with_interf=WITH_INTERF)
 partial_drive_diff_plot.build(
     {'reference': no_drive_data, 'experimental': partial_drive_data}
 )
-max_drive_diff_plot = cMDriveDiffParametricCurve(with_interf=WITH_INTERF)
+max_drive_diff_plot = cMMaxDriveDiffCurve(with_interf=WITH_INTERF)
 max_drive_diff_plot.build({'reference': no_drive_data, 'experimental': max_drive_data})

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import ClassVar
 
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.figure import Figure
 from src.specific_interf_sims.plotter import save_plot
 
@@ -61,4 +62,27 @@ def plot_cM_parametric_curve(data: PairedCMData):
     fig = plt.figure(figsize=(9.0, 7.0))
     ax = fig.add_subplot()
     _ = ax.plot(*zip(*data))
+    max_x = max(data, key=operator.itemgetter(0))[0]
+    xs = np.linspace(0, max_x, 50)
+    _ = ax.plot(xs, xs, 'r')
+    ax.set_aspect('equal')
+    ax.grid(visible=True)
     return fig
+
+
+class cMMaxDriveDiffCurve(cMDriveDiffParametricCurve):
+    fig_name: ClassVar[str] = 'cM with/without max drive parametric wrt recomb rate'
+    xlabel: ClassVar[str] = 'morgans (M) w/o drive'
+    ylabel: ClassVar[str] = 'morgans (M) w/ max drive'
+
+    def __init__(self, *, with_interf: bool):
+        super().__init__(with_interf=with_interf)
+
+
+class cMPartialDriveDiffCurve(cMDriveDiffParametricCurve):
+    fig_name: ClassVar[str] = 'cM with/without partial drive parametric wrt recomb rate'
+    xlabel: ClassVar[str] = 'morgans (M) w/o drive'
+    ylabel: ClassVar[str] = 'morgans (M) w/ partial drive'
+
+    def __init__(self, *, with_interf: bool):
+        super().__init__(with_interf=with_interf)
