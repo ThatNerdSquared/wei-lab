@@ -52,6 +52,22 @@
             {
                 "code": "reportArgumentType",
                 "range": {
+                    "startColumn": 8,
+                    "endColumn": 53,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 12,
+                    "endColumn": 59,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
                     "startColumn": 32,
                     "endColumn": 56,
                     "lineCount": 1

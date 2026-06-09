@@ -9,6 +9,16 @@ from croissant.chromosomes.core import ChromosomeLike
 
 type ListOfPoints = list[tuple[float, float]]
 type MultipleCurves = dict[str, ListOfPoints]
+type AxisLists = tuple[list[float], list[float]]
+
+
+def points_to_axis_lists(pts: ListOfPoints) -> AxisLists:
+    retvals = list(map(list, zip(*pts)))
+    return retvals[0], retvals[1]
+
+
+def axis_lists_to_points(axis_lists: AxisLists) -> ListOfPoints:
+    return [(x, y) for x, y in zip(*axis_lists)]
 
 
 class Output[T, R](Protocol):

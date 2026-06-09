@@ -1,4 +1,3 @@
-import operator
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import ClassVar
@@ -6,13 +5,19 @@ from typing import ClassVar
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.figure import Figure
+from numpy.polynomial import polynomial
 from src.specific_interf_sims.plotter import save_plot
 from src.utils.standard_funcs import haldane_input_cM, kosambi
 
 from croissant.chromosomes import ChromosomeSet
 from croissant.chromosomes.core import ChromosomeLike
 from croissant.outputs.cM_rf_curve import calculate_cM_rf_data
-from croissant.outputs.output import MultipleCurves, label_figure, smart_dictify
+from croissant.outputs.output import (
+    MultipleCurves,
+    axis_lists_to_points,
+    label_figure,
+    points_to_axis_lists,
+)
 
 
 @dataclass(slots=True, init=False)
@@ -49,26 +54,21 @@ def process_delta_rf_data(
     """
 
     raw_ref_chrom_data = calculate_cM_rf_data(ref_chromset)
-    ref_data = smart_dictify(
-        raw_ref_chrom_data, resolver=lambda x: np.mean(x, dtype=np.float64)
-    )
-    exp_chrom_data = [calculate_cM_rf_data(x) for x in exp_chromsets]
+    ref_cM, ref_rf = points_to_axis_lists(raw_ref_chrom_data)
+    domain = [0, max(ref_cM) * 5]
+    ref_curve = polynomial.Polynomial.fit(ref_cM, ref_rf, 2, domain=domain)
 
     data: dict[str, list[tuple[float, float]]] = {}
-    data[ref_chromset.label] = raw_ref_chrom_data
+    data['no drive'] = axis_lists_to_points(
+        ref_curve.linspace(n=len(raw_ref_chrom_data))
+    )
+    exp_chrom_data = [calculate_cM_rf_data(x) for x in exp_chromsets]
     for chrom_set, dataset in zip(exp_chromsets, exp_chrom_data):
-        num_pts_discarded = 0
-        res: list[tuple[float, float]] = []
-        for pt in dataset:
-            try:
-                res.append((pt[0], pt[1] - ref_data[pt[0]]))
-            except KeyError:
-                num_pts_discarded += 1
-                continue
-        res.sort(key=operator.itemgetter(0))
-        data[chrom_set.label] = res
-        print(
-            f'∆RF calculated for {chrom_set.label} with {num_pts_discarded}/{len(dataset)} points discarded.'  # noqa: E501
+        exp_cM, exp_rf = points_to_axis_lists(dataset)
+        exp_curve = polynomial.Polynomial.fit(exp_cM, exp_rf, 2, domain=domain)
+        delta_curve = exp_curve - ref_curve
+        data[chrom_set.label] = axis_lists_to_points(
+            delta_curve.linspace(n=len(raw_ref_chrom_data))
         )
     return data
 
