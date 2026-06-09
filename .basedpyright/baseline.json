@@ -20,20 +20,30 @@
                 }
             }
         ],
+        "./croissant/croissant/haplotype_table.py": [
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 11,
+                    "endColumn": 30,
+                    "lineCount": 1
+                }
+            }
+        ],
         "./croissant/croissant/outputs/cM_rf_curve.py": [
             {
                 "code": "reportAny",
                 "range": {
-                    "startColumn": 8,
-                    "endColumn": 15,
+                    "startColumn": 29,
+                    "endColumn": 35,
                     "lineCount": 1
                 }
             },
             {
                 "code": "reportAny",
                 "range": {
-                    "startColumn": 8,
-                    "endColumn": 10,
+                    "startColumn": 37,
+                    "endColumn": 39,
                     "lineCount": 1
                 }
             }

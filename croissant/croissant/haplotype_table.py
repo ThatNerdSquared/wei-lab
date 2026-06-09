@@ -7,6 +7,7 @@ import numpy as np
 from croissant.chromosomes.core import ChromosomeLike, num_strands, strandify
 
 type IndicatorTbl = np.ndarray[tuple[int, int], np.dtype[np.int64]]
+type TotalTbl = np.ndarray[tuple[int], np.dtype[np.int64]]
 
 
 def make_indicator_tbl(*, height: int, width: int) -> IndicatorTbl:
@@ -51,3 +52,14 @@ class HaplotypeTable:
             curr_row[co_locs[-1] :] = strand.haplotype_at(co_locs[-1]).value
 
         return res
+
+    def convert_to_visible_co_indicators(self):
+        base_haplotypes = self.tbl[:, 0]
+        self.tbl[:, 1:] = self.tbl[:, 1:] ^ np.expand_dims(base_haplotypes, axis=1)
+
+    def to_totals(self) -> TotalTbl:
+        return indicators_to_totals(self.tbl)
+
+
+def indicators_to_totals(tbl: IndicatorTbl) -> TotalTbl:
+    return np.sum(tbl, axis=0)
