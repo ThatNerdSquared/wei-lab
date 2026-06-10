@@ -5,19 +5,14 @@ from typing import ClassVar
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.figure import Figure
-from numpy.polynomial import polynomial
 from src.specific_interf_sims.plotter import save_plot
 from src.utils.standard_funcs import haldane_input_cM, kosambi
 
 from croissant.chromosomes import ChromosomeSet
 from croissant.chromosomes.core import ChromosomeLike
 from croissant.outputs.cM_rf_curve import calculate_cM_rf_data
-from croissant.outputs.output import (
-    MultipleCurves,
-    axis_lists_to_points,
-    label_figure,
-    points_to_axis_lists,
-)
+from croissant.outputs.interpolated_cM_rf_curve import interpolate_cM_rf_data
+from croissant.outputs.output import MultipleCurves, label_figure
 
 
 @dataclass(slots=True, init=False)
@@ -53,44 +48,39 @@ def process_delta_rf_data(
     the "delta" for all other chromsets is calculated.
     """
 
-    raw_ref_chrom_data = calculate_cM_rf_data(ref_chromset)
-    ref_cM, ref_rf = points_to_axis_lists(raw_ref_chrom_data)
-    domain = [0, max(ref_cM) * 5]
-    ref_curve = polynomial.Polynomial.fit(ref_cM, ref_rf, 2, domain=domain)
-
     data: dict[str, list[tuple[float, float]]] = {}
-    data['no drive'] = axis_lists_to_points(
-        ref_curve.linspace(n=len(raw_ref_chrom_data))
-    )
-    exp_chrom_data = [calculate_cM_rf_data(x) for x in exp_chromsets]
-    for chrom_set, dataset in zip(exp_chromsets, exp_chrom_data):
-        exp_cM, exp_rf = points_to_axis_lists(dataset)
-        exp_curve = polynomial.Polynomial.fit(exp_cM, exp_rf, 2, domain=domain)
-        delta_curve = exp_curve - ref_curve
-        data[chrom_set.label] = axis_lists_to_points(
-            delta_curve.linspace(n=len(raw_ref_chrom_data))
-        )
+
+    interpolants = interpolate_cM_rf_data((ref_chromset, *exp_chromsets))
+    ref_rf_curve = interpolants[f'{ref_chromset.label} (interp.)']
+
+    for k, v in interpolants.items():
+        data[k.replace(' (interp.)', '')] = [
+            (ref[0], exp[1] - ref[1]) for ref, exp in zip(ref_rf_curve, v)
+        ]
+
+    data[ref_chromset.label] = calculate_cM_rf_data(ref_chromset)
     return data
 
 
 def plot_delta_rf_curve(data: MultipleCurves):
     fig = plt.figure(figsize=(9.0, 7.0))
     ax = fig.add_subplot()
+    no_drive_curve = None
     for curve_label, points in data.items():
-        _ = ax.plot(*zip(*points), label=curve_label)
+        cM, rf = zip(*points)
+        if curve_label == 'no drive':
+            no_drive_curve = ax.plot(cM[1:], rf[1:], label=curve_label)
+        else:
+            _ = ax.plot(cM[1:], rf[1:], label=curve_label)
+    if no_drive_curve:
+        no_drive_curve[0].remove()
 
-    raw_ref_cM, ref_rf = zip(*data['no drive'])
+    raw_ref_cM, raw_ref_rf = zip(*data['no drive'])
     ref_cM = np.array(raw_ref_cM)
-    ref_cM.sort()
-    _ = ax.plot(
-        ref_cM,
-        list(map(float.__sub__, haldane_input_cM(ref_cM), ref_rf)),
-        label='haldane',
-    )
-    _ = ax.plot(ref_cM, list(map(float.__sub__, ref_cM, ref_rf)), label='morgan')
-    _ = ax.plot(
-        ref_cM, list(map(float.__sub__, kosambi(ref_cM), ref_rf)), label='kosambi'
-    )
+    ref_rf = np.array(raw_ref_rf)
+    _ = ax.plot(ref_cM[1:], (haldane_input_cM(ref_cM) - ref_rf)[1:], label='haldane')
+    _ = ax.plot(ref_cM[1:], (ref_cM - ref_rf)[1:], label='morgan')
+    _ = ax.plot(ref_cM[1:], (kosambi(ref_cM) - ref_rf)[1:], label='kosambi')
     _ = ax.legend()
 
     return fig

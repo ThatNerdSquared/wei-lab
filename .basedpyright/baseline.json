@@ -52,64 +52,26 @@
             {
                 "code": "reportArgumentType",
                 "range": {
-                    "startColumn": 8,
-                    "endColumn": 53,
+                    "startColumn": 46,
+                    "endColumn": 52,
                     "lineCount": 1
                 }
             },
             {
                 "code": "reportArgumentType",
                 "range": {
-                    "startColumn": 12,
-                    "endColumn": 59,
+                    "startColumn": 37,
+                    "endColumn": 43,
                     "lineCount": 1
                 }
-            },
+            }
+        ],
+        "./croissant/croissant/outputs/interpolated_cM_rf_curve.py": [
             {
                 "code": "reportArgumentType",
                 "range": {
-                    "startColumn": 32,
-                    "endColumn": 56,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 32,
-                    "endColumn": 56,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 49,
-                    "endColumn": 55,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 40,
-                    "endColumn": 55,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 40,
-                    "endColumn": 55,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 48,
-                    "endColumn": 54,
+                    "startColumn": 65,
+                    "endColumn": 77,
                     "lineCount": 1
                 }
             }
