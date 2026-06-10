@@ -38,6 +38,8 @@ Repository = "https://github.com/ThatNerdSquared/wei-lab.git"
 [tool.basedpyright]
 allowedUntypedLibraries = [ "matplotlib" ]
 reportUnnecessaryTypeIgnoreComment = true
+reportIncompatibleUnannotatedOverride = true
+reportUnannotatedClassAttribute = false
 exclude = ["**/__pycache__"]
 
 [tool.ruff.lint]

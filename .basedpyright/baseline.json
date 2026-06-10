@@ -114,6 +114,24 @@
                 }
             }
         ],
+        "./croissant/croissant/outputs/preinterf_cM_rf_curve.py": [
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 29,
+                    "endColumn": 35,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportAny",
+                "range": {
+                    "startColumn": 37,
+                    "endColumn": 39,
+                    "lineCount": 1
+                }
+            }
+        ],
         "./croissant/croissant/recomb_sim.py": [
             {
                 "code": "reportExplicitAny",

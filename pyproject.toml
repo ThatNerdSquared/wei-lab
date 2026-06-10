@@ -1,6 +1,8 @@
 [tool.basedpyright]
 allowedUntypedLibraries = [ "matplotlib" ]
 reportUnnecessaryTypeIgnoreComment = true
+reportIncompatibleUnannotatedOverride = true
+reportUnannotatedClassAttribute = false
 exclude = ["**/__pycache__", "**/.*", "**/*.ipynb"]
 
 [tool.ruff]
