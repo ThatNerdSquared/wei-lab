@@ -1,3 +1,5 @@
+import itertools
+import operator
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import ClassVar
@@ -67,20 +69,27 @@ def plot_delta_rf_curve(data: MultipleCurves):
     ax = fig.add_subplot()
     no_drive_curve = None
     for curve_label, points in data.items():
-        cM, rf = zip(*points)
+        cM, rf = zip(*points[1:])
         if curve_label == 'no drive':
-            no_drive_curve = ax.plot(cM[1:], rf[1:], label=curve_label)
+            no_drive_curve = ax.plot(cM, rf, label=curve_label)
         else:
-            _ = ax.plot(cM[1:], rf[1:], label=curve_label)
+            _ = ax.plot(cM, rf, label=curve_label)
     if no_drive_curve:
         no_drive_curve[0].remove()
 
-    raw_ref_cM, raw_ref_rf = zip(*data['no drive'])
+    raw_ref_cM, raw_ref_rf = zip(*data['no drive'][1:])
     ref_cM = np.array(raw_ref_cM)
     ref_rf = np.array(raw_ref_rf)
-    _ = ax.plot(ref_cM[1:], (haldane_input_cM(ref_cM) - ref_rf)[1:], label='haldane')
-    _ = ax.plot(ref_cM[1:], (ref_cM - ref_rf)[1:], label='morgan')
-    _ = ax.plot(ref_cM[1:], (kosambi(ref_cM) - ref_rf)[1:], label='kosambi')
+    _ = ax.plot(ref_cM, haldane_input_cM(ref_cM) - ref_rf, label='haldane')
+    _ = ax.plot(ref_cM, ref_cM - ref_rf, label='morgan')
+    _ = ax.plot(ref_cM, kosambi(ref_cM) - ref_rf, label='kosambi')
     _ = ax.legend()
+
+    del data['no drive']
+    datapts_without_first = map(lambda x: x[1:], data.values())
+    max_y = max(
+        itertools.chain.from_iterable(datapts_without_first), key=operator.itemgetter(1)
+    )[1]
+    _ = ax.set_ylim(top=max_y * 1.5)
 
     return fig

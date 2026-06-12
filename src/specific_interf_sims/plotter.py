@@ -29,6 +29,7 @@ def _fmt_plot_filename(plot_title: str, fmt: str, additional_annotation: str = '
         .replace('.', '_')
         .replace(' ', '_')
         .replace('/', '_')
+        .replace('∆', 'delta')
         .strip()
         .lower()
     )

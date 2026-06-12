@@ -1,3 +1,4 @@
+import itertools
 import operator
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -5,6 +6,7 @@ from typing import ClassVar
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import markers
 from matplotlib.figure import Figure
 from src.specific_interf_sims.plotter import save_plot
 
@@ -75,10 +77,13 @@ def interpolate_cM_rf_data(
 def plot_interpolated_cM_rf_curve(data: MultipleCurves):
     fig = plt.figure(figsize=(9.0, 7.0))
     ax = fig.add_subplot()
+    marker = markers.MarkerStyle('D', fillstyle='none')
     for curve_label, points in data.items():
         if '(interp.)' in curve_label:
             _ = ax.plot(*zip(*points), label=curve_label)
         else:
-            _ = ax.scatter(*zip(*points), label=curve_label)
+            # thin out the points for clearer viewing on plot
+            thinned_pts = itertools.islice(points, 0, None, 20)
+            _ = ax.scatter(*zip(*thinned_pts), marker=marker, label=curve_label)
     _ = ax.legend()
     return fig
