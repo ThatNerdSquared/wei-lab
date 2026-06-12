@@ -30,6 +30,112 @@
                 }
             }
         ],
+        "./croissant/croissant/map_funcs.py": [
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 23,
+                    "endColumn": 42,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 40,
+                    "endColumn": 41,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 47,
+                    "endColumn": 57,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 55,
+                    "endColumn": 56,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 44,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 36,
+                    "endColumn": 38,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 41,
+                    "endColumn": 43,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 26,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 19,
+                    "endColumn": 21,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 23,
+                    "endColumn": 25,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 8,
+                    "endColumn": 35,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 27,
+                    "endColumn": 29,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 32,
+                    "endColumn": 34,
+                    "lineCount": 1
+                }
+            }
+        ],
         "./croissant/croissant/outputs/cM_rf_curve.py": [
             {
                 "code": "reportAny",
@@ -44,24 +150,6 @@
                 "range": {
                     "startColumn": 37,
                     "endColumn": 39,
-                    "lineCount": 1
-                }
-            }
-        ],
-        "./croissant/croissant/outputs/delta_rf_curve.py": [
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 41,
-                    "endColumn": 47,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 32,
-                    "endColumn": 38,
                     "lineCount": 1
                 }
             }
@@ -98,6 +186,22 @@
             {
                 "code": "reportUnknownMemberType",
                 "range": {
+                    "startColumn": 35,
+                    "endColumn": 51,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportUnknownArgumentType",
+                "range": {
+                    "startColumn": 35,
+                    "endColumn": 51,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportUnknownMemberType",
+                "range": {
                     "startColumn": 64,
                     "endColumn": 80,
                     "lineCount": 1
@@ -108,22 +212,6 @@
                 "range": {
                     "startColumn": 64,
                     "endColumn": 80,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 41,
-                    "endColumn": 47,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 32,
-                    "endColumn": 38,
                     "lineCount": 1
                 }
             }

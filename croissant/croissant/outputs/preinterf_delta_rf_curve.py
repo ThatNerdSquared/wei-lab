@@ -7,7 +7,11 @@ from src.specific_interf_sims.plotter import save_plot
 
 from croissant.chromosomes import ChromosomeSet
 from croissant.chromosomes.core import ChromosomeLike
-from croissant.outputs.delta_rf_curve import DeltaRFCurve, plot_delta_rf_curve
+from croissant.map_funcs import generate_comparative_map_func_data
+from croissant.outputs.delta_rf_curve import (
+    DeltaRFCurve,
+    plot_comparative_drive_rf_curves,
+)
 from croissant.outputs.output import MultipleCurves, label_figure
 from croissant.outputs.preinterf_cM_rf_curve import calculate_preinterf_cM_rf_data
 
@@ -26,7 +30,10 @@ class PreinterfDeltaRFCurve(DeltaRFCurve):
         self.data = process_preinterf_delta_rf_data(
             chrom_sets['reference'][0], chrom_sets['experimental'], self.pre_interf_dist
         )
-        self.output_file = plot_delta_rf_curve(self.data)
+        map_data = generate_comparative_map_func_data(
+            self.data['no drive'], operator.sub
+        )
+        self.output_file = plot_comparative_drive_rf_curves(self.data, map_data)
         label_figure(self)
         save_plot(
             self.output_file,
