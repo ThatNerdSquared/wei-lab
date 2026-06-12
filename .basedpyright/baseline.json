@@ -94,6 +94,40 @@
                 }
             }
         ],
+        "./croissant/croissant/outputs/rf_ratio_curve.py": [
+            {
+                "code": "reportUnknownMemberType",
+                "range": {
+                    "startColumn": 64,
+                    "endColumn": 80,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportUnknownArgumentType",
+                "range": {
+                    "startColumn": 64,
+                    "endColumn": 80,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 41,
+                    "endColumn": 47,
+                    "lineCount": 1
+                }
+            },
+            {
+                "code": "reportArgumentType",
+                "range": {
+                    "startColumn": 32,
+                    "endColumn": 38,
+                    "lineCount": 1
+                }
+            }
+        ],
         "./croissant/croissant/recomb_sim.py": [
             {
                 "code": "reportExplicitAny",

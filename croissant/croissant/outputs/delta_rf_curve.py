@@ -12,8 +12,7 @@ from src.utils.standard_funcs import haldane_input_cM, kosambi
 
 from croissant.chromosomes import ChromosomeSet
 from croissant.chromosomes.core import ChromosomeLike
-from croissant.outputs.cM_rf_curve import calculate_cM_rf_data
-from croissant.outputs.interpolated_cM_rf_curve import interpolate_cM_rf_data
+from croissant.outputs.interpolated_cM_rf_curve import compare_interpolated_rf
 from croissant.outputs.output import MultipleCurves, label_figure
 
 
@@ -45,23 +44,7 @@ def process_delta_rf_data(
     ref_chromset: ChromosomeSet[ChromosomeLike],
     exp_chromsets: Sequence[ChromosomeSet[ChromosomeLike]],
 ) -> MultipleCurves:
-    """
-    Assumes that the first chromset is the reference, against which
-    the "delta" for all other chromsets is calculated.
-    """
-
-    data: dict[str, list[tuple[float, float]]] = {}
-
-    interpolants = interpolate_cM_rf_data((ref_chromset, *exp_chromsets))
-    ref_rf_curve = interpolants[f'{ref_chromset.label} (interp.)']
-
-    for k, v in interpolants.items():
-        data[k.replace(' (interp.)', '')] = [
-            (ref[0], exp[1] - ref[1]) for ref, exp in zip(ref_rf_curve, v)
-        ]
-
-    data[ref_chromset.label] = calculate_cM_rf_data(ref_chromset)
-    return data
+    return compare_interpolated_rf(ref_chromset, exp_chromsets, operator.sub)
 
 
 def plot_delta_rf_curve(data: MultipleCurves):

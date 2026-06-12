@@ -2,7 +2,7 @@ import itertools
 import operator
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import Callable, ClassVar
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -71,6 +71,25 @@ def interpolate_cM_rf_data(
         raw_cM, raw_rf = points_to_axis_lists(dataset)
         rf_pts = np.interp(xs, raw_cM, raw_rf)
         data[f'{chroms.label} (interp.)'] = axis_lists_to_points((xs, rf_pts))
+    return data
+
+
+def compare_interpolated_rf(
+    ref_chromset: ChromosomeSet[ChromosomeLike],
+    exp_chromsets: Sequence[ChromosomeSet[ChromosomeLike]],
+    comparator: Callable[[float, float], float],
+) -> MultipleCurves:
+    data: MultipleCurves = {}
+
+    interpolants = interpolate_cM_rf_data((ref_chromset, *exp_chromsets))
+    ref_rf_curve = interpolants[f'{ref_chromset.label} (interp.)']
+
+    for k, v in interpolants.items():
+        data[k.replace(' (interp.)', '')] = [
+            (ref[0], comparator(exp[1], ref[1])) for ref, exp in zip(ref_rf_curve, v)
+        ]
+
+    data[ref_chromset.label] = calculate_cM_rf_data(ref_chromset)
     return data
 
 
