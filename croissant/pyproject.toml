@@ -14,10 +14,10 @@ authors = [
 description = "CROISSANT: CROssover and Interference Scheme Simulator and ANalysis Tool"
 requires-python = ">= 3.12"
 dependencies = [
-    "numpy>=2.3.1",
-    "matplotlib>=3.10.3",
-    "scipy>=1.16.0",
-    "more-itertools>=10.7.0",
+    "numpy>=2.5.0",
+    "matplotlib>=3.11.0",
+    "scipy>=1.18.0",
+    "more-itertools>=11.1.0",
     "tomli-w>=1.2.0",
 ]
 readme = "README.md"
@@ -26,9 +26,9 @@ license-files = ["LICENCE"]
 
 [project.optional-dependencies]
 dev = [
-    "scipy-stubs>=1.16.0.0",
-    "ruff>=0.12.1",
-    "pytest>=8.4.1",
+    "scipy-stubs>=1.18.0.0",
+    "ruff>=0.15.18",
+    "pytest>=9.1.1",
 ]
 
 [project.urls]

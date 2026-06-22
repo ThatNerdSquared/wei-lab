@@ -11,7 +11,7 @@ y = haldane_input_cM(x_range, 2)
 _ = plt.plot(x_range, y)
 
 num: np.float64
-for num in np.linspace(0.1, 2, 19):  # pyright: ignore[reportAny]
+for num in np.linspace(0.1, 2, 19):
     y = haldane_input_cM(x_range, num)
     _ = plt.plot(x_range, y)
 _ = plt.plot(np.linspace(0, 2.5, 100), np.linspace(0, 2.5, 100))

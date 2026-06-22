@@ -20,16 +20,6 @@
                 }
             }
         ],
-        "./croissant/croissant/haplotype_table.py": [
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 11,
-                    "endColumn": 30,
-                    "lineCount": 1
-                }
-            }
-        ],
         "./croissant/croissant/map_funcs.py": [
             {
                 "code": "reportArgumentType",
@@ -165,14 +155,6 @@
             }
         ],
         "./croissant/croissant/outputs/preinterf_cM_rf_curve.py": [
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 29,
-                    "endColumn": 35,
-                    "lineCount": 1
-                }
-            },
             {
                 "code": "reportAny",
                 "range": {
@@ -396,24 +378,6 @@
                 }
             }
         ],
-        "./src/oneoffs/cM_with_and_without_drive_parametric_curve.py": [
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 21,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 22,
-                    "endColumn": 75,
-                    "lineCount": 1
-                }
-            }
-        ],
         "./src/oneoffs/generate_haplotype_tbl_for_grant.py": [
             {
                 "code": "reportAny",
@@ -484,22 +448,6 @@
                 }
             },
             {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 42,
-                    "endColumn": 43,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 54,
-                    "endColumn": 55,
-                    "lineCount": 1
-                }
-            },
-            {
                 "code": "reportUnknownMemberType",
                 "range": {
                     "startColumn": 14,
@@ -508,34 +456,10 @@
                 }
             },
             {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 42,
-                    "endColumn": 43,
-                    "lineCount": 1
-                }
-            },
-            {
                 "code": "reportUnknownMemberType",
                 "range": {
                     "startColumn": 12,
                     "endColumn": 20,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 31,
-                    "endColumn": 32,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 43,
-                    "endColumn": 44,
                     "lineCount": 1
                 }
             },
@@ -609,22 +533,6 @@
             }
         ],
         "./src/oneoffs/recover_haldane_using_default_mc.py": [
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 33,
-                    "endColumn": 34,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 40,
-                    "endColumn": 41,
-                    "lineCount": 1
-                }
-            },
             {
                 "code": "reportUnknownMemberType",
                 "range": {
@@ -1106,56 +1014,8 @@
             {
                 "code": "reportAny",
                 "range": {
-                    "startColumn": 4,
-                    "endColumn": 30,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 12,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 38,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 40,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
                     "startColumn": 54,
                     "endColumn": 72,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 30,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 4,
-                    "endColumn": 12,
                     "lineCount": 1
                 }
             }

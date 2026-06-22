@@ -71,7 +71,7 @@ def transform_interevent_dist_data(
     if proportional:
         totals = totals / pool_size(chrom_set)
 
-    return chrom_set.label, (totals, groups)
+    return chrom_set.label, (totals, groups)  # pyright: ignore[reportReturnType]
 
 
 def transform_cM_rf_curve_data(
