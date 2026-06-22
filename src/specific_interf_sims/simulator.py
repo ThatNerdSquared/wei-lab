@@ -16,19 +16,23 @@ class InterferenceSim:
     starting_bins: BinArray
     chrom_set: ChromosomeSet[ChromosomeLike]
     rand: np.random.Generator
+    completed: bool = False
+
+
+type SimModel = Callable[
+    [
+        ChromosomeSet[ChromosomeLike],
+        BinArray,
+        InterferenceScheme,
+        np.random.Generator,
+    ],
+    None,
+]
 
 
 @dataclass
 class SimulationQueue:
-    model: Callable[
-        [
-            ChromosomeSet[ChromosomeLike],
-            BinArray,
-            InterferenceScheme,
-            np.random.Generator,
-        ],
-        None,
-    ]
+    model: SimModel
     default_starting_bins: BinArray | None = None
     sims: list[InterferenceSim] = field(default_factory=list)
     rand_seed: int | None = None
@@ -81,10 +85,15 @@ def run_sims(queue: SimulationQueue):
     print('simulating crossovers...')
     for queue_num in range(total_sims):
         sim = queue.sims[queue_num]
+        if sim.completed:
+            print('op complete', f'[{queue_num + 1}/{total_sims}]:')
+            print('restored from previous completion.')
+            continue
         with elapsed_time_printer(
             op_name=sim.chrom_set.label,
             op_number=(queue_num + 1, total_sims),
             chrom_set=sim.chrom_set,
         ):
             queue.model(sim.chrom_set, sim.starting_bins, sim.interf_scheme, sim.rand)
+            sim.completed = True
     print('all queued sims completed.')

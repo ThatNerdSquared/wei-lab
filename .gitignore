@@ -1,10 +1,11 @@
 .venv
+curr.vim
 
 # build clutter
 .ipynb_checkpoints
 **/.mypy_cache/
 **/__pycache__/
-mplconfigdir/
+.mplconfigdir/
 
 # outputs
 **/out--*.png
