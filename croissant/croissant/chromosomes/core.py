@@ -2,12 +2,15 @@ from __future__ import (
     annotations,
 )  # needed to have Strand and ChromosomeLike in same file
 
+import ast
 import itertools
 from collections.abc import Iterable, Sequence
 from enum import Enum
 from typing import ClassVar, NamedTuple, NewType, Protocol, Self
 
 import numpy as np
+
+from croissant._numeric_utils import TaggedInterval
 
 
 class Haplotype(Enum):
@@ -126,3 +129,53 @@ def num_strands(chroms: Sequence[ChromosomeLike]) -> int:
     constant time.
     """
     return len(chroms) * chroms[0].num_strands
+
+
+class Segments(list[TaggedInterval[Haplotype]]):
+    @classmethod
+    def from_strand(cls, strand: Strand) -> Self:
+        """
+        Converts the given strand into a list of Segments, with fields for
+        start, end, and data (containing haplotype of the segment).
+        """
+        if strand.get_num_crossovers() == 0:
+            return cls(
+                [
+                    TaggedInterval(
+                        start=0, end=strand.length - 1, data=strand.base_haplotype
+                    )
+                ]
+            )
+
+        co_locs = strand.get_crossover_locations()
+        res = cls(
+            [TaggedInterval(start=0, end=co_locs[0] - 1, data=strand.base_haplotype)]
+        )
+        for curr_loc, next_loc in itertools.pairwise(co_locs):
+            res.append(
+                TaggedInterval(
+                    start=curr_loc, end=next_loc - 1, data=strand.haplotype_at(curr_loc)
+                )
+            )
+        res.append(
+            TaggedInterval(
+                start=co_locs[-1],
+                end=strand.length - 1,
+                data=strand.haplotype_at(co_locs[-1]),
+            )
+        )
+
+        return res
+
+    @classmethod
+    def from_str(cls, raw_segments: str) -> Self:
+        parsed_raw_segments: list[tuple[int, int, int]] = ast.literal_eval(raw_segments)  # pyright: ignore[reportAny]
+        segments = map(
+            lambda x: TaggedInterval(start=x[0], end=x[1], data=Haplotype(x[2])),
+            parsed_raw_segments,
+        )
+        return cls(list(segments))
+
+    def to_str(self) -> str:
+        processed_segments = list(map(lambda x: (x.start, x.end, x.data.value), self))
+        return repr(processed_segments)

@@ -43,3 +43,8 @@ class Interval:
 
     def __le__(self, other: int | float) -> bool:
         return self < other or other in self
+
+
+@dataclass(slots=True, frozen=True, kw_only=True)
+class TaggedInterval[T](Interval):
+    data: T
