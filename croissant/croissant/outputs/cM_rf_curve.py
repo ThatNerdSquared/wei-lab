@@ -1,4 +1,11 @@
+from collections.abc import Sequence
+from dataclasses import dataclass
+from typing import ClassVar
+
+import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.figure import Figure
+from src.specific_interf_sims.plotter import save_plot
 
 from croissant.chromosomes import ChromosomeSet
 from croissant.chromosomes.core import ChromosomeLike, num_strands, strandify
@@ -7,20 +14,41 @@ from croissant.haplotype_table import (
     indicators_to_totals,
     make_indicator_tbl_chrom_sized,
 )
-from croissant.outputs.output import ListOfPoints
+from croissant.map_funcs import (
+    MapFuncData,
+    generate_canonical_map_func_data,
+    plot_canonical_map_funcs,
+)
+from croissant.outputs.output import ListOfPoints, MultipleCurves, label_figure
+
+
+@dataclass(slots=True, init=False)
+class cMRFCurve:
+    fig_name: ClassVar[str] = 'cM-RF curve'
+    xlabel: ClassVar[str] = 'morgans (M)'
+    ylabel: ClassVar[str] = 'recombinant frequency (rf)'
+    data: MultipleCurves
+    output_file: Figure
+    annotation: str
+    plot_map_funcs_up_to: float
+
+    def __init__(self, *, annotation: str = '', plot_map_funcs_up_to: float = 1.0):
+        self.annotation = annotation
+        self.plot_map_funcs_up_to = plot_map_funcs_up_to
+
+    def build(self, chrom_sets: dict[str, Sequence[ChromosomeSet[ChromosomeLike]]]):
+        chroms = chrom_sets['data']
+        self.data = dict(map(lambda x: (x.label, calculate_cM_rf_data(x)), chroms))
+        map_data = generate_canonical_map_func_data(up_to=self.plot_map_funcs_up_to)
+        self.output_file = plot_cM_rf_curve(self.data, map_data)
+        label_figure(self)
+        save_plot(self.output_file, additional_annotation=self.annotation)
 
 
 # TODO: write test!!
 def calculate_cM_rf_data(
     chrom_set: ChromosomeSet[ChromosomeLike],
 ) -> ListOfPoints:
-    # one approach: create two haplotypetbls, one for all COs, one
-    # for all visible COs, and then can add columnwise to get the
-    # totals at each point of the chromosome length? then can
-    # iterate CO-wise per chromosome, hopefully saving a lot of
-    # time (since expected num of COs per strand is not *that*
-    # high, or at least << 1000, which is the chrom length we
-    # usually use)
 
     visible_cos_tbl = HaplotypeTable.from_chromosomes(chrom_set.chroms)
     visible_cos_tbl.convert_to_visible_co_indicators()
@@ -37,3 +65,17 @@ def calculate_cM_rf_data(
     morgans_across_chrom = all_cos_cumulative / num_strands(chrom_set.chroms)
 
     return [(morgan, rf) for morgan, rf in zip(morgans_across_chrom, rf_across_chrom)]
+
+
+def plot_cM_rf_curve(data: MultipleCurves, map_data: MapFuncData) -> Figure:
+    fig = plt.figure(figsize=(9.0, 7.0))
+    ax = fig.add_subplot()
+    for curve_label, points in data.items():
+        cM, rf = zip(*points)
+        _ = ax.plot(cM, rf, label=curve_label)
+
+    plot_canonical_map_funcs(ax, map_data)
+    ax.axhline(y=0.5, color='tab:red', label='50% RF').set_dashes((5, 2))
+    _ = ax.set_ylim(bottom=0, top=1)
+
+    return fig

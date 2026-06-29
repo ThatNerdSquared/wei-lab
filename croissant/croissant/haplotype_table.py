@@ -56,6 +56,9 @@ class HaplotypeTable:
     def convert_to_visible_co_indicators(self):
         base_haplotypes = self.tbl[:, 0]
         self.tbl[:, 1:] = self.tbl[:, 1:] ^ np.expand_dims(base_haplotypes, axis=1)
+        # can't have visible CO in the first bin, since can't have a "more
+        # leftmost" marker to indicate a visible CO w
+        self.tbl[:, 0] = 0
 
     def to_totals(self) -> TotalTbl:
         return indicators_to_totals(self.tbl)

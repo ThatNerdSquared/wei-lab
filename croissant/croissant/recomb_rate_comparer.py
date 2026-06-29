@@ -90,5 +90,10 @@ class RecombRateComparer:
         else:
             return self._match_rate(curr_avg, upper, target)
 
-    def build_tbl(self) -> None:
+    def build_tbl(self, within: Interval) -> str:  # pyright: ignore[reportUnusedParameter]
+        """
+        If an interval of recomb rates is not provided, the table
+        is built using any sims previously run by this comparer
+        instance.
+        """
         raise NotImplementedError()

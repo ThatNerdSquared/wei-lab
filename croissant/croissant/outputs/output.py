@@ -21,6 +21,9 @@ def axis_lists_to_points(axis_lists: AxisLists) -> ListOfPoints:
     return [(x, y) for x, y in zip(*axis_lists)]
 
 
+type RawData = dict[str, Sequence[ChromosomeSet[ChromosomeLike]]]
+
+
 class Output[T, R](Protocol):
     fig_name: ClassVar[str]
     xlabel: ClassVar[str]
@@ -28,7 +31,7 @@ class Output[T, R](Protocol):
     data: T
     output_file: R
 
-    def build(self, chrom_sets: dict[str, Sequence[ChromosomeSet[ChromosomeLike]]]): ...
+    def build(self, chrom_sets: RawData): ...
 
 
 def label_figure[T, R](
