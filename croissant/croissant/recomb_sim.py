@@ -19,10 +19,16 @@ from croissant.chromosomes import (
     ChromosomeSet,
     ChromosomeTetrad,
 )
-from croissant.chromosomes.core import ChromosomeLike, Strand
+from croissant.chromosomes.core import (
+    ChromosomeLike,
+    Strand,
+    segments_serialisable,
+    strandify,
+)
 
 _CURR_SIM_VERSION = 0
 SIM_FILE_EXT = '.recombsim'
+DIVIDER = '=~=~=~=~=~=\n'
 
 
 def _assemble_simfile_path(label: str, at_location: Path | None = None) -> Path:
@@ -124,18 +130,16 @@ class RecombSim[C: ChromosomeLike]:
         metadata = asdict(self, dict_factory=self._dictify)
         stringified_metadata = tomli_w.dumps(metadata)
 
-        buffer_length = self.num_chroms * self.chrom_type.num_strands
-        stringified_chroms_buffer = np.zeros(
-            (buffer_length, self.chrom_length), dtype=np.int64
-        )
-        for idx in range(0, buffer_length, self.chrom_type.num_strands):
-            self.chroms[int(idx / self.chrom_type.num_strands)].into_haplotype_tbl(
-                stringified_chroms_buffer[idx : idx + self.chrom_type.num_strands]
+        res_strings: list[str] = []
+        for strand in strandify(self.chroms):
+            res_strings.append(
+                f'{strand.base_haplotype.value},{str(list(segments_serialisable(strand)))}'
             )
 
-        np.savetxt(
-            fp, stringified_chroms_buffer, header=stringified_metadata, fmt='%0d'
+        final_txt = '\n'.join(
+            itertools.chain((stringified_metadata, DIVIDER), res_strings)
         )
+        _ = fp.write_text(final_txt)
         return fp
 
 

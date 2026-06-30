@@ -1,4 +1,4 @@
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass, field
 from itertools import pairwise
 from typing import ClassVar, Self
@@ -6,7 +6,13 @@ from uuid import UUID, uuid4
 
 import numpy as np
 
-from croissant.chromosomes.core import Crossover, CrossoverStack, Haplotype, Strand
+from croissant.chromosomes.core import (
+    Crossover,
+    CrossoverStack,
+    Haplotype,
+    Segment,
+    Strand,
+)
 
 
 def invert_haplotypes_in_co_stack(co_stack: CrossoverStack) -> CrossoverStack:
@@ -112,6 +118,10 @@ class Chromatid:
     def add_co_stack_from_exchange(self, co_stack: CrossoverStack) -> None:
         co_stack.reverse()
         self.crossovers += co_stack
+
+    def fill_from_segments(self, segments: Iterator[Segment]) -> None:
+        for segment in segments:
+            self.crossovers.append(Crossover(int(segment.start), segment.data))
 
 
 def convert_chromatid_to_haplotype_tbl(

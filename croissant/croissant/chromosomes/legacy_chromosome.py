@@ -1,4 +1,4 @@
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Iterator, Sequence
 from itertools import pairwise
 from random import randint
 from typing import ClassVar, Self, override
@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 
 import numpy as np
 
-from croissant.chromosomes.core import Haplotype, Strand
+from croissant.chromosomes.core import Haplotype, Segment, Strand
 
 
 class LegacyChromosome:
@@ -111,3 +111,8 @@ class LegacyChromosome:
     ) -> Self:
         print(input_arr)
         raise NotImplementedError()
+
+    def fill_from_segments(self, segments: Iterator[Segment]) -> None:
+        self._crossovers = {}
+        for segment in segments:
+            self.insert_crossover(int(segment.start))

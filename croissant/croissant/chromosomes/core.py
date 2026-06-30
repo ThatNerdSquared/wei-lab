@@ -109,7 +109,23 @@ class ChromosomeLike(Protocol):
 class Strand(ChromosomeLike, Protocol):
     base_haplotype: Haplotype
 
-    def haplotype_at(self, location: int) -> Haplotype: ...
+    def haplotype_at(self, location: int) -> Haplotype:
+        """
+        Returns the haplotype of the strand at the given location, in O(m)
+        time, where m is the number of COs inserted on the strand.
+        """
+        ...
+
+    def fill_from_segments(self, segments: Iterator[Segment]) -> None:
+        """
+        Given an iterator of segments, insert COs into the strand such that it
+        has segments matching those in the iterator.
+
+        Note that this MAY REPLACE ALL existing COs on this strand - the
+        behaviour of calling `fill_from_segments` on a strand where COs have
+        already been placed is undefined.
+        """
+        ...
 
 
 def strandify(chroms: Sequence[ChromosomeLike]) -> Iterable[Strand]:
