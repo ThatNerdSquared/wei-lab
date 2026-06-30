@@ -4,7 +4,11 @@ from croissant.chromosomes import (
     make_chromset_custom_sister_selectors,
     selectSingleSisterForPool,
 )
-from croissant.chromosomes.core import Segments
+from croissant.chromosomes.core import (
+    segments,
+    segments_from_str,
+    segments_serialisable,
+)
 
 from src.specific_interf_sims.interf_schemes import no_interf
 from src.specific_interf_sims.models import induce_COs_via_random_forward_draw
@@ -40,10 +44,13 @@ _ = queue_sim(
 )
 run_sims(queue)
 
+# UPDATE TO USE SEGMENT GENERATOR_ITERATOR
 print(no_drive_chroms.chroms[0].a1.get_crossover_locations())
-chrom1_strand = Segments.from_strand(no_drive_chroms.chroms[0].a1)
+selected_chrom = no_drive_chroms.chroms[0].a1
+chrom1_strand = list(segments(selected_chrom))
 print(chrom1_strand)
-sered = chrom1_strand.to_str()
+print(str(chrom1_strand))
+sered = str(list(segments_serialisable(selected_chrom)))
 print(sered)
-desered = Segments.from_str(sered)
-print(desered)
+desered = segments_from_str(sered)
+print(list(desered))

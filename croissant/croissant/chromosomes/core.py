@@ -4,9 +4,9 @@ from __future__ import (
 
 import ast
 import itertools
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Iterator, Sequence
 from enum import Enum
-from typing import ClassVar, NamedTuple, NewType, Protocol, Self
+from typing import ClassVar, Literal, NamedTuple, NewType, Protocol, Self
 
 import numpy as np
 
@@ -131,51 +131,38 @@ def num_strands(chroms: Sequence[ChromosomeLike]) -> int:
     return len(chroms) * chroms[0].num_strands
 
 
-class Segments(list[TaggedInterval[Haplotype]]):
-    @classmethod
-    def from_strand(cls, strand: Strand) -> Self:
-        """
-        Converts the given strand into a list of Segments, with fields for
-        start, end, and data (containing haplotype of the segment).
-        """
-        if strand.get_num_crossovers() == 0:
-            return cls(
-                [
-                    TaggedInterval(
-                        start=0, end=strand.length - 1, data=strand.base_haplotype
-                    )
-                ]
-            )
+type Segment = TaggedInterval[Haplotype]
 
-        co_locs = strand.get_crossover_locations()
-        res = cls(
-            [TaggedInterval(start=0, end=co_locs[0] - 1, data=strand.base_haplotype)]
-        )
-        for curr_loc, next_loc in itertools.pairwise(co_locs):
-            res.append(
-                TaggedInterval(
-                    start=curr_loc, end=next_loc - 1, data=strand.haplotype_at(curr_loc)
-                )
-            )
-        res.append(
-            TaggedInterval(
-                start=co_locs[-1],
-                end=strand.length - 1,
-                data=strand.haplotype_at(co_locs[-1]),
-            )
+
+def segments(strand: Strand) -> Iterator[Segment]:
+    if strand.get_num_crossovers() == 0:
+        yield TaggedInterval(start=0, end=strand.length - 1, data=strand.base_haplotype)
+        return
+
+    co_locs = strand.get_crossover_locations()
+    yield TaggedInterval(start=0, end=co_locs[0] - 1, data=strand.base_haplotype)
+
+    for curr_loc, next_loc in itertools.pairwise(co_locs):
+        yield TaggedInterval(
+            start=curr_loc, end=next_loc - 1, data=strand.haplotype_at(curr_loc)
         )
 
-        return res
+    yield TaggedInterval(
+        start=co_locs[-1],
+        end=strand.length - 1,
+        data=strand.haplotype_at(co_locs[-1]),
+    )
 
-    @classmethod
-    def from_str(cls, raw_segments: str) -> Self:
-        parsed_raw_segments: list[tuple[int, int, int]] = ast.literal_eval(raw_segments)  # pyright: ignore[reportAny]
-        segments = map(
-            lambda x: TaggedInterval(start=x[0], end=x[1], data=Haplotype(x[2])),
-            parsed_raw_segments,
-        )
-        return cls(list(segments))
 
-    def to_str(self) -> str:
-        processed_segments = list(map(lambda x: (x.start, x.end, x.data.value), self))
-        return repr(processed_segments)
+def segments_from_str(raw_segments: str) -> Iterator[Segment]:
+    parsed_raw_segments: list[tuple[int, int, int]] = ast.literal_eval(raw_segments)  # pyright: ignore[reportAny]
+    return (
+        TaggedInterval(start=x[0], end=x[1], data=Haplotype(x[2]))
+        for x in parsed_raw_segments
+    )
+
+
+def segments_serialisable(
+    strand: Strand,
+) -> Iterator[tuple[float, float, Literal[0, 1]]]:
+    return ((x.start, x.end, x.data.value) for x in segments(strand))

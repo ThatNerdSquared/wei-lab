@@ -3,7 +3,7 @@ from typing import Self
 
 import numpy as np
 
-from croissant.chromosomes.core import ChromosomeLike, Segments, num_strands, strandify
+from croissant.chromosomes.core import ChromosomeLike, num_strands, segments, strandify
 
 type IndicatorTbl = np.ndarray[tuple[int, int], np.dtype[np.int64]]
 type TotalTbl = np.ndarray[tuple[int], np.dtype[np.int64]]
@@ -38,7 +38,7 @@ class HaplotypeTable:
     def from_chromosomes(cls, chroms: Sequence[ChromosomeLike]) -> Self:
         res = cls(tbl=make_indicator_tbl_chrom_sized(chroms))
         for strand, curr_row in zip(strandify(chroms), res.tbl):
-            for segment in Segments.from_strand(strand):
+            for segment in segments(strand):
                 curr_row[segment.start : segment.end + 1] = segment.data.value
         return res
 
